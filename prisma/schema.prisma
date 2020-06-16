@@ -16,7 +16,7 @@ model User {
   books          Book[]
   chapters       Chapter[]
   voices         Voice[]
-  rating         Rating[]
+  ratings        Rating[]
 }
 
 model Book {
@@ -29,7 +29,7 @@ model Book {
   authorUsername String?
   chapters       Chapter[]
   voices         Voice[]
-  rating         Rating[]
+  ratings        Rating[]
 }
 
 model Chapter {
@@ -43,7 +43,7 @@ model Chapter {
   book           Book?      @relation(fields: [bookId], references: [id])
   bookId         Int?
   voices         Voice[]
-  rating         Rating[]
+  ratings        Rating[]
 }
 
 model Voice {
@@ -56,7 +56,7 @@ model Voice {
   bookId         Int?
   chapter        Chapter?   @relation(fields: [chapterId], references: [id])
   chapterId      Int?
-  rating         Rating[]
+  ratings        Rating[]
 }
 
 model Rating {
