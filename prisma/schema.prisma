@@ -23,6 +23,7 @@ model Book {
   id             Int        @default(autoincrement()) @id
   name           String
   description    String
+  intro          String?
   image          String?
 
   author         User?      @relation(fields: [authorUsername], references: [username])
@@ -36,6 +37,7 @@ model Chapter {
   id             Int        @default(autoincrement()) @id
   title          String?
   content        String
+  intro          String?
   image          String?
 
   author         User?      @relation(fields: [authorUsername], references: [username])
