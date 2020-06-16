@@ -16,28 +16,26 @@ model User {
   books          Book[]
   chapters       Chapter[]
   voices         Voice[]
-  ratings        Rating[]
+  rating         Rating[]
 }
 
 model Book {
   id             Int        @default(autoincrement()) @id
   name           String
   description    String
-  intro          String?
   image          String?
 
   author         User?      @relation(fields: [authorUsername], references: [username])
   authorUsername String?
   chapters       Chapter[]
   voices         Voice[]
-  ratings        Rating[]
+  rating         Rating[]
 }
 
 model Chapter {
   id             Int        @default(autoincrement()) @id
   title          String?
   content        String
-  intro          String?
   image          String?
 
   author         User?      @relation(fields: [authorUsername], references: [username])
@@ -45,7 +43,7 @@ model Chapter {
   book           Book?      @relation(fields: [bookId], references: [id])
   bookId         Int?
   voices         Voice[]
-  ratings        Rating[]
+  rating         Rating[]
 }
 
 model Voice {
@@ -58,7 +56,7 @@ model Voice {
   bookId         Int?
   chapter        Chapter?   @relation(fields: [chapterId], references: [id])
   chapterId      Int?
-  ratings        Rating[]
+  rating         Rating[]
 }
 
 model Rating {
