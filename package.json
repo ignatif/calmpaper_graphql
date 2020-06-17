@@ -20,7 +20,7 @@
     "passport-magic": "^1.0.0"
   },
   "scripts": {
-    "dev": "node src",
+    "dev": "nodemon src",
     "generate": "prisma generate",
     "postinstall": "prisma generate"
   },
