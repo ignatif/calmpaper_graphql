@@ -28,6 +28,49 @@ const Query = objectType({
     t.crud.voices()
     t.crud.rating()
     t.crud.ratings()
+
+    // t.list.field('chapterByBook', {
+    //   type: 'Chapter',
+    //   args: {
+    //     bookId: intArg(),
+    //     skip: intArg({ nullable: true }),
+    //   },
+    //   resolve: (_, { bookId, skip }, ctx) => {
+    //     // return ctx.prisma.chapter.findMany()
+    //     return ctx.prisma.book
+    //       .findOne({
+    //         where: { id: bookId },
+    //       })
+    //       .chapters.finaMany({
+    //         where: {
+    //           last: 1,
+    //           skip: skip || 0,
+    //         },
+    //       })
+    //   },
+    // })
+    t.list.field('chapterByBook', {
+      type: 'Chapter',
+      args: {
+        bookId: intArg(),
+        skip: intArg({ nullable: true }),
+      },
+      resolve: (_, { bookId, skip }, ctx) => {
+        return ctx.prisma.chapter.findMany({
+          take: 1,
+          skip,
+          where: {
+            book: {
+              id: bookId,
+            },
+          },
+          include: {
+            ratings: true,
+            voices: true,
+          },
+        })
+      },
+    })
   },
 })
 
@@ -52,6 +95,7 @@ const Mutation = objectType({
 
     t.crud.createOneRating()
     t.crud.updateOneRating()
+    t.crud.upsertOneRating()
     t.crud.deleteOneRating()
   },
 })
