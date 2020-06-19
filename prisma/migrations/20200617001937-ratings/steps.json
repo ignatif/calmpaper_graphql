@@ -1,0 +1,53 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "CreateField",
+      "model": "User",
+      "field": "ratings",
+      "type": "Rating",
+      "arity": "List"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "User",
+      "field": "rating"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Book",
+      "field": "ratings",
+      "type": "Rating",
+      "arity": "List"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "Book",
+      "field": "rating"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Chapter",
+      "field": "ratings",
+      "type": "Rating",
+      "arity": "List"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "Chapter",
+      "field": "rating"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Voice",
+      "field": "ratings",
+      "type": "Rating",
+      "arity": "List"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "Voice",
+      "field": "rating"
+    }
+  ]
+}

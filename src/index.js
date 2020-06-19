@@ -29,26 +29,6 @@ const Query = objectType({
     t.crud.rating()
     t.crud.ratings()
 
-    // t.list.field('chapterByBook', {
-    //   type: 'Chapter',
-    //   args: {
-    //     bookId: intArg(),
-    //     skip: intArg({ nullable: true }),
-    //   },
-    //   resolve: (_, { bookId, skip }, ctx) => {
-    //     // return ctx.prisma.chapter.findMany()
-    //     return ctx.prisma.book
-    //       .findOne({
-    //         where: { id: bookId },
-    //       })
-    //       .chapters.finaMany({
-    //         where: {
-    //           last: 1,
-    //           skip: skip || 0,
-    //         },
-    //       })
-    //   },
-    // })
     t.list.field('chapterByBook', {
       type: 'Chapter',
       args: {
@@ -97,6 +77,61 @@ const Mutation = objectType({
     t.crud.updateOneRating()
     t.crud.upsertOneRating()
     t.crud.deleteOneRating()
+
+    t.field('setRating', {
+      type: 'Rating',
+      args: {
+        id: intArg({ nullable: true }),
+        stars: intArg(),
+        authorUsername: stringArg(),
+        userId: intArg({ nullable: true }), // when setting rating to other user
+        bookId: intArg({ nullable: true }),
+        chapterId: intArg({ nullable: true }),
+        voiceId: intArg({ nullable: true }),
+      },
+      resolve: (
+        parent,
+        { id, stars, authorUsername, userId, bookId, chapterId, voiceId },
+        ctx,
+      ) => {
+        if (id) {
+          return ctx.prisma.rating.update({
+            data: { stars },
+            where: { id },
+          })
+        } else {
+          let connect
+
+          if (userId) {
+            connect = { user: { connect: { id: userId } } }
+          }
+
+          if (bookId) {
+            connect = { book: { connect: { id: bookId } } }
+          }
+
+          if (chapterId) {
+            connect = { chapter: { connect: { id: chapterId } } }
+          }
+
+          if (voiceId) {
+            connect = { voice: { connect: { id: voiceId } } }
+          }
+
+          return ctx.prisma.rating.create({
+            data: {
+              stars,
+              author: {
+                connect: {
+                  username: authorUsername,
+                },
+              },
+              ...connect,
+            },
+          })
+        }
+      },
+    })
   },
 })
 

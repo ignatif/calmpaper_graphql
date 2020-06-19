@@ -7,6 +7,7 @@ type Book {
   chapters: [Chapter!]!
   description: String!
   id: Int!
+  image: String
   name: String!
   ratings: [Rating!]!
   voices: [Voice!]!
@@ -521,11 +522,13 @@ type Mutation {
   deleteOneRating(where: RatingWhereUniqueInput!): Rating
   deleteOneUser(where: UserWhereUniqueInput!): User
   deleteOneVoice(where: VoiceWhereUniqueInput!): Voice
+  setRating(authorUsername: String, bookId: Int, chapterId: Int, id: Int, stars: Int, userId: Int, voiceId: Int): Rating!
   updateOneBook(data: BookUpdateInput!, where: BookWhereUniqueInput!): Book
   updateOneChapter(data: ChapterUpdateInput!, where: ChapterWhereUniqueInput!): Chapter
   updateOneRating(data: RatingUpdateInput!, where: RatingWhereUniqueInput!): Rating
   updateOneUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   updateOneVoice(data: VoiceUpdateInput!, where: VoiceWhereUniqueInput!): Voice
+  upsertOneRating(create: RatingCreateInput!, update: RatingUpdateInput!, where: RatingWhereUniqueInput!): Rating!
 }
 
 input NullableIntFilter {
@@ -557,6 +560,7 @@ type Query {
   book(where: BookWhereUniqueInput!): Book
   books(skip: Int): [Book!]!
   chapter(where: ChapterWhereUniqueInput!): Chapter
+  chapterByBook(bookId: Int, skip: Int): [Chapter!]!
   chapters(skip: Int): [Chapter!]!
   rating(where: RatingWhereUniqueInput!): Rating
   ratings(skip: Int): [Rating!]!
@@ -572,6 +576,7 @@ type Rating {
   chapter: Chapter
   id: Int!
   stars: Int!
+  user: User
   voice: Voice
 }
 
@@ -580,6 +585,7 @@ input RatingCreateInput {
   book: BookCreateOneWithoutRatingsInput
   chapter: ChapterCreateOneWithoutRatingsInput
   stars: Int!
+  user: UserCreateOneWithoutSettedRetingsInput
   voice: VoiceCreateOneWithoutRatingsInput
 }
 
@@ -598,6 +604,11 @@ input RatingCreateManyWithoutChapterInput {
   create: [RatingCreateWithoutChapterInput!]
 }
 
+input RatingCreateManyWithoutUserInput {
+  connect: [RatingWhereUniqueInput!]
+  create: [RatingCreateWithoutUserInput!]
+}
+
 input RatingCreateManyWithoutVoiceInput {
   connect: [RatingWhereUniqueInput!]
   create: [RatingCreateWithoutVoiceInput!]
@@ -607,6 +618,7 @@ input RatingCreateWithoutAuthorInput {
   book: BookCreateOneWithoutRatingsInput
   chapter: ChapterCreateOneWithoutRatingsInput
   stars: Int!
+  user: UserCreateOneWithoutSettedRetingsInput
   voice: VoiceCreateOneWithoutRatingsInput
 }
 
@@ -614,12 +626,22 @@ input RatingCreateWithoutBookInput {
   author: UserCreateOneWithoutRatingsInput
   chapter: ChapterCreateOneWithoutRatingsInput
   stars: Int!
+  user: UserCreateOneWithoutSettedRetingsInput
   voice: VoiceCreateOneWithoutRatingsInput
 }
 
 input RatingCreateWithoutChapterInput {
   author: UserCreateOneWithoutRatingsInput
   book: BookCreateOneWithoutRatingsInput
+  stars: Int!
+  user: UserCreateOneWithoutSettedRetingsInput
+  voice: VoiceCreateOneWithoutRatingsInput
+}
+
+input RatingCreateWithoutUserInput {
+  author: UserCreateOneWithoutRatingsInput
+  book: BookCreateOneWithoutRatingsInput
+  chapter: ChapterCreateOneWithoutRatingsInput
   stars: Int!
   voice: VoiceCreateOneWithoutRatingsInput
 }
@@ -629,6 +651,7 @@ input RatingCreateWithoutVoiceInput {
   book: BookCreateOneWithoutRatingsInput
   chapter: ChapterCreateOneWithoutRatingsInput
   stars: Int!
+  user: UserCreateOneWithoutSettedRetingsInput
 }
 
 input RatingFilter {
@@ -646,6 +669,7 @@ input RatingScalarWhereInput {
   NOT: [RatingScalarWhereInput!]
   OR: [RatingScalarWhereInput!]
   stars: IntFilter
+  userUsername: NullableStringFilter
   voiceId: NullableIntFilter
 }
 
@@ -655,6 +679,7 @@ input RatingUpdateInput {
   chapter: ChapterUpdateOneWithoutRatingsInput
   id: Int
   stars: Int
+  user: UserUpdateOneWithoutSettedRetingsInput
   voice: VoiceUpdateOneWithoutRatingsInput
 }
 
@@ -699,6 +724,18 @@ input RatingUpdateManyWithoutChapterInput {
   upsert: [RatingUpsertWithWhereUniqueWithoutChapterInput!]
 }
 
+input RatingUpdateManyWithoutUserInput {
+  connect: [RatingWhereUniqueInput!]
+  create: [RatingCreateWithoutUserInput!]
+  delete: [RatingWhereUniqueInput!]
+  deleteMany: [RatingScalarWhereInput!]
+  disconnect: [RatingWhereUniqueInput!]
+  set: [RatingWhereUniqueInput!]
+  update: [RatingUpdateWithWhereUniqueWithoutUserInput!]
+  updateMany: [RatingUpdateManyWithWhereNestedInput!]
+  upsert: [RatingUpsertWithWhereUniqueWithoutUserInput!]
+}
+
 input RatingUpdateManyWithoutVoiceInput {
   connect: [RatingWhereUniqueInput!]
   create: [RatingCreateWithoutVoiceInput!]
@@ -721,6 +758,7 @@ input RatingUpdateWithoutAuthorDataInput {
   chapter: ChapterUpdateOneWithoutRatingsInput
   id: Int
   stars: Int
+  user: UserUpdateOneWithoutSettedRetingsInput
   voice: VoiceUpdateOneWithoutRatingsInput
 }
 
@@ -729,12 +767,23 @@ input RatingUpdateWithoutBookDataInput {
   chapter: ChapterUpdateOneWithoutRatingsInput
   id: Int
   stars: Int
+  user: UserUpdateOneWithoutSettedRetingsInput
   voice: VoiceUpdateOneWithoutRatingsInput
 }
 
 input RatingUpdateWithoutChapterDataInput {
   author: UserUpdateOneWithoutRatingsInput
   book: BookUpdateOneWithoutRatingsInput
+  id: Int
+  stars: Int
+  user: UserUpdateOneWithoutSettedRetingsInput
+  voice: VoiceUpdateOneWithoutRatingsInput
+}
+
+input RatingUpdateWithoutUserDataInput {
+  author: UserUpdateOneWithoutRatingsInput
+  book: BookUpdateOneWithoutRatingsInput
+  chapter: ChapterUpdateOneWithoutRatingsInput
   id: Int
   stars: Int
   voice: VoiceUpdateOneWithoutRatingsInput
@@ -746,6 +795,7 @@ input RatingUpdateWithoutVoiceDataInput {
   chapter: ChapterUpdateOneWithoutRatingsInput
   id: Int
   stars: Int
+  user: UserUpdateOneWithoutSettedRetingsInput
 }
 
 input RatingUpdateWithWhereUniqueWithoutAuthorInput {
@@ -760,6 +810,11 @@ input RatingUpdateWithWhereUniqueWithoutBookInput {
 
 input RatingUpdateWithWhereUniqueWithoutChapterInput {
   data: RatingUpdateWithoutChapterDataInput!
+  where: RatingWhereUniqueInput!
+}
+
+input RatingUpdateWithWhereUniqueWithoutUserInput {
+  data: RatingUpdateWithoutUserDataInput!
   where: RatingWhereUniqueInput!
 }
 
@@ -786,6 +841,12 @@ input RatingUpsertWithWhereUniqueWithoutChapterInput {
   where: RatingWhereUniqueInput!
 }
 
+input RatingUpsertWithWhereUniqueWithoutUserInput {
+  create: RatingCreateWithoutUserInput!
+  update: RatingUpdateWithoutUserDataInput!
+  where: RatingWhereUniqueInput!
+}
+
 input RatingUpsertWithWhereUniqueWithoutVoiceInput {
   create: RatingCreateWithoutVoiceInput!
   update: RatingUpdateWithoutVoiceDataInput!
@@ -804,6 +865,8 @@ input RatingWhereInput {
   NOT: [RatingWhereInput!]
   OR: [RatingWhereInput!]
   stars: IntFilter
+  user: UserWhereInput
+  userUsername: NullableStringFilter
   voice: VoiceWhereInput
   voiceId: NullableIntFilter
 }
@@ -830,7 +893,7 @@ type User {
   avatar: String
   books: [Book!]!
   chapters: [Chapter!]!
-  email: String!
+  email: String
   id: Int!
   ratings: [Rating!]!
   username: String!
@@ -841,8 +904,9 @@ input UserCreateInput {
   avatar: String
   books: BookCreateManyWithoutAuthorInput
   chapters: ChapterCreateManyWithoutAuthorInput
-  email: String!
+  email: String
   ratings: RatingCreateManyWithoutAuthorInput
+  settedRetings: RatingCreateManyWithoutUserInput
   username: String!
   voices: VoiceCreateManyWithoutAuthorInput
 }
@@ -862,6 +926,11 @@ input UserCreateOneWithoutRatingsInput {
   create: UserCreateWithoutRatingsInput
 }
 
+input UserCreateOneWithoutSettedRetingsInput {
+  connect: UserWhereUniqueInput
+  create: UserCreateWithoutSettedRetingsInput
+}
+
 input UserCreateOneWithoutVoicesInput {
   connect: UserWhereUniqueInput
   create: UserCreateWithoutVoicesInput
@@ -870,8 +939,9 @@ input UserCreateOneWithoutVoicesInput {
 input UserCreateWithoutBooksInput {
   avatar: String
   chapters: ChapterCreateManyWithoutAuthorInput
-  email: String!
+  email: String
   ratings: RatingCreateManyWithoutAuthorInput
+  settedRetings: RatingCreateManyWithoutUserInput
   username: String!
   voices: VoiceCreateManyWithoutAuthorInput
 }
@@ -879,8 +949,9 @@ input UserCreateWithoutBooksInput {
 input UserCreateWithoutChaptersInput {
   avatar: String
   books: BookCreateManyWithoutAuthorInput
-  email: String!
+  email: String
   ratings: RatingCreateManyWithoutAuthorInput
+  settedRetings: RatingCreateManyWithoutUserInput
   username: String!
   voices: VoiceCreateManyWithoutAuthorInput
 }
@@ -889,7 +960,18 @@ input UserCreateWithoutRatingsInput {
   avatar: String
   books: BookCreateManyWithoutAuthorInput
   chapters: ChapterCreateManyWithoutAuthorInput
-  email: String!
+  email: String
+  settedRetings: RatingCreateManyWithoutUserInput
+  username: String!
+  voices: VoiceCreateManyWithoutAuthorInput
+}
+
+input UserCreateWithoutSettedRetingsInput {
+  avatar: String
+  books: BookCreateManyWithoutAuthorInput
+  chapters: ChapterCreateManyWithoutAuthorInput
+  email: String
+  ratings: RatingCreateManyWithoutAuthorInput
   username: String!
   voices: VoiceCreateManyWithoutAuthorInput
 }
@@ -898,8 +980,9 @@ input UserCreateWithoutVoicesInput {
   avatar: String
   books: BookCreateManyWithoutAuthorInput
   chapters: ChapterCreateManyWithoutAuthorInput
-  email: String!
+  email: String
   ratings: RatingCreateManyWithoutAuthorInput
+  settedRetings: RatingCreateManyWithoutUserInput
   username: String!
 }
 
@@ -910,6 +993,7 @@ input UserUpdateInput {
   email: String
   id: Int
   ratings: RatingUpdateManyWithoutAuthorInput
+  settedRetings: RatingUpdateManyWithoutUserInput
   username: String
   voices: VoiceUpdateManyWithoutAuthorInput
 }
@@ -941,6 +1025,15 @@ input UserUpdateOneWithoutRatingsInput {
   upsert: UserUpsertWithoutRatingsInput
 }
 
+input UserUpdateOneWithoutSettedRetingsInput {
+  connect: UserWhereUniqueInput
+  create: UserCreateWithoutSettedRetingsInput
+  delete: Boolean
+  disconnect: Boolean
+  update: UserUpdateWithoutSettedRetingsDataInput
+  upsert: UserUpsertWithoutSettedRetingsInput
+}
+
 input UserUpdateOneWithoutVoicesInput {
   connect: UserWhereUniqueInput
   create: UserCreateWithoutVoicesInput
@@ -956,6 +1049,7 @@ input UserUpdateWithoutBooksDataInput {
   email: String
   id: Int
   ratings: RatingUpdateManyWithoutAuthorInput
+  settedRetings: RatingUpdateManyWithoutUserInput
   username: String
   voices: VoiceUpdateManyWithoutAuthorInput
 }
@@ -966,6 +1060,7 @@ input UserUpdateWithoutChaptersDataInput {
   email: String
   id: Int
   ratings: RatingUpdateManyWithoutAuthorInput
+  settedRetings: RatingUpdateManyWithoutUserInput
   username: String
   voices: VoiceUpdateManyWithoutAuthorInput
 }
@@ -976,6 +1071,18 @@ input UserUpdateWithoutRatingsDataInput {
   chapters: ChapterUpdateManyWithoutAuthorInput
   email: String
   id: Int
+  settedRetings: RatingUpdateManyWithoutUserInput
+  username: String
+  voices: VoiceUpdateManyWithoutAuthorInput
+}
+
+input UserUpdateWithoutSettedRetingsDataInput {
+  avatar: String
+  books: BookUpdateManyWithoutAuthorInput
+  chapters: ChapterUpdateManyWithoutAuthorInput
+  email: String
+  id: Int
+  ratings: RatingUpdateManyWithoutAuthorInput
   username: String
   voices: VoiceUpdateManyWithoutAuthorInput
 }
@@ -987,6 +1094,7 @@ input UserUpdateWithoutVoicesDataInput {
   email: String
   id: Int
   ratings: RatingUpdateManyWithoutAuthorInput
+  settedRetings: RatingUpdateManyWithoutUserInput
   username: String
 }
 
@@ -1005,6 +1113,11 @@ input UserUpsertWithoutRatingsInput {
   update: UserUpdateWithoutRatingsDataInput!
 }
 
+input UserUpsertWithoutSettedRetingsInput {
+  create: UserCreateWithoutSettedRetingsInput!
+  update: UserUpdateWithoutSettedRetingsDataInput!
+}
+
 input UserUpsertWithoutVoicesInput {
   create: UserCreateWithoutVoicesInput!
   update: UserUpdateWithoutVoicesDataInput!
@@ -1015,11 +1128,12 @@ input UserWhereInput {
   avatar: NullableStringFilter
   books: BookFilter
   chapters: ChapterFilter
-  email: StringFilter
+  email: NullableStringFilter
   id: IntFilter
   NOT: [UserWhereInput!]
   OR: [UserWhereInput!]
   ratings: RatingFilter
+  settedRetings: RatingFilter
   username: StringFilter
   voices: VoiceFilter
 }
