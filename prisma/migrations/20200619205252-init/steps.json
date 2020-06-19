@@ -93,7 +93,7 @@
       "model": "User",
       "field": "email",
       "type": "String",
-      "arity": "Required"
+      "arity": "Optional"
     },
     {
       "tag": "CreateDirective",
@@ -140,6 +140,63 @@
       "field": "ratings",
       "type": "Rating",
       "arity": "List"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "User",
+          "field": "ratings"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "User",
+          "field": "ratings"
+        },
+        "directive": "relation"
+      },
+      "argument": "",
+      "value": "\"RatingAuthor\""
+    },
+    {
+      "tag": "CreateField",
+      "model": "User",
+      "field": "settedRetings",
+      "type": "Rating",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "User",
+          "field": "settedRetings"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "User",
+          "field": "settedRetings"
+        },
+        "directive": "relation"
+      },
+      "argument": "",
+      "value": "\"RatingTarget\""
     },
     {
       "tag": "CreateModel",
@@ -774,6 +831,20 @@
         },
         "directive": "relation"
       },
+      "argument": "name",
+      "value": "\"RatingAuthor\""
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Rating",
+          "field": "author"
+        },
+        "directive": "relation"
+      },
       "argument": "fields",
       "value": "[authorUsername]"
     },
@@ -795,6 +866,73 @@
       "tag": "CreateField",
       "model": "Rating",
       "field": "authorUsername",
+      "type": "String",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Rating",
+      "field": "user",
+      "type": "User",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Rating",
+          "field": "user"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Rating",
+          "field": "user"
+        },
+        "directive": "relation"
+      },
+      "argument": "name",
+      "value": "\"RatingTarget\""
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Rating",
+          "field": "user"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[userUsername]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Rating",
+          "field": "user"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[username]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Rating",
+      "field": "userUsername",
       "type": "String",
       "arity": "Optional"
     },

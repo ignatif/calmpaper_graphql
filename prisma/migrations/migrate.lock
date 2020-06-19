@@ -1,7 +1,3 @@
 # Prisma Migrate lockfile v1
 
-20200616065537-init
-20200617001754-rating
-20200617001937-ratings
-20200619174811-ra
-20200619200924-rating-author-rating-target
+20200619205252-init
