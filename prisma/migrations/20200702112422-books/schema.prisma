@@ -4,7 +4,7 @@ generator client {
 
 datasource sqlite {
   provider = "sqlite"
-  url      = "file:dev.db"
+  url = "***"
 }
 
 
@@ -18,8 +18,8 @@ model User {
   reviews        Review[]
   likes          Like[]
   comments       Comment[]
-  following      User[]     @relation("UserFollowers", references: [id])
-  followers      User[]     @relation("UserFollowers", references: [id])
+  following      User[]     @relation("UserFollows", references: [id])
+  followedBy     User[]     @relation("UserFollows", references: [id])
 }
 
 model Book {
@@ -27,13 +27,14 @@ model Book {
   name           String
   description    String
   image          String?
+  views          Int        @default(0)
+
   author         User?      @relation(fields: [authorUsername], references: [username])
   authorUsername String?
   chapters       Chapter[]
   tags           Tag[]      @relation(references: [id])
-  likes          Like[]
-  views          Int        @default(0)
   reviews        Review[]
+  likes          Like[]
   comments       Comment[]
 }
 
@@ -42,20 +43,22 @@ model Chapter {
   title          String?
   content        String
   image          String?
+  views          Int        @default(0)
+
   author         User?      @relation(fields: [authorUsername], references: [username])
   authorUsername String?
   book           Book?      @relation(fields: [bookId], references: [id])
   bookId         Int?
   tags           Tag[]      @relation(references: [id])
-  likes          Like[]
-  views          Int        @default(0)
   reviews        Review[]
+  likes          Like[]
   comments       Comment[]
 }
 
 model Tag {
   id             Int        @default(autoincrement()) @id
   label          String
+
   books          Book[]     @relation(references: [id])
   chapters       Chapter[]  @relation(references: [id])
 }
@@ -63,6 +66,7 @@ model Tag {
 model Comment {
   id             Int        @default(autoincrement()) @id
   body           String
+
   author         User?      @relation(fields: [authorUsername], references: [username])
   authorUsername String?
   book           Book?      @relation(fields: [bookId], references: [id])
@@ -76,6 +80,7 @@ model Review {
   id             Int        @default(autoincrement()) @id
   stars          Int
   message        String?
+
   author         User?      @relation(fields: [authorUsername], references: [username])
   authorUsername String?
   book           Book?      @relation(fields: [bookId], references: [id])
@@ -102,6 +107,8 @@ model Like {
 
 model Notification {
   id             Int        @default(autoincrement()) @id
+  body           String
+
   author         User?      @relation(fields: [authorUsername], references: [username])
   authorUsername String?
   book           Book?      @relation(fields: [bookId], references: [id])

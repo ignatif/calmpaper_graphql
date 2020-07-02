@@ -4,7 +4,7 @@ generator client {
 
 datasource sqlite {
   provider = "sqlite"
-  url      = "file:dev.db"
+  url = "***"
 }
 
 
@@ -27,13 +27,13 @@ model Book {
   name           String
   description    String
   image          String?
+  views          Int        @default(0)
   author         User?      @relation(fields: [authorUsername], references: [username])
   authorUsername String?
   chapters       Chapter[]
   tags           Tag[]      @relation(references: [id])
-  likes          Like[]
-  views          Int        @default(0)
   reviews        Review[]
+  likes          Like[]
   comments       Comment[]
 }
 
@@ -42,14 +42,14 @@ model Chapter {
   title          String?
   content        String
   image          String?
+  views          Int        @default(0)
   author         User?      @relation(fields: [authorUsername], references: [username])
   authorUsername String?
   book           Book?      @relation(fields: [bookId], references: [id])
   bookId         Int?
   tags           Tag[]      @relation(references: [id])
-  likes          Like[]
-  views          Int        @default(0)
   reviews        Review[]
+  likes          Like[]
   comments       Comment[]
 }
 
@@ -102,6 +102,7 @@ model Like {
 
 model Notification {
   id             Int        @default(autoincrement()) @id
+  body           String
   author         User?      @relation(fields: [authorUsername], references: [username])
   authorUsername String?
   book           Book?      @relation(fields: [bookId], references: [id])

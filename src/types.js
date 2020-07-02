@@ -9,8 +9,11 @@ const User = objectType({
     t.model.avatar()
     t.model.books({ pagination: false })
     t.model.chapters({ pagination: false })
-    t.model.voices({ pagination: false })
-    t.model.ratings({ pagination: false })
+    t.model.reviews({ pagination: false })
+    t.model.likes({ pagination: false })
+    t.model.comments({ pagination: false })
+    t.model.following({ pagination: false })
+    t.model.followers({ pagination: false })
   },
 })
 
@@ -22,9 +25,12 @@ const Book = objectType({
     t.model.description()
     t.model.image()
     t.model.author()
+    t.model.views()
     t.model.chapters({ pagination: false })
-    t.model.voices({ pagination: false })
-    t.model.ratings({ pagination: false })
+    t.model.tags({ pagination: false })
+    t.model.likes({ pagination: false })
+    t.model.reviews({ pagination: false })
+    t.model.comments({ pagination: false })
   },
 })
 
@@ -37,33 +43,68 @@ const Chapter = objectType({
     t.model.image()
     t.model.author()
     t.model.book()
-    t.model.voices({ pagination: false })
-    t.model.ratings({ pagination: false })
+    t.model.views()
+    t.model.tags({ pagination: false })
+    t.model.likes({ pagination: false })
+    t.model.reviews({ pagination: false })
+    t.model.comments({ pagination: false })
   },
 })
 
-const Voice = objectType({
-  name: 'Voice',
+const Tag = objectType({
+  name: 'Tag',
   definition(t) {
     t.model.id()
-    t.model.url()
+    t.model.label()
+    t.model.books({ pagination: false })
+    t.model.chapters({ pagination: false })
+  },
+})
+
+const Comment = objectType({
+  name: 'Comment',
+  definition(t) {
+    t.model.id()
+    t.model.body()
     t.model.author()
     t.model.book()
     t.model.chapter()
-    t.model.ratings({ pagination: false })
+    t.model.likes({ pagination: false })
   },
 })
 
-const Rating = objectType({
-  name: 'Rating',
+const Review = objectType({
+  name: 'Review',
   definition(t) {
     t.model.id()
     t.model.stars()
     t.model.author()
-    t.model.user()
     t.model.book()
     t.model.chapter()
-    t.model.voice()
+    t.model.likes({ pagination: false })
+  },
+})
+
+const Like = objectType({
+  name: 'Like',
+  definition(t) {
+    t.model.id()
+    t.model.author()
+    t.model.book()
+    t.model.chapter()
+    t.model.comment()
+    t.model.review()
+  },
+})
+
+const Notification = objectType({
+  name: 'Notification',
+  definition(t) {
+    t.model.id()
+    t.model.author()
+    t.model.book()
+    t.model.chapter()
+    t.model.review()
   },
 })
 
@@ -71,6 +112,9 @@ module.exports = {
   User,
   Book,
   Chapter,
-  Voice,
-  Rating,
+  Tag,
+  Comment,
+  Review,
+  Like,
+  Notification,
 }

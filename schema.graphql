@@ -5,22 +5,29 @@
 type Book {
   author: User
   chapters: [Chapter!]!
+  comments: [Comment!]!
   description: String!
   id: Int!
   image: String
+  likes: [Like!]!
   name: String!
-  ratings: [Rating!]!
-  voices: [Voice!]!
+  reviews: [Review!]!
+  tags: [Tag!]!
+  views: Int!
 }
 
 input BookCreateInput {
   author: UserCreateOneWithoutBooksInput
   chapters: ChapterCreateManyWithoutBookInput
+  comments: CommentCreateManyWithoutBookInput
   description: String!
   image: String
+  likes: LikeCreateManyWithoutBookInput
   name: String!
-  ratings: RatingCreateManyWithoutBookInput
-  voices: VoiceCreateManyWithoutBookInput
+  Notification: NotificationCreateManyWithoutBookInput
+  reviews: ReviewCreateManyWithoutBookInput
+  tags: TagCreateManyWithoutBooksInput
+  views: Int
 }
 
 input BookCreateManyWithoutAuthorInput {
@@ -28,55 +35,125 @@ input BookCreateManyWithoutAuthorInput {
   create: [BookCreateWithoutAuthorInput!]
 }
 
+input BookCreateManyWithoutTagsInput {
+  connect: [BookWhereUniqueInput!]
+  create: [BookCreateWithoutTagsInput!]
+}
+
 input BookCreateOneWithoutChaptersInput {
   connect: BookWhereUniqueInput
   create: BookCreateWithoutChaptersInput
 }
 
-input BookCreateOneWithoutRatingsInput {
+input BookCreateOneWithoutCommentsInput {
   connect: BookWhereUniqueInput
-  create: BookCreateWithoutRatingsInput
+  create: BookCreateWithoutCommentsInput
 }
 
-input BookCreateOneWithoutVoicesInput {
+input BookCreateOneWithoutLikesInput {
   connect: BookWhereUniqueInput
-  create: BookCreateWithoutVoicesInput
+  create: BookCreateWithoutLikesInput
+}
+
+input BookCreateOneWithoutNotificationInput {
+  connect: BookWhereUniqueInput
+  create: BookCreateWithoutNotificationInput
+}
+
+input BookCreateOneWithoutReviewsInput {
+  connect: BookWhereUniqueInput
+  create: BookCreateWithoutReviewsInput
 }
 
 input BookCreateWithoutAuthorInput {
   chapters: ChapterCreateManyWithoutBookInput
+  comments: CommentCreateManyWithoutBookInput
   description: String!
   image: String
+  likes: LikeCreateManyWithoutBookInput
   name: String!
-  ratings: RatingCreateManyWithoutBookInput
-  voices: VoiceCreateManyWithoutBookInput
+  Notification: NotificationCreateManyWithoutBookInput
+  reviews: ReviewCreateManyWithoutBookInput
+  tags: TagCreateManyWithoutBooksInput
+  views: Int
 }
 
 input BookCreateWithoutChaptersInput {
   author: UserCreateOneWithoutBooksInput
+  comments: CommentCreateManyWithoutBookInput
   description: String!
   image: String
+  likes: LikeCreateManyWithoutBookInput
   name: String!
-  ratings: RatingCreateManyWithoutBookInput
-  voices: VoiceCreateManyWithoutBookInput
+  Notification: NotificationCreateManyWithoutBookInput
+  reviews: ReviewCreateManyWithoutBookInput
+  tags: TagCreateManyWithoutBooksInput
+  views: Int
 }
 
-input BookCreateWithoutRatingsInput {
+input BookCreateWithoutCommentsInput {
   author: UserCreateOneWithoutBooksInput
   chapters: ChapterCreateManyWithoutBookInput
   description: String!
   image: String
+  likes: LikeCreateManyWithoutBookInput
   name: String!
-  voices: VoiceCreateManyWithoutBookInput
+  Notification: NotificationCreateManyWithoutBookInput
+  reviews: ReviewCreateManyWithoutBookInput
+  tags: TagCreateManyWithoutBooksInput
+  views: Int
 }
 
-input BookCreateWithoutVoicesInput {
+input BookCreateWithoutLikesInput {
   author: UserCreateOneWithoutBooksInput
   chapters: ChapterCreateManyWithoutBookInput
+  comments: CommentCreateManyWithoutBookInput
   description: String!
   image: String
   name: String!
-  ratings: RatingCreateManyWithoutBookInput
+  Notification: NotificationCreateManyWithoutBookInput
+  reviews: ReviewCreateManyWithoutBookInput
+  tags: TagCreateManyWithoutBooksInput
+  views: Int
+}
+
+input BookCreateWithoutNotificationInput {
+  author: UserCreateOneWithoutBooksInput
+  chapters: ChapterCreateManyWithoutBookInput
+  comments: CommentCreateManyWithoutBookInput
+  description: String!
+  image: String
+  likes: LikeCreateManyWithoutBookInput
+  name: String!
+  reviews: ReviewCreateManyWithoutBookInput
+  tags: TagCreateManyWithoutBooksInput
+  views: Int
+}
+
+input BookCreateWithoutReviewsInput {
+  author: UserCreateOneWithoutBooksInput
+  chapters: ChapterCreateManyWithoutBookInput
+  comments: CommentCreateManyWithoutBookInput
+  description: String!
+  image: String
+  likes: LikeCreateManyWithoutBookInput
+  name: String!
+  Notification: NotificationCreateManyWithoutBookInput
+  tags: TagCreateManyWithoutBooksInput
+  views: Int
+}
+
+input BookCreateWithoutTagsInput {
+  author: UserCreateOneWithoutBooksInput
+  chapters: ChapterCreateManyWithoutBookInput
+  comments: CommentCreateManyWithoutBookInput
+  description: String!
+  image: String
+  likes: LikeCreateManyWithoutBookInput
+  name: String!
+  Notification: NotificationCreateManyWithoutBookInput
+  reviews: ReviewCreateManyWithoutBookInput
+  views: Int
 }
 
 input BookFilter {
@@ -89,25 +166,33 @@ input BookScalarWhereInput {
   AND: [BookScalarWhereInput!]
   authorUsername: NullableStringFilter
   chapters: ChapterFilter
+  comments: CommentFilter
   description: StringFilter
   id: IntFilter
   image: NullableStringFilter
+  likes: LikeFilter
   name: StringFilter
   NOT: [BookScalarWhereInput!]
+  Notification: NotificationFilter
   OR: [BookScalarWhereInput!]
-  ratings: RatingFilter
-  voices: VoiceFilter
+  reviews: ReviewFilter
+  tags: TagFilter
+  views: IntFilter
 }
 
 input BookUpdateInput {
   author: UserUpdateOneWithoutBooksInput
   chapters: ChapterUpdateManyWithoutBookInput
+  comments: CommentUpdateManyWithoutBookInput
   description: String
   id: Int
   image: String
+  likes: LikeUpdateManyWithoutBookInput
   name: String
-  ratings: RatingUpdateManyWithoutBookInput
-  voices: VoiceUpdateManyWithoutBookInput
+  Notification: NotificationUpdateManyWithoutBookInput
+  reviews: ReviewUpdateManyWithoutBookInput
+  tags: TagUpdateManyWithoutBooksInput
+  views: Int
 }
 
 input BookUpdateManyDataInput {
@@ -115,6 +200,7 @@ input BookUpdateManyDataInput {
   id: Int
   image: String
   name: String
+  views: Int
 }
 
 input BookUpdateManyWithoutAuthorInput {
@@ -127,6 +213,18 @@ input BookUpdateManyWithoutAuthorInput {
   update: [BookUpdateWithWhereUniqueWithoutAuthorInput!]
   updateMany: [BookUpdateManyWithWhereNestedInput!]
   upsert: [BookUpsertWithWhereUniqueWithoutAuthorInput!]
+}
+
+input BookUpdateManyWithoutTagsInput {
+  connect: [BookWhereUniqueInput!]
+  create: [BookCreateWithoutTagsInput!]
+  delete: [BookWhereUniqueInput!]
+  deleteMany: [BookScalarWhereInput!]
+  disconnect: [BookWhereUniqueInput!]
+  set: [BookWhereUniqueInput!]
+  update: [BookUpdateWithWhereUniqueWithoutTagsInput!]
+  updateMany: [BookUpdateManyWithWhereNestedInput!]
+  upsert: [BookUpsertWithWhereUniqueWithoutTagsInput!]
 }
 
 input BookUpdateManyWithWhereNestedInput {
@@ -143,66 +241,147 @@ input BookUpdateOneWithoutChaptersInput {
   upsert: BookUpsertWithoutChaptersInput
 }
 
-input BookUpdateOneWithoutRatingsInput {
+input BookUpdateOneWithoutCommentsInput {
   connect: BookWhereUniqueInput
-  create: BookCreateWithoutRatingsInput
+  create: BookCreateWithoutCommentsInput
   delete: Boolean
   disconnect: Boolean
-  update: BookUpdateWithoutRatingsDataInput
-  upsert: BookUpsertWithoutRatingsInput
+  update: BookUpdateWithoutCommentsDataInput
+  upsert: BookUpsertWithoutCommentsInput
 }
 
-input BookUpdateOneWithoutVoicesInput {
+input BookUpdateOneWithoutLikesInput {
   connect: BookWhereUniqueInput
-  create: BookCreateWithoutVoicesInput
+  create: BookCreateWithoutLikesInput
   delete: Boolean
   disconnect: Boolean
-  update: BookUpdateWithoutVoicesDataInput
-  upsert: BookUpsertWithoutVoicesInput
+  update: BookUpdateWithoutLikesDataInput
+  upsert: BookUpsertWithoutLikesInput
+}
+
+input BookUpdateOneWithoutNotificationInput {
+  connect: BookWhereUniqueInput
+  create: BookCreateWithoutNotificationInput
+  delete: Boolean
+  disconnect: Boolean
+  update: BookUpdateWithoutNotificationDataInput
+  upsert: BookUpsertWithoutNotificationInput
+}
+
+input BookUpdateOneWithoutReviewsInput {
+  connect: BookWhereUniqueInput
+  create: BookCreateWithoutReviewsInput
+  delete: Boolean
+  disconnect: Boolean
+  update: BookUpdateWithoutReviewsDataInput
+  upsert: BookUpsertWithoutReviewsInput
 }
 
 input BookUpdateWithoutAuthorDataInput {
   chapters: ChapterUpdateManyWithoutBookInput
+  comments: CommentUpdateManyWithoutBookInput
   description: String
   id: Int
   image: String
+  likes: LikeUpdateManyWithoutBookInput
   name: String
-  ratings: RatingUpdateManyWithoutBookInput
-  voices: VoiceUpdateManyWithoutBookInput
+  Notification: NotificationUpdateManyWithoutBookInput
+  reviews: ReviewUpdateManyWithoutBookInput
+  tags: TagUpdateManyWithoutBooksInput
+  views: Int
 }
 
 input BookUpdateWithoutChaptersDataInput {
   author: UserUpdateOneWithoutBooksInput
+  comments: CommentUpdateManyWithoutBookInput
   description: String
   id: Int
   image: String
+  likes: LikeUpdateManyWithoutBookInput
   name: String
-  ratings: RatingUpdateManyWithoutBookInput
-  voices: VoiceUpdateManyWithoutBookInput
+  Notification: NotificationUpdateManyWithoutBookInput
+  reviews: ReviewUpdateManyWithoutBookInput
+  tags: TagUpdateManyWithoutBooksInput
+  views: Int
 }
 
-input BookUpdateWithoutRatingsDataInput {
+input BookUpdateWithoutCommentsDataInput {
   author: UserUpdateOneWithoutBooksInput
   chapters: ChapterUpdateManyWithoutBookInput
   description: String
   id: Int
   image: String
+  likes: LikeUpdateManyWithoutBookInput
   name: String
-  voices: VoiceUpdateManyWithoutBookInput
+  Notification: NotificationUpdateManyWithoutBookInput
+  reviews: ReviewUpdateManyWithoutBookInput
+  tags: TagUpdateManyWithoutBooksInput
+  views: Int
 }
 
-input BookUpdateWithoutVoicesDataInput {
+input BookUpdateWithoutLikesDataInput {
   author: UserUpdateOneWithoutBooksInput
   chapters: ChapterUpdateManyWithoutBookInput
+  comments: CommentUpdateManyWithoutBookInput
   description: String
   id: Int
   image: String
   name: String
-  ratings: RatingUpdateManyWithoutBookInput
+  Notification: NotificationUpdateManyWithoutBookInput
+  reviews: ReviewUpdateManyWithoutBookInput
+  tags: TagUpdateManyWithoutBooksInput
+  views: Int
+}
+
+input BookUpdateWithoutNotificationDataInput {
+  author: UserUpdateOneWithoutBooksInput
+  chapters: ChapterUpdateManyWithoutBookInput
+  comments: CommentUpdateManyWithoutBookInput
+  description: String
+  id: Int
+  image: String
+  likes: LikeUpdateManyWithoutBookInput
+  name: String
+  reviews: ReviewUpdateManyWithoutBookInput
+  tags: TagUpdateManyWithoutBooksInput
+  views: Int
+}
+
+input BookUpdateWithoutReviewsDataInput {
+  author: UserUpdateOneWithoutBooksInput
+  chapters: ChapterUpdateManyWithoutBookInput
+  comments: CommentUpdateManyWithoutBookInput
+  description: String
+  id: Int
+  image: String
+  likes: LikeUpdateManyWithoutBookInput
+  name: String
+  Notification: NotificationUpdateManyWithoutBookInput
+  tags: TagUpdateManyWithoutBooksInput
+  views: Int
+}
+
+input BookUpdateWithoutTagsDataInput {
+  author: UserUpdateOneWithoutBooksInput
+  chapters: ChapterUpdateManyWithoutBookInput
+  comments: CommentUpdateManyWithoutBookInput
+  description: String
+  id: Int
+  image: String
+  likes: LikeUpdateManyWithoutBookInput
+  name: String
+  Notification: NotificationUpdateManyWithoutBookInput
+  reviews: ReviewUpdateManyWithoutBookInput
+  views: Int
 }
 
 input BookUpdateWithWhereUniqueWithoutAuthorInput {
   data: BookUpdateWithoutAuthorDataInput!
+  where: BookWhereUniqueInput!
+}
+
+input BookUpdateWithWhereUniqueWithoutTagsInput {
+  data: BookUpdateWithoutTagsDataInput!
   where: BookWhereUniqueInput!
 }
 
@@ -211,14 +390,24 @@ input BookUpsertWithoutChaptersInput {
   update: BookUpdateWithoutChaptersDataInput!
 }
 
-input BookUpsertWithoutRatingsInput {
-  create: BookCreateWithoutRatingsInput!
-  update: BookUpdateWithoutRatingsDataInput!
+input BookUpsertWithoutCommentsInput {
+  create: BookCreateWithoutCommentsInput!
+  update: BookUpdateWithoutCommentsDataInput!
 }
 
-input BookUpsertWithoutVoicesInput {
-  create: BookCreateWithoutVoicesInput!
-  update: BookUpdateWithoutVoicesDataInput!
+input BookUpsertWithoutLikesInput {
+  create: BookCreateWithoutLikesInput!
+  update: BookUpdateWithoutLikesDataInput!
+}
+
+input BookUpsertWithoutNotificationInput {
+  create: BookCreateWithoutNotificationInput!
+  update: BookUpdateWithoutNotificationDataInput!
+}
+
+input BookUpsertWithoutReviewsInput {
+  create: BookCreateWithoutReviewsInput!
+  update: BookUpdateWithoutReviewsDataInput!
 }
 
 input BookUpsertWithWhereUniqueWithoutAuthorInput {
@@ -227,19 +416,29 @@ input BookUpsertWithWhereUniqueWithoutAuthorInput {
   where: BookWhereUniqueInput!
 }
 
+input BookUpsertWithWhereUniqueWithoutTagsInput {
+  create: BookCreateWithoutTagsInput!
+  update: BookUpdateWithoutTagsDataInput!
+  where: BookWhereUniqueInput!
+}
+
 input BookWhereInput {
   AND: [BookWhereInput!]
   author: UserWhereInput
   authorUsername: NullableStringFilter
   chapters: ChapterFilter
+  comments: CommentFilter
   description: StringFilter
   id: IntFilter
   image: NullableStringFilter
+  likes: LikeFilter
   name: StringFilter
   NOT: [BookWhereInput!]
+  Notification: NotificationFilter
   OR: [BookWhereInput!]
-  ratings: RatingFilter
-  voices: VoiceFilter
+  reviews: ReviewFilter
+  tags: TagFilter
+  views: IntFilter
 }
 
 input BookWhereUniqueInput {
@@ -249,22 +448,29 @@ input BookWhereUniqueInput {
 type Chapter {
   author: User
   book: Book
+  comments: [Comment!]!
   content: String!
   id: Int!
   image: String
-  ratings: [Rating!]!
+  likes: [Like!]!
+  reviews: [Review!]!
+  tags: [Tag!]!
   title: String
-  voices: [Voice!]!
+  views: Int!
 }
 
 input ChapterCreateInput {
   author: UserCreateOneWithoutChaptersInput
   book: BookCreateOneWithoutChaptersInput
+  comments: CommentCreateManyWithoutChapterInput
   content: String!
   image: String
-  ratings: RatingCreateManyWithoutChapterInput
+  likes: LikeCreateManyWithoutChapterInput
+  Notification: NotificationCreateManyWithoutChapterInput
+  reviews: ReviewCreateManyWithoutChapterInput
+  tags: TagCreateManyWithoutChaptersInput
   title: String
-  voices: VoiceCreateManyWithoutChapterInput
+  views: Int
 }
 
 input ChapterCreateManyWithoutAuthorInput {
@@ -277,50 +483,120 @@ input ChapterCreateManyWithoutBookInput {
   create: [ChapterCreateWithoutBookInput!]
 }
 
-input ChapterCreateOneWithoutRatingsInput {
-  connect: ChapterWhereUniqueInput
-  create: ChapterCreateWithoutRatingsInput
+input ChapterCreateManyWithoutTagsInput {
+  connect: [ChapterWhereUniqueInput!]
+  create: [ChapterCreateWithoutTagsInput!]
 }
 
-input ChapterCreateOneWithoutVoicesInput {
+input ChapterCreateOneWithoutCommentsInput {
   connect: ChapterWhereUniqueInput
-  create: ChapterCreateWithoutVoicesInput
+  create: ChapterCreateWithoutCommentsInput
+}
+
+input ChapterCreateOneWithoutLikesInput {
+  connect: ChapterWhereUniqueInput
+  create: ChapterCreateWithoutLikesInput
+}
+
+input ChapterCreateOneWithoutNotificationInput {
+  connect: ChapterWhereUniqueInput
+  create: ChapterCreateWithoutNotificationInput
+}
+
+input ChapterCreateOneWithoutReviewsInput {
+  connect: ChapterWhereUniqueInput
+  create: ChapterCreateWithoutReviewsInput
 }
 
 input ChapterCreateWithoutAuthorInput {
   book: BookCreateOneWithoutChaptersInput
+  comments: CommentCreateManyWithoutChapterInput
   content: String!
   image: String
-  ratings: RatingCreateManyWithoutChapterInput
+  likes: LikeCreateManyWithoutChapterInput
+  Notification: NotificationCreateManyWithoutChapterInput
+  reviews: ReviewCreateManyWithoutChapterInput
+  tags: TagCreateManyWithoutChaptersInput
   title: String
-  voices: VoiceCreateManyWithoutChapterInput
+  views: Int
 }
 
 input ChapterCreateWithoutBookInput {
   author: UserCreateOneWithoutChaptersInput
+  comments: CommentCreateManyWithoutChapterInput
   content: String!
   image: String
-  ratings: RatingCreateManyWithoutChapterInput
+  likes: LikeCreateManyWithoutChapterInput
+  Notification: NotificationCreateManyWithoutChapterInput
+  reviews: ReviewCreateManyWithoutChapterInput
+  tags: TagCreateManyWithoutChaptersInput
   title: String
-  voices: VoiceCreateManyWithoutChapterInput
+  views: Int
 }
 
-input ChapterCreateWithoutRatingsInput {
+input ChapterCreateWithoutCommentsInput {
   author: UserCreateOneWithoutChaptersInput
   book: BookCreateOneWithoutChaptersInput
   content: String!
   image: String
+  likes: LikeCreateManyWithoutChapterInput
+  Notification: NotificationCreateManyWithoutChapterInput
+  reviews: ReviewCreateManyWithoutChapterInput
+  tags: TagCreateManyWithoutChaptersInput
   title: String
-  voices: VoiceCreateManyWithoutChapterInput
+  views: Int
 }
 
-input ChapterCreateWithoutVoicesInput {
+input ChapterCreateWithoutLikesInput {
   author: UserCreateOneWithoutChaptersInput
   book: BookCreateOneWithoutChaptersInput
+  comments: CommentCreateManyWithoutChapterInput
   content: String!
   image: String
-  ratings: RatingCreateManyWithoutChapterInput
+  Notification: NotificationCreateManyWithoutChapterInput
+  reviews: ReviewCreateManyWithoutChapterInput
+  tags: TagCreateManyWithoutChaptersInput
   title: String
+  views: Int
+}
+
+input ChapterCreateWithoutNotificationInput {
+  author: UserCreateOneWithoutChaptersInput
+  book: BookCreateOneWithoutChaptersInput
+  comments: CommentCreateManyWithoutChapterInput
+  content: String!
+  image: String
+  likes: LikeCreateManyWithoutChapterInput
+  reviews: ReviewCreateManyWithoutChapterInput
+  tags: TagCreateManyWithoutChaptersInput
+  title: String
+  views: Int
+}
+
+input ChapterCreateWithoutReviewsInput {
+  author: UserCreateOneWithoutChaptersInput
+  book: BookCreateOneWithoutChaptersInput
+  comments: CommentCreateManyWithoutChapterInput
+  content: String!
+  image: String
+  likes: LikeCreateManyWithoutChapterInput
+  Notification: NotificationCreateManyWithoutChapterInput
+  tags: TagCreateManyWithoutChaptersInput
+  title: String
+  views: Int
+}
+
+input ChapterCreateWithoutTagsInput {
+  author: UserCreateOneWithoutChaptersInput
+  book: BookCreateOneWithoutChaptersInput
+  comments: CommentCreateManyWithoutChapterInput
+  content: String!
+  image: String
+  likes: LikeCreateManyWithoutChapterInput
+  Notification: NotificationCreateManyWithoutChapterInput
+  reviews: ReviewCreateManyWithoutChapterInput
+  title: String
+  views: Int
 }
 
 input ChapterFilter {
@@ -333,25 +609,33 @@ input ChapterScalarWhereInput {
   AND: [ChapterScalarWhereInput!]
   authorUsername: NullableStringFilter
   bookId: NullableIntFilter
+  comments: CommentFilter
   content: StringFilter
   id: IntFilter
   image: NullableStringFilter
+  likes: LikeFilter
   NOT: [ChapterScalarWhereInput!]
+  Notification: NotificationFilter
   OR: [ChapterScalarWhereInput!]
-  ratings: RatingFilter
+  reviews: ReviewFilter
+  tags: TagFilter
   title: NullableStringFilter
-  voices: VoiceFilter
+  views: IntFilter
 }
 
 input ChapterUpdateInput {
   author: UserUpdateOneWithoutChaptersInput
   book: BookUpdateOneWithoutChaptersInput
+  comments: CommentUpdateManyWithoutChapterInput
   content: String
   id: Int
   image: String
-  ratings: RatingUpdateManyWithoutChapterInput
+  likes: LikeUpdateManyWithoutChapterInput
+  Notification: NotificationUpdateManyWithoutChapterInput
+  reviews: ReviewUpdateManyWithoutChapterInput
+  tags: TagUpdateManyWithoutChaptersInput
   title: String
-  voices: VoiceUpdateManyWithoutChapterInput
+  views: Int
 }
 
 input ChapterUpdateManyDataInput {
@@ -359,6 +643,7 @@ input ChapterUpdateManyDataInput {
   id: Int
   image: String
   title: String
+  views: Int
 }
 
 input ChapterUpdateManyWithoutAuthorInput {
@@ -385,67 +670,155 @@ input ChapterUpdateManyWithoutBookInput {
   upsert: [ChapterUpsertWithWhereUniqueWithoutBookInput!]
 }
 
+input ChapterUpdateManyWithoutTagsInput {
+  connect: [ChapterWhereUniqueInput!]
+  create: [ChapterCreateWithoutTagsInput!]
+  delete: [ChapterWhereUniqueInput!]
+  deleteMany: [ChapterScalarWhereInput!]
+  disconnect: [ChapterWhereUniqueInput!]
+  set: [ChapterWhereUniqueInput!]
+  update: [ChapterUpdateWithWhereUniqueWithoutTagsInput!]
+  updateMany: [ChapterUpdateManyWithWhereNestedInput!]
+  upsert: [ChapterUpsertWithWhereUniqueWithoutTagsInput!]
+}
+
 input ChapterUpdateManyWithWhereNestedInput {
   data: ChapterUpdateManyDataInput!
   where: ChapterScalarWhereInput!
 }
 
-input ChapterUpdateOneWithoutRatingsInput {
+input ChapterUpdateOneWithoutCommentsInput {
   connect: ChapterWhereUniqueInput
-  create: ChapterCreateWithoutRatingsInput
+  create: ChapterCreateWithoutCommentsInput
   delete: Boolean
   disconnect: Boolean
-  update: ChapterUpdateWithoutRatingsDataInput
-  upsert: ChapterUpsertWithoutRatingsInput
+  update: ChapterUpdateWithoutCommentsDataInput
+  upsert: ChapterUpsertWithoutCommentsInput
 }
 
-input ChapterUpdateOneWithoutVoicesInput {
+input ChapterUpdateOneWithoutLikesInput {
   connect: ChapterWhereUniqueInput
-  create: ChapterCreateWithoutVoicesInput
+  create: ChapterCreateWithoutLikesInput
   delete: Boolean
   disconnect: Boolean
-  update: ChapterUpdateWithoutVoicesDataInput
-  upsert: ChapterUpsertWithoutVoicesInput
+  update: ChapterUpdateWithoutLikesDataInput
+  upsert: ChapterUpsertWithoutLikesInput
+}
+
+input ChapterUpdateOneWithoutNotificationInput {
+  connect: ChapterWhereUniqueInput
+  create: ChapterCreateWithoutNotificationInput
+  delete: Boolean
+  disconnect: Boolean
+  update: ChapterUpdateWithoutNotificationDataInput
+  upsert: ChapterUpsertWithoutNotificationInput
+}
+
+input ChapterUpdateOneWithoutReviewsInput {
+  connect: ChapterWhereUniqueInput
+  create: ChapterCreateWithoutReviewsInput
+  delete: Boolean
+  disconnect: Boolean
+  update: ChapterUpdateWithoutReviewsDataInput
+  upsert: ChapterUpsertWithoutReviewsInput
 }
 
 input ChapterUpdateWithoutAuthorDataInput {
   book: BookUpdateOneWithoutChaptersInput
+  comments: CommentUpdateManyWithoutChapterInput
   content: String
   id: Int
   image: String
-  ratings: RatingUpdateManyWithoutChapterInput
+  likes: LikeUpdateManyWithoutChapterInput
+  Notification: NotificationUpdateManyWithoutChapterInput
+  reviews: ReviewUpdateManyWithoutChapterInput
+  tags: TagUpdateManyWithoutChaptersInput
   title: String
-  voices: VoiceUpdateManyWithoutChapterInput
+  views: Int
 }
 
 input ChapterUpdateWithoutBookDataInput {
   author: UserUpdateOneWithoutChaptersInput
+  comments: CommentUpdateManyWithoutChapterInput
   content: String
   id: Int
   image: String
-  ratings: RatingUpdateManyWithoutChapterInput
+  likes: LikeUpdateManyWithoutChapterInput
+  Notification: NotificationUpdateManyWithoutChapterInput
+  reviews: ReviewUpdateManyWithoutChapterInput
+  tags: TagUpdateManyWithoutChaptersInput
   title: String
-  voices: VoiceUpdateManyWithoutChapterInput
+  views: Int
 }
 
-input ChapterUpdateWithoutRatingsDataInput {
+input ChapterUpdateWithoutCommentsDataInput {
   author: UserUpdateOneWithoutChaptersInput
   book: BookUpdateOneWithoutChaptersInput
   content: String
   id: Int
   image: String
+  likes: LikeUpdateManyWithoutChapterInput
+  Notification: NotificationUpdateManyWithoutChapterInput
+  reviews: ReviewUpdateManyWithoutChapterInput
+  tags: TagUpdateManyWithoutChaptersInput
   title: String
-  voices: VoiceUpdateManyWithoutChapterInput
+  views: Int
 }
 
-input ChapterUpdateWithoutVoicesDataInput {
+input ChapterUpdateWithoutLikesDataInput {
   author: UserUpdateOneWithoutChaptersInput
   book: BookUpdateOneWithoutChaptersInput
+  comments: CommentUpdateManyWithoutChapterInput
   content: String
   id: Int
   image: String
-  ratings: RatingUpdateManyWithoutChapterInput
+  Notification: NotificationUpdateManyWithoutChapterInput
+  reviews: ReviewUpdateManyWithoutChapterInput
+  tags: TagUpdateManyWithoutChaptersInput
   title: String
+  views: Int
+}
+
+input ChapterUpdateWithoutNotificationDataInput {
+  author: UserUpdateOneWithoutChaptersInput
+  book: BookUpdateOneWithoutChaptersInput
+  comments: CommentUpdateManyWithoutChapterInput
+  content: String
+  id: Int
+  image: String
+  likes: LikeUpdateManyWithoutChapterInput
+  reviews: ReviewUpdateManyWithoutChapterInput
+  tags: TagUpdateManyWithoutChaptersInput
+  title: String
+  views: Int
+}
+
+input ChapterUpdateWithoutReviewsDataInput {
+  author: UserUpdateOneWithoutChaptersInput
+  book: BookUpdateOneWithoutChaptersInput
+  comments: CommentUpdateManyWithoutChapterInput
+  content: String
+  id: Int
+  image: String
+  likes: LikeUpdateManyWithoutChapterInput
+  Notification: NotificationUpdateManyWithoutChapterInput
+  tags: TagUpdateManyWithoutChaptersInput
+  title: String
+  views: Int
+}
+
+input ChapterUpdateWithoutTagsDataInput {
+  author: UserUpdateOneWithoutChaptersInput
+  book: BookUpdateOneWithoutChaptersInput
+  comments: CommentUpdateManyWithoutChapterInput
+  content: String
+  id: Int
+  image: String
+  likes: LikeUpdateManyWithoutChapterInput
+  Notification: NotificationUpdateManyWithoutChapterInput
+  reviews: ReviewUpdateManyWithoutChapterInput
+  title: String
+  views: Int
 }
 
 input ChapterUpdateWithWhereUniqueWithoutAuthorInput {
@@ -458,14 +831,29 @@ input ChapterUpdateWithWhereUniqueWithoutBookInput {
   where: ChapterWhereUniqueInput!
 }
 
-input ChapterUpsertWithoutRatingsInput {
-  create: ChapterCreateWithoutRatingsInput!
-  update: ChapterUpdateWithoutRatingsDataInput!
+input ChapterUpdateWithWhereUniqueWithoutTagsInput {
+  data: ChapterUpdateWithoutTagsDataInput!
+  where: ChapterWhereUniqueInput!
 }
 
-input ChapterUpsertWithoutVoicesInput {
-  create: ChapterCreateWithoutVoicesInput!
-  update: ChapterUpdateWithoutVoicesDataInput!
+input ChapterUpsertWithoutCommentsInput {
+  create: ChapterCreateWithoutCommentsInput!
+  update: ChapterUpdateWithoutCommentsDataInput!
+}
+
+input ChapterUpsertWithoutLikesInput {
+  create: ChapterCreateWithoutLikesInput!
+  update: ChapterUpdateWithoutLikesDataInput!
+}
+
+input ChapterUpsertWithoutNotificationInput {
+  create: ChapterCreateWithoutNotificationInput!
+  update: ChapterUpdateWithoutNotificationDataInput!
+}
+
+input ChapterUpsertWithoutReviewsInput {
+  create: ChapterCreateWithoutReviewsInput!
+  update: ChapterUpdateWithoutReviewsDataInput!
 }
 
 input ChapterUpsertWithWhereUniqueWithoutAuthorInput {
@@ -480,23 +868,298 @@ input ChapterUpsertWithWhereUniqueWithoutBookInput {
   where: ChapterWhereUniqueInput!
 }
 
+input ChapterUpsertWithWhereUniqueWithoutTagsInput {
+  create: ChapterCreateWithoutTagsInput!
+  update: ChapterUpdateWithoutTagsDataInput!
+  where: ChapterWhereUniqueInput!
+}
+
 input ChapterWhereInput {
   AND: [ChapterWhereInput!]
   author: UserWhereInput
   authorUsername: NullableStringFilter
   book: BookWhereInput
   bookId: NullableIntFilter
+  comments: CommentFilter
   content: StringFilter
   id: IntFilter
   image: NullableStringFilter
+  likes: LikeFilter
   NOT: [ChapterWhereInput!]
+  Notification: NotificationFilter
   OR: [ChapterWhereInput!]
-  ratings: RatingFilter
+  reviews: ReviewFilter
+  tags: TagFilter
   title: NullableStringFilter
-  voices: VoiceFilter
+  views: IntFilter
 }
 
 input ChapterWhereUniqueInput {
+  id: Int
+}
+
+type Comment {
+  author: User
+  body: String!
+  book: Book
+  chapter: Chapter
+  id: Int!
+  likes: [Like!]!
+}
+
+input CommentCreateManyWithoutAuthorInput {
+  connect: [CommentWhereUniqueInput!]
+  create: [CommentCreateWithoutAuthorInput!]
+}
+
+input CommentCreateManyWithoutBookInput {
+  connect: [CommentWhereUniqueInput!]
+  create: [CommentCreateWithoutBookInput!]
+}
+
+input CommentCreateManyWithoutChapterInput {
+  connect: [CommentWhereUniqueInput!]
+  create: [CommentCreateWithoutChapterInput!]
+}
+
+input CommentCreateOneWithoutLikesInput {
+  connect: CommentWhereUniqueInput
+  create: CommentCreateWithoutLikesInput
+}
+
+input CommentCreateOneWithoutNotificationInput {
+  connect: CommentWhereUniqueInput
+  create: CommentCreateWithoutNotificationInput
+}
+
+input CommentCreateWithoutAuthorInput {
+  body: String!
+  book: BookCreateOneWithoutCommentsInput
+  chapter: ChapterCreateOneWithoutCommentsInput
+  likes: LikeCreateManyWithoutCommentInput
+  Notification: NotificationCreateManyWithoutReviewInput
+}
+
+input CommentCreateWithoutBookInput {
+  author: UserCreateOneWithoutCommentsInput
+  body: String!
+  chapter: ChapterCreateOneWithoutCommentsInput
+  likes: LikeCreateManyWithoutCommentInput
+  Notification: NotificationCreateManyWithoutReviewInput
+}
+
+input CommentCreateWithoutChapterInput {
+  author: UserCreateOneWithoutCommentsInput
+  body: String!
+  book: BookCreateOneWithoutCommentsInput
+  likes: LikeCreateManyWithoutCommentInput
+  Notification: NotificationCreateManyWithoutReviewInput
+}
+
+input CommentCreateWithoutLikesInput {
+  author: UserCreateOneWithoutCommentsInput
+  body: String!
+  book: BookCreateOneWithoutCommentsInput
+  chapter: ChapterCreateOneWithoutCommentsInput
+  Notification: NotificationCreateManyWithoutReviewInput
+}
+
+input CommentCreateWithoutNotificationInput {
+  author: UserCreateOneWithoutCommentsInput
+  body: String!
+  book: BookCreateOneWithoutCommentsInput
+  chapter: ChapterCreateOneWithoutCommentsInput
+  likes: LikeCreateManyWithoutCommentInput
+}
+
+input CommentFilter {
+  every: CommentWhereInput
+  none: CommentWhereInput
+  some: CommentWhereInput
+}
+
+input CommentScalarWhereInput {
+  AND: [CommentScalarWhereInput!]
+  authorUsername: NullableStringFilter
+  body: StringFilter
+  bookId: NullableIntFilter
+  chapterId: NullableIntFilter
+  id: IntFilter
+  likes: LikeFilter
+  NOT: [CommentScalarWhereInput!]
+  Notification: NotificationFilter
+  OR: [CommentScalarWhereInput!]
+}
+
+input CommentUpdateManyDataInput {
+  body: String
+  id: Int
+}
+
+input CommentUpdateManyWithoutAuthorInput {
+  connect: [CommentWhereUniqueInput!]
+  create: [CommentCreateWithoutAuthorInput!]
+  delete: [CommentWhereUniqueInput!]
+  deleteMany: [CommentScalarWhereInput!]
+  disconnect: [CommentWhereUniqueInput!]
+  set: [CommentWhereUniqueInput!]
+  update: [CommentUpdateWithWhereUniqueWithoutAuthorInput!]
+  updateMany: [CommentUpdateManyWithWhereNestedInput!]
+  upsert: [CommentUpsertWithWhereUniqueWithoutAuthorInput!]
+}
+
+input CommentUpdateManyWithoutBookInput {
+  connect: [CommentWhereUniqueInput!]
+  create: [CommentCreateWithoutBookInput!]
+  delete: [CommentWhereUniqueInput!]
+  deleteMany: [CommentScalarWhereInput!]
+  disconnect: [CommentWhereUniqueInput!]
+  set: [CommentWhereUniqueInput!]
+  update: [CommentUpdateWithWhereUniqueWithoutBookInput!]
+  updateMany: [CommentUpdateManyWithWhereNestedInput!]
+  upsert: [CommentUpsertWithWhereUniqueWithoutBookInput!]
+}
+
+input CommentUpdateManyWithoutChapterInput {
+  connect: [CommentWhereUniqueInput!]
+  create: [CommentCreateWithoutChapterInput!]
+  delete: [CommentWhereUniqueInput!]
+  deleteMany: [CommentScalarWhereInput!]
+  disconnect: [CommentWhereUniqueInput!]
+  set: [CommentWhereUniqueInput!]
+  update: [CommentUpdateWithWhereUniqueWithoutChapterInput!]
+  updateMany: [CommentUpdateManyWithWhereNestedInput!]
+  upsert: [CommentUpsertWithWhereUniqueWithoutChapterInput!]
+}
+
+input CommentUpdateManyWithWhereNestedInput {
+  data: CommentUpdateManyDataInput!
+  where: CommentScalarWhereInput!
+}
+
+input CommentUpdateOneWithoutLikesInput {
+  connect: CommentWhereUniqueInput
+  create: CommentCreateWithoutLikesInput
+  delete: Boolean
+  disconnect: Boolean
+  update: CommentUpdateWithoutLikesDataInput
+  upsert: CommentUpsertWithoutLikesInput
+}
+
+input CommentUpdateOneWithoutNotificationInput {
+  connect: CommentWhereUniqueInput
+  create: CommentCreateWithoutNotificationInput
+  delete: Boolean
+  disconnect: Boolean
+  update: CommentUpdateWithoutNotificationDataInput
+  upsert: CommentUpsertWithoutNotificationInput
+}
+
+input CommentUpdateWithoutAuthorDataInput {
+  body: String
+  book: BookUpdateOneWithoutCommentsInput
+  chapter: ChapterUpdateOneWithoutCommentsInput
+  id: Int
+  likes: LikeUpdateManyWithoutCommentInput
+  Notification: NotificationUpdateManyWithoutReviewInput
+}
+
+input CommentUpdateWithoutBookDataInput {
+  author: UserUpdateOneWithoutCommentsInput
+  body: String
+  chapter: ChapterUpdateOneWithoutCommentsInput
+  id: Int
+  likes: LikeUpdateManyWithoutCommentInput
+  Notification: NotificationUpdateManyWithoutReviewInput
+}
+
+input CommentUpdateWithoutChapterDataInput {
+  author: UserUpdateOneWithoutCommentsInput
+  body: String
+  book: BookUpdateOneWithoutCommentsInput
+  id: Int
+  likes: LikeUpdateManyWithoutCommentInput
+  Notification: NotificationUpdateManyWithoutReviewInput
+}
+
+input CommentUpdateWithoutLikesDataInput {
+  author: UserUpdateOneWithoutCommentsInput
+  body: String
+  book: BookUpdateOneWithoutCommentsInput
+  chapter: ChapterUpdateOneWithoutCommentsInput
+  id: Int
+  Notification: NotificationUpdateManyWithoutReviewInput
+}
+
+input CommentUpdateWithoutNotificationDataInput {
+  author: UserUpdateOneWithoutCommentsInput
+  body: String
+  book: BookUpdateOneWithoutCommentsInput
+  chapter: ChapterUpdateOneWithoutCommentsInput
+  id: Int
+  likes: LikeUpdateManyWithoutCommentInput
+}
+
+input CommentUpdateWithWhereUniqueWithoutAuthorInput {
+  data: CommentUpdateWithoutAuthorDataInput!
+  where: CommentWhereUniqueInput!
+}
+
+input CommentUpdateWithWhereUniqueWithoutBookInput {
+  data: CommentUpdateWithoutBookDataInput!
+  where: CommentWhereUniqueInput!
+}
+
+input CommentUpdateWithWhereUniqueWithoutChapterInput {
+  data: CommentUpdateWithoutChapterDataInput!
+  where: CommentWhereUniqueInput!
+}
+
+input CommentUpsertWithoutLikesInput {
+  create: CommentCreateWithoutLikesInput!
+  update: CommentUpdateWithoutLikesDataInput!
+}
+
+input CommentUpsertWithoutNotificationInput {
+  create: CommentCreateWithoutNotificationInput!
+  update: CommentUpdateWithoutNotificationDataInput!
+}
+
+input CommentUpsertWithWhereUniqueWithoutAuthorInput {
+  create: CommentCreateWithoutAuthorInput!
+  update: CommentUpdateWithoutAuthorDataInput!
+  where: CommentWhereUniqueInput!
+}
+
+input CommentUpsertWithWhereUniqueWithoutBookInput {
+  create: CommentCreateWithoutBookInput!
+  update: CommentUpdateWithoutBookDataInput!
+  where: CommentWhereUniqueInput!
+}
+
+input CommentUpsertWithWhereUniqueWithoutChapterInput {
+  create: CommentCreateWithoutChapterInput!
+  update: CommentUpdateWithoutChapterDataInput!
+  where: CommentWhereUniqueInput!
+}
+
+input CommentWhereInput {
+  AND: [CommentWhereInput!]
+  author: UserWhereInput
+  authorUsername: NullableStringFilter
+  body: StringFilter
+  book: BookWhereInput
+  bookId: NullableIntFilter
+  chapter: ChapterWhereInput
+  chapterId: NullableIntFilter
+  id: IntFilter
+  likes: LikeFilter
+  NOT: [CommentWhereInput!]
+  Notification: NotificationFilter
+  OR: [CommentWhereInput!]
+}
+
+input CommentWhereUniqueInput {
   id: Int
 }
 
@@ -511,24 +1174,510 @@ input IntFilter {
   notIn: [Int!]
 }
 
+type Like {
+  author: User
+  book: Book
+  chapter: Chapter
+  comment: Comment
+  id: Int!
+  review: Review
+}
+
+input LikeCreateManyWithoutAuthorInput {
+  connect: [LikeWhereUniqueInput!]
+  create: [LikeCreateWithoutAuthorInput!]
+}
+
+input LikeCreateManyWithoutBookInput {
+  connect: [LikeWhereUniqueInput!]
+  create: [LikeCreateWithoutBookInput!]
+}
+
+input LikeCreateManyWithoutChapterInput {
+  connect: [LikeWhereUniqueInput!]
+  create: [LikeCreateWithoutChapterInput!]
+}
+
+input LikeCreateManyWithoutCommentInput {
+  connect: [LikeWhereUniqueInput!]
+  create: [LikeCreateWithoutCommentInput!]
+}
+
+input LikeCreateManyWithoutReviewInput {
+  connect: [LikeWhereUniqueInput!]
+  create: [LikeCreateWithoutReviewInput!]
+}
+
+input LikeCreateWithoutAuthorInput {
+  book: BookCreateOneWithoutLikesInput
+  chapter: ChapterCreateOneWithoutLikesInput
+  comment: CommentCreateOneWithoutLikesInput
+  review: ReviewCreateOneWithoutLikesInput
+}
+
+input LikeCreateWithoutBookInput {
+  author: UserCreateOneWithoutLikesInput
+  chapter: ChapterCreateOneWithoutLikesInput
+  comment: CommentCreateOneWithoutLikesInput
+  review: ReviewCreateOneWithoutLikesInput
+}
+
+input LikeCreateWithoutChapterInput {
+  author: UserCreateOneWithoutLikesInput
+  book: BookCreateOneWithoutLikesInput
+  comment: CommentCreateOneWithoutLikesInput
+  review: ReviewCreateOneWithoutLikesInput
+}
+
+input LikeCreateWithoutCommentInput {
+  author: UserCreateOneWithoutLikesInput
+  book: BookCreateOneWithoutLikesInput
+  chapter: ChapterCreateOneWithoutLikesInput
+  review: ReviewCreateOneWithoutLikesInput
+}
+
+input LikeCreateWithoutReviewInput {
+  author: UserCreateOneWithoutLikesInput
+  book: BookCreateOneWithoutLikesInput
+  chapter: ChapterCreateOneWithoutLikesInput
+  comment: CommentCreateOneWithoutLikesInput
+}
+
+input LikeFilter {
+  every: LikeWhereInput
+  none: LikeWhereInput
+  some: LikeWhereInput
+}
+
+input LikeScalarWhereInput {
+  AND: [LikeScalarWhereInput!]
+  authorUsername: NullableStringFilter
+  bookId: NullableIntFilter
+  chapterId: NullableIntFilter
+  commentId: NullableIntFilter
+  id: IntFilter
+  NOT: [LikeScalarWhereInput!]
+  OR: [LikeScalarWhereInput!]
+  reviewId: NullableIntFilter
+}
+
+input LikeUpdateManyDataInput {
+  id: Int
+}
+
+input LikeUpdateManyWithoutAuthorInput {
+  connect: [LikeWhereUniqueInput!]
+  create: [LikeCreateWithoutAuthorInput!]
+  delete: [LikeWhereUniqueInput!]
+  deleteMany: [LikeScalarWhereInput!]
+  disconnect: [LikeWhereUniqueInput!]
+  set: [LikeWhereUniqueInput!]
+  update: [LikeUpdateWithWhereUniqueWithoutAuthorInput!]
+  updateMany: [LikeUpdateManyWithWhereNestedInput!]
+  upsert: [LikeUpsertWithWhereUniqueWithoutAuthorInput!]
+}
+
+input LikeUpdateManyWithoutBookInput {
+  connect: [LikeWhereUniqueInput!]
+  create: [LikeCreateWithoutBookInput!]
+  delete: [LikeWhereUniqueInput!]
+  deleteMany: [LikeScalarWhereInput!]
+  disconnect: [LikeWhereUniqueInput!]
+  set: [LikeWhereUniqueInput!]
+  update: [LikeUpdateWithWhereUniqueWithoutBookInput!]
+  updateMany: [LikeUpdateManyWithWhereNestedInput!]
+  upsert: [LikeUpsertWithWhereUniqueWithoutBookInput!]
+}
+
+input LikeUpdateManyWithoutChapterInput {
+  connect: [LikeWhereUniqueInput!]
+  create: [LikeCreateWithoutChapterInput!]
+  delete: [LikeWhereUniqueInput!]
+  deleteMany: [LikeScalarWhereInput!]
+  disconnect: [LikeWhereUniqueInput!]
+  set: [LikeWhereUniqueInput!]
+  update: [LikeUpdateWithWhereUniqueWithoutChapterInput!]
+  updateMany: [LikeUpdateManyWithWhereNestedInput!]
+  upsert: [LikeUpsertWithWhereUniqueWithoutChapterInput!]
+}
+
+input LikeUpdateManyWithoutCommentInput {
+  connect: [LikeWhereUniqueInput!]
+  create: [LikeCreateWithoutCommentInput!]
+  delete: [LikeWhereUniqueInput!]
+  deleteMany: [LikeScalarWhereInput!]
+  disconnect: [LikeWhereUniqueInput!]
+  set: [LikeWhereUniqueInput!]
+  update: [LikeUpdateWithWhereUniqueWithoutCommentInput!]
+  updateMany: [LikeUpdateManyWithWhereNestedInput!]
+  upsert: [LikeUpsertWithWhereUniqueWithoutCommentInput!]
+}
+
+input LikeUpdateManyWithoutReviewInput {
+  connect: [LikeWhereUniqueInput!]
+  create: [LikeCreateWithoutReviewInput!]
+  delete: [LikeWhereUniqueInput!]
+  deleteMany: [LikeScalarWhereInput!]
+  disconnect: [LikeWhereUniqueInput!]
+  set: [LikeWhereUniqueInput!]
+  update: [LikeUpdateWithWhereUniqueWithoutReviewInput!]
+  updateMany: [LikeUpdateManyWithWhereNestedInput!]
+  upsert: [LikeUpsertWithWhereUniqueWithoutReviewInput!]
+}
+
+input LikeUpdateManyWithWhereNestedInput {
+  data: LikeUpdateManyDataInput!
+  where: LikeScalarWhereInput!
+}
+
+input LikeUpdateWithoutAuthorDataInput {
+  book: BookUpdateOneWithoutLikesInput
+  chapter: ChapterUpdateOneWithoutLikesInput
+  comment: CommentUpdateOneWithoutLikesInput
+  id: Int
+  review: ReviewUpdateOneWithoutLikesInput
+}
+
+input LikeUpdateWithoutBookDataInput {
+  author: UserUpdateOneWithoutLikesInput
+  chapter: ChapterUpdateOneWithoutLikesInput
+  comment: CommentUpdateOneWithoutLikesInput
+  id: Int
+  review: ReviewUpdateOneWithoutLikesInput
+}
+
+input LikeUpdateWithoutChapterDataInput {
+  author: UserUpdateOneWithoutLikesInput
+  book: BookUpdateOneWithoutLikesInput
+  comment: CommentUpdateOneWithoutLikesInput
+  id: Int
+  review: ReviewUpdateOneWithoutLikesInput
+}
+
+input LikeUpdateWithoutCommentDataInput {
+  author: UserUpdateOneWithoutLikesInput
+  book: BookUpdateOneWithoutLikesInput
+  chapter: ChapterUpdateOneWithoutLikesInput
+  id: Int
+  review: ReviewUpdateOneWithoutLikesInput
+}
+
+input LikeUpdateWithoutReviewDataInput {
+  author: UserUpdateOneWithoutLikesInput
+  book: BookUpdateOneWithoutLikesInput
+  chapter: ChapterUpdateOneWithoutLikesInput
+  comment: CommentUpdateOneWithoutLikesInput
+  id: Int
+}
+
+input LikeUpdateWithWhereUniqueWithoutAuthorInput {
+  data: LikeUpdateWithoutAuthorDataInput!
+  where: LikeWhereUniqueInput!
+}
+
+input LikeUpdateWithWhereUniqueWithoutBookInput {
+  data: LikeUpdateWithoutBookDataInput!
+  where: LikeWhereUniqueInput!
+}
+
+input LikeUpdateWithWhereUniqueWithoutChapterInput {
+  data: LikeUpdateWithoutChapterDataInput!
+  where: LikeWhereUniqueInput!
+}
+
+input LikeUpdateWithWhereUniqueWithoutCommentInput {
+  data: LikeUpdateWithoutCommentDataInput!
+  where: LikeWhereUniqueInput!
+}
+
+input LikeUpdateWithWhereUniqueWithoutReviewInput {
+  data: LikeUpdateWithoutReviewDataInput!
+  where: LikeWhereUniqueInput!
+}
+
+input LikeUpsertWithWhereUniqueWithoutAuthorInput {
+  create: LikeCreateWithoutAuthorInput!
+  update: LikeUpdateWithoutAuthorDataInput!
+  where: LikeWhereUniqueInput!
+}
+
+input LikeUpsertWithWhereUniqueWithoutBookInput {
+  create: LikeCreateWithoutBookInput!
+  update: LikeUpdateWithoutBookDataInput!
+  where: LikeWhereUniqueInput!
+}
+
+input LikeUpsertWithWhereUniqueWithoutChapterInput {
+  create: LikeCreateWithoutChapterInput!
+  update: LikeUpdateWithoutChapterDataInput!
+  where: LikeWhereUniqueInput!
+}
+
+input LikeUpsertWithWhereUniqueWithoutCommentInput {
+  create: LikeCreateWithoutCommentInput!
+  update: LikeUpdateWithoutCommentDataInput!
+  where: LikeWhereUniqueInput!
+}
+
+input LikeUpsertWithWhereUniqueWithoutReviewInput {
+  create: LikeCreateWithoutReviewInput!
+  update: LikeUpdateWithoutReviewDataInput!
+  where: LikeWhereUniqueInput!
+}
+
+input LikeWhereInput {
+  AND: [LikeWhereInput!]
+  author: UserWhereInput
+  authorUsername: NullableStringFilter
+  book: BookWhereInput
+  bookId: NullableIntFilter
+  chapter: ChapterWhereInput
+  chapterId: NullableIntFilter
+  comment: CommentWhereInput
+  commentId: NullableIntFilter
+  id: IntFilter
+  NOT: [LikeWhereInput!]
+  OR: [LikeWhereInput!]
+  review: ReviewWhereInput
+  reviewId: NullableIntFilter
+}
+
+input LikeWhereUniqueInput {
+  id: Int
+}
+
 type Mutation {
   createOneBook(data: BookCreateInput!): Book!
   createOneChapter(data: ChapterCreateInput!): Chapter!
-  createOneRating(data: RatingCreateInput!): Rating!
+  createOneReview(data: ReviewCreateInput!): Review!
   createOneUser(data: UserCreateInput!): User!
-  createOneVoice(data: VoiceCreateInput!): Voice!
   deleteOneBook(where: BookWhereUniqueInput!): Book
   deleteOneChapter(where: ChapterWhereUniqueInput!): Chapter
-  deleteOneRating(where: RatingWhereUniqueInput!): Rating
+  deleteOneReview(where: ReviewWhereUniqueInput!): Review
   deleteOneUser(where: UserWhereUniqueInput!): User
-  deleteOneVoice(where: VoiceWhereUniqueInput!): Voice
-  setRating(authorUsername: String, bookId: Int, chapterId: Int, id: Int, stars: Int, userId: Int, voiceId: Int): Rating!
+  setReview(authorUsername: String, bookId: Int, id: Int, stars: Int): Review!
   updateOneBook(data: BookUpdateInput!, where: BookWhereUniqueInput!): Book
   updateOneChapter(data: ChapterUpdateInput!, where: ChapterWhereUniqueInput!): Chapter
-  updateOneRating(data: RatingUpdateInput!, where: RatingWhereUniqueInput!): Rating
+  updateOneReview(data: ReviewUpdateInput!, where: ReviewWhereUniqueInput!): Review
   updateOneUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
-  updateOneVoice(data: VoiceUpdateInput!, where: VoiceWhereUniqueInput!): Voice
-  upsertOneRating(create: RatingCreateInput!, update: RatingUpdateInput!, where: RatingWhereUniqueInput!): Rating!
+  upsertOneReview(create: ReviewCreateInput!, update: ReviewUpdateInput!, where: ReviewWhereUniqueInput!): Review!
+}
+
+type Notification {
+  author: User
+  book: Book
+  chapter: Chapter
+  id: Int!
+  review: Comment
+}
+
+input NotificationCreateManyWithoutAuthorInput {
+  connect: [NotificationWhereUniqueInput!]
+  create: [NotificationCreateWithoutAuthorInput!]
+}
+
+input NotificationCreateManyWithoutBookInput {
+  connect: [NotificationWhereUniqueInput!]
+  create: [NotificationCreateWithoutBookInput!]
+}
+
+input NotificationCreateManyWithoutChapterInput {
+  connect: [NotificationWhereUniqueInput!]
+  create: [NotificationCreateWithoutChapterInput!]
+}
+
+input NotificationCreateManyWithoutReviewInput {
+  connect: [NotificationWhereUniqueInput!]
+  create: [NotificationCreateWithoutReviewInput!]
+}
+
+input NotificationCreateWithoutAuthorInput {
+  book: BookCreateOneWithoutNotificationInput
+  chapter: ChapterCreateOneWithoutNotificationInput
+  review: CommentCreateOneWithoutNotificationInput
+}
+
+input NotificationCreateWithoutBookInput {
+  author: UserCreateOneWithoutNotificationInput
+  chapter: ChapterCreateOneWithoutNotificationInput
+  review: CommentCreateOneWithoutNotificationInput
+}
+
+input NotificationCreateWithoutChapterInput {
+  author: UserCreateOneWithoutNotificationInput
+  book: BookCreateOneWithoutNotificationInput
+  review: CommentCreateOneWithoutNotificationInput
+}
+
+input NotificationCreateWithoutReviewInput {
+  author: UserCreateOneWithoutNotificationInput
+  book: BookCreateOneWithoutNotificationInput
+  chapter: ChapterCreateOneWithoutNotificationInput
+}
+
+input NotificationFilter {
+  every: NotificationWhereInput
+  none: NotificationWhereInput
+  some: NotificationWhereInput
+}
+
+input NotificationScalarWhereInput {
+  AND: [NotificationScalarWhereInput!]
+  authorUsername: NullableStringFilter
+  bookId: NullableIntFilter
+  chapterId: NullableIntFilter
+  id: IntFilter
+  NOT: [NotificationScalarWhereInput!]
+  OR: [NotificationScalarWhereInput!]
+  reviewId: NullableIntFilter
+}
+
+input NotificationUpdateManyDataInput {
+  id: Int
+}
+
+input NotificationUpdateManyWithoutAuthorInput {
+  connect: [NotificationWhereUniqueInput!]
+  create: [NotificationCreateWithoutAuthorInput!]
+  delete: [NotificationWhereUniqueInput!]
+  deleteMany: [NotificationScalarWhereInput!]
+  disconnect: [NotificationWhereUniqueInput!]
+  set: [NotificationWhereUniqueInput!]
+  update: [NotificationUpdateWithWhereUniqueWithoutAuthorInput!]
+  updateMany: [NotificationUpdateManyWithWhereNestedInput!]
+  upsert: [NotificationUpsertWithWhereUniqueWithoutAuthorInput!]
+}
+
+input NotificationUpdateManyWithoutBookInput {
+  connect: [NotificationWhereUniqueInput!]
+  create: [NotificationCreateWithoutBookInput!]
+  delete: [NotificationWhereUniqueInput!]
+  deleteMany: [NotificationScalarWhereInput!]
+  disconnect: [NotificationWhereUniqueInput!]
+  set: [NotificationWhereUniqueInput!]
+  update: [NotificationUpdateWithWhereUniqueWithoutBookInput!]
+  updateMany: [NotificationUpdateManyWithWhereNestedInput!]
+  upsert: [NotificationUpsertWithWhereUniqueWithoutBookInput!]
+}
+
+input NotificationUpdateManyWithoutChapterInput {
+  connect: [NotificationWhereUniqueInput!]
+  create: [NotificationCreateWithoutChapterInput!]
+  delete: [NotificationWhereUniqueInput!]
+  deleteMany: [NotificationScalarWhereInput!]
+  disconnect: [NotificationWhereUniqueInput!]
+  set: [NotificationWhereUniqueInput!]
+  update: [NotificationUpdateWithWhereUniqueWithoutChapterInput!]
+  updateMany: [NotificationUpdateManyWithWhereNestedInput!]
+  upsert: [NotificationUpsertWithWhereUniqueWithoutChapterInput!]
+}
+
+input NotificationUpdateManyWithoutReviewInput {
+  connect: [NotificationWhereUniqueInput!]
+  create: [NotificationCreateWithoutReviewInput!]
+  delete: [NotificationWhereUniqueInput!]
+  deleteMany: [NotificationScalarWhereInput!]
+  disconnect: [NotificationWhereUniqueInput!]
+  set: [NotificationWhereUniqueInput!]
+  update: [NotificationUpdateWithWhereUniqueWithoutReviewInput!]
+  updateMany: [NotificationUpdateManyWithWhereNestedInput!]
+  upsert: [NotificationUpsertWithWhereUniqueWithoutReviewInput!]
+}
+
+input NotificationUpdateManyWithWhereNestedInput {
+  data: NotificationUpdateManyDataInput!
+  where: NotificationScalarWhereInput!
+}
+
+input NotificationUpdateWithoutAuthorDataInput {
+  book: BookUpdateOneWithoutNotificationInput
+  chapter: ChapterUpdateOneWithoutNotificationInput
+  id: Int
+  review: CommentUpdateOneWithoutNotificationInput
+}
+
+input NotificationUpdateWithoutBookDataInput {
+  author: UserUpdateOneWithoutNotificationInput
+  chapter: ChapterUpdateOneWithoutNotificationInput
+  id: Int
+  review: CommentUpdateOneWithoutNotificationInput
+}
+
+input NotificationUpdateWithoutChapterDataInput {
+  author: UserUpdateOneWithoutNotificationInput
+  book: BookUpdateOneWithoutNotificationInput
+  id: Int
+  review: CommentUpdateOneWithoutNotificationInput
+}
+
+input NotificationUpdateWithoutReviewDataInput {
+  author: UserUpdateOneWithoutNotificationInput
+  book: BookUpdateOneWithoutNotificationInput
+  chapter: ChapterUpdateOneWithoutNotificationInput
+  id: Int
+}
+
+input NotificationUpdateWithWhereUniqueWithoutAuthorInput {
+  data: NotificationUpdateWithoutAuthorDataInput!
+  where: NotificationWhereUniqueInput!
+}
+
+input NotificationUpdateWithWhereUniqueWithoutBookInput {
+  data: NotificationUpdateWithoutBookDataInput!
+  where: NotificationWhereUniqueInput!
+}
+
+input NotificationUpdateWithWhereUniqueWithoutChapterInput {
+  data: NotificationUpdateWithoutChapterDataInput!
+  where: NotificationWhereUniqueInput!
+}
+
+input NotificationUpdateWithWhereUniqueWithoutReviewInput {
+  data: NotificationUpdateWithoutReviewDataInput!
+  where: NotificationWhereUniqueInput!
+}
+
+input NotificationUpsertWithWhereUniqueWithoutAuthorInput {
+  create: NotificationCreateWithoutAuthorInput!
+  update: NotificationUpdateWithoutAuthorDataInput!
+  where: NotificationWhereUniqueInput!
+}
+
+input NotificationUpsertWithWhereUniqueWithoutBookInput {
+  create: NotificationCreateWithoutBookInput!
+  update: NotificationUpdateWithoutBookDataInput!
+  where: NotificationWhereUniqueInput!
+}
+
+input NotificationUpsertWithWhereUniqueWithoutChapterInput {
+  create: NotificationCreateWithoutChapterInput!
+  update: NotificationUpdateWithoutChapterDataInput!
+  where: NotificationWhereUniqueInput!
+}
+
+input NotificationUpsertWithWhereUniqueWithoutReviewInput {
+  create: NotificationCreateWithoutReviewInput!
+  update: NotificationUpdateWithoutReviewDataInput!
+  where: NotificationWhereUniqueInput!
+}
+
+input NotificationWhereInput {
+  AND: [NotificationWhereInput!]
+  author: UserWhereInput
+  authorUsername: NullableStringFilter
+  book: BookWhereInput
+  bookId: NullableIntFilter
+  chapter: ChapterWhereInput
+  chapterId: NullableIntFilter
+  id: IntFilter
+  NOT: [NotificationWhereInput!]
+  OR: [NotificationWhereInput!]
+  review: CommentWhereInput
+  reviewId: NullableIntFilter
+}
+
+input NotificationWhereUniqueInput {
+  id: Int
 }
 
 input NullableIntFilter {
@@ -562,299 +1711,249 @@ type Query {
   chapter(where: ChapterWhereUniqueInput!): Chapter
   chapterByBook(bookId: Int, skip: Int): [Chapter!]!
   chapters(skip: Int): [Chapter!]!
-  rating(where: RatingWhereUniqueInput!): Rating
-  ratings(skip: Int): [Rating!]!
+  comment(where: CommentWhereUniqueInput!): Comment
+  comments(skip: Int): [Comment!]!
+  likes(skip: Int): [Like!]!
+  notification(where: NotificationWhereUniqueInput!): Notification
+  notifications(skip: Int): [Notification!]!
+  review(where: ReviewWhereUniqueInput!): Review
+  reviews(skip: Int): [Review!]!
+  tags(skip: Int): [Tag!]!
   user(where: UserWhereUniqueInput!): User
   users(skip: Int): [User!]!
-  voice(where: VoiceWhereUniqueInput!): Voice
-  voices(skip: Int): [Voice!]!
 }
 
-type Rating {
+type Review {
   author: User
   book: Book
   chapter: Chapter
   id: Int!
+  likes: [Like!]!
   stars: Int!
-  user: User
-  voice: Voice
 }
 
-input RatingCreateInput {
-  author: UserCreateOneWithoutRatingsInput
-  book: BookCreateOneWithoutRatingsInput
-  chapter: ChapterCreateOneWithoutRatingsInput
+input ReviewCreateInput {
+  author: UserCreateOneWithoutReviewsInput
+  book: BookCreateOneWithoutReviewsInput
+  chapter: ChapterCreateOneWithoutReviewsInput
+  likes: LikeCreateManyWithoutReviewInput
+  message: String
   stars: Int!
-  user: UserCreateOneWithoutSettedRetingsInput
-  voice: VoiceCreateOneWithoutRatingsInput
 }
 
-input RatingCreateManyWithoutAuthorInput {
-  connect: [RatingWhereUniqueInput!]
-  create: [RatingCreateWithoutAuthorInput!]
+input ReviewCreateManyWithoutAuthorInput {
+  connect: [ReviewWhereUniqueInput!]
+  create: [ReviewCreateWithoutAuthorInput!]
 }
 
-input RatingCreateManyWithoutBookInput {
-  connect: [RatingWhereUniqueInput!]
-  create: [RatingCreateWithoutBookInput!]
+input ReviewCreateManyWithoutBookInput {
+  connect: [ReviewWhereUniqueInput!]
+  create: [ReviewCreateWithoutBookInput!]
 }
 
-input RatingCreateManyWithoutChapterInput {
-  connect: [RatingWhereUniqueInput!]
-  create: [RatingCreateWithoutChapterInput!]
+input ReviewCreateManyWithoutChapterInput {
+  connect: [ReviewWhereUniqueInput!]
+  create: [ReviewCreateWithoutChapterInput!]
 }
 
-input RatingCreateManyWithoutUserInput {
-  connect: [RatingWhereUniqueInput!]
-  create: [RatingCreateWithoutUserInput!]
+input ReviewCreateOneWithoutLikesInput {
+  connect: ReviewWhereUniqueInput
+  create: ReviewCreateWithoutLikesInput
 }
 
-input RatingCreateManyWithoutVoiceInput {
-  connect: [RatingWhereUniqueInput!]
-  create: [RatingCreateWithoutVoiceInput!]
-}
-
-input RatingCreateWithoutAuthorInput {
-  book: BookCreateOneWithoutRatingsInput
-  chapter: ChapterCreateOneWithoutRatingsInput
+input ReviewCreateWithoutAuthorInput {
+  book: BookCreateOneWithoutReviewsInput
+  chapter: ChapterCreateOneWithoutReviewsInput
+  likes: LikeCreateManyWithoutReviewInput
+  message: String
   stars: Int!
-  user: UserCreateOneWithoutSettedRetingsInput
-  voice: VoiceCreateOneWithoutRatingsInput
 }
 
-input RatingCreateWithoutBookInput {
-  author: UserCreateOneWithoutRatingsInput
-  chapter: ChapterCreateOneWithoutRatingsInput
+input ReviewCreateWithoutBookInput {
+  author: UserCreateOneWithoutReviewsInput
+  chapter: ChapterCreateOneWithoutReviewsInput
+  likes: LikeCreateManyWithoutReviewInput
+  message: String
   stars: Int!
-  user: UserCreateOneWithoutSettedRetingsInput
-  voice: VoiceCreateOneWithoutRatingsInput
 }
 
-input RatingCreateWithoutChapterInput {
-  author: UserCreateOneWithoutRatingsInput
-  book: BookCreateOneWithoutRatingsInput
+input ReviewCreateWithoutChapterInput {
+  author: UserCreateOneWithoutReviewsInput
+  book: BookCreateOneWithoutReviewsInput
+  likes: LikeCreateManyWithoutReviewInput
+  message: String
   stars: Int!
-  user: UserCreateOneWithoutSettedRetingsInput
-  voice: VoiceCreateOneWithoutRatingsInput
 }
 
-input RatingCreateWithoutUserInput {
-  author: UserCreateOneWithoutRatingsInput
-  book: BookCreateOneWithoutRatingsInput
-  chapter: ChapterCreateOneWithoutRatingsInput
+input ReviewCreateWithoutLikesInput {
+  author: UserCreateOneWithoutReviewsInput
+  book: BookCreateOneWithoutReviewsInput
+  chapter: ChapterCreateOneWithoutReviewsInput
+  message: String
   stars: Int!
-  voice: VoiceCreateOneWithoutRatingsInput
 }
 
-input RatingCreateWithoutVoiceInput {
-  author: UserCreateOneWithoutRatingsInput
-  book: BookCreateOneWithoutRatingsInput
-  chapter: ChapterCreateOneWithoutRatingsInput
-  stars: Int!
-  user: UserCreateOneWithoutSettedRetingsInput
+input ReviewFilter {
+  every: ReviewWhereInput
+  none: ReviewWhereInput
+  some: ReviewWhereInput
 }
 
-input RatingFilter {
-  every: RatingWhereInput
-  none: RatingWhereInput
-  some: RatingWhereInput
-}
-
-input RatingScalarWhereInput {
-  AND: [RatingScalarWhereInput!]
+input ReviewScalarWhereInput {
+  AND: [ReviewScalarWhereInput!]
   authorUsername: NullableStringFilter
   bookId: NullableIntFilter
   chapterId: NullableIntFilter
   id: IntFilter
-  NOT: [RatingScalarWhereInput!]
-  OR: [RatingScalarWhereInput!]
+  likes: LikeFilter
+  message: NullableStringFilter
+  NOT: [ReviewScalarWhereInput!]
+  OR: [ReviewScalarWhereInput!]
   stars: IntFilter
-  userUsername: NullableStringFilter
-  voiceId: NullableIntFilter
 }
 
-input RatingUpdateInput {
-  author: UserUpdateOneWithoutRatingsInput
-  book: BookUpdateOneWithoutRatingsInput
-  chapter: ChapterUpdateOneWithoutRatingsInput
+input ReviewUpdateInput {
+  author: UserUpdateOneWithoutReviewsInput
+  book: BookUpdateOneWithoutReviewsInput
+  chapter: ChapterUpdateOneWithoutReviewsInput
   id: Int
-  stars: Int
-  user: UserUpdateOneWithoutSettedRetingsInput
-  voice: VoiceUpdateOneWithoutRatingsInput
-}
-
-input RatingUpdateManyDataInput {
-  id: Int
+  likes: LikeUpdateManyWithoutReviewInput
+  message: String
   stars: Int
 }
 
-input RatingUpdateManyWithoutAuthorInput {
-  connect: [RatingWhereUniqueInput!]
-  create: [RatingCreateWithoutAuthorInput!]
-  delete: [RatingWhereUniqueInput!]
-  deleteMany: [RatingScalarWhereInput!]
-  disconnect: [RatingWhereUniqueInput!]
-  set: [RatingWhereUniqueInput!]
-  update: [RatingUpdateWithWhereUniqueWithoutAuthorInput!]
-  updateMany: [RatingUpdateManyWithWhereNestedInput!]
-  upsert: [RatingUpsertWithWhereUniqueWithoutAuthorInput!]
-}
-
-input RatingUpdateManyWithoutBookInput {
-  connect: [RatingWhereUniqueInput!]
-  create: [RatingCreateWithoutBookInput!]
-  delete: [RatingWhereUniqueInput!]
-  deleteMany: [RatingScalarWhereInput!]
-  disconnect: [RatingWhereUniqueInput!]
-  set: [RatingWhereUniqueInput!]
-  update: [RatingUpdateWithWhereUniqueWithoutBookInput!]
-  updateMany: [RatingUpdateManyWithWhereNestedInput!]
-  upsert: [RatingUpsertWithWhereUniqueWithoutBookInput!]
-}
-
-input RatingUpdateManyWithoutChapterInput {
-  connect: [RatingWhereUniqueInput!]
-  create: [RatingCreateWithoutChapterInput!]
-  delete: [RatingWhereUniqueInput!]
-  deleteMany: [RatingScalarWhereInput!]
-  disconnect: [RatingWhereUniqueInput!]
-  set: [RatingWhereUniqueInput!]
-  update: [RatingUpdateWithWhereUniqueWithoutChapterInput!]
-  updateMany: [RatingUpdateManyWithWhereNestedInput!]
-  upsert: [RatingUpsertWithWhereUniqueWithoutChapterInput!]
-}
-
-input RatingUpdateManyWithoutUserInput {
-  connect: [RatingWhereUniqueInput!]
-  create: [RatingCreateWithoutUserInput!]
-  delete: [RatingWhereUniqueInput!]
-  deleteMany: [RatingScalarWhereInput!]
-  disconnect: [RatingWhereUniqueInput!]
-  set: [RatingWhereUniqueInput!]
-  update: [RatingUpdateWithWhereUniqueWithoutUserInput!]
-  updateMany: [RatingUpdateManyWithWhereNestedInput!]
-  upsert: [RatingUpsertWithWhereUniqueWithoutUserInput!]
-}
-
-input RatingUpdateManyWithoutVoiceInput {
-  connect: [RatingWhereUniqueInput!]
-  create: [RatingCreateWithoutVoiceInput!]
-  delete: [RatingWhereUniqueInput!]
-  deleteMany: [RatingScalarWhereInput!]
-  disconnect: [RatingWhereUniqueInput!]
-  set: [RatingWhereUniqueInput!]
-  update: [RatingUpdateWithWhereUniqueWithoutVoiceInput!]
-  updateMany: [RatingUpdateManyWithWhereNestedInput!]
-  upsert: [RatingUpsertWithWhereUniqueWithoutVoiceInput!]
-}
-
-input RatingUpdateManyWithWhereNestedInput {
-  data: RatingUpdateManyDataInput!
-  where: RatingScalarWhereInput!
-}
-
-input RatingUpdateWithoutAuthorDataInput {
-  book: BookUpdateOneWithoutRatingsInput
-  chapter: ChapterUpdateOneWithoutRatingsInput
+input ReviewUpdateManyDataInput {
   id: Int
+  message: String
   stars: Int
-  user: UserUpdateOneWithoutSettedRetingsInput
-  voice: VoiceUpdateOneWithoutRatingsInput
 }
 
-input RatingUpdateWithoutBookDataInput {
-  author: UserUpdateOneWithoutRatingsInput
-  chapter: ChapterUpdateOneWithoutRatingsInput
+input ReviewUpdateManyWithoutAuthorInput {
+  connect: [ReviewWhereUniqueInput!]
+  create: [ReviewCreateWithoutAuthorInput!]
+  delete: [ReviewWhereUniqueInput!]
+  deleteMany: [ReviewScalarWhereInput!]
+  disconnect: [ReviewWhereUniqueInput!]
+  set: [ReviewWhereUniqueInput!]
+  update: [ReviewUpdateWithWhereUniqueWithoutAuthorInput!]
+  updateMany: [ReviewUpdateManyWithWhereNestedInput!]
+  upsert: [ReviewUpsertWithWhereUniqueWithoutAuthorInput!]
+}
+
+input ReviewUpdateManyWithoutBookInput {
+  connect: [ReviewWhereUniqueInput!]
+  create: [ReviewCreateWithoutBookInput!]
+  delete: [ReviewWhereUniqueInput!]
+  deleteMany: [ReviewScalarWhereInput!]
+  disconnect: [ReviewWhereUniqueInput!]
+  set: [ReviewWhereUniqueInput!]
+  update: [ReviewUpdateWithWhereUniqueWithoutBookInput!]
+  updateMany: [ReviewUpdateManyWithWhereNestedInput!]
+  upsert: [ReviewUpsertWithWhereUniqueWithoutBookInput!]
+}
+
+input ReviewUpdateManyWithoutChapterInput {
+  connect: [ReviewWhereUniqueInput!]
+  create: [ReviewCreateWithoutChapterInput!]
+  delete: [ReviewWhereUniqueInput!]
+  deleteMany: [ReviewScalarWhereInput!]
+  disconnect: [ReviewWhereUniqueInput!]
+  set: [ReviewWhereUniqueInput!]
+  update: [ReviewUpdateWithWhereUniqueWithoutChapterInput!]
+  updateMany: [ReviewUpdateManyWithWhereNestedInput!]
+  upsert: [ReviewUpsertWithWhereUniqueWithoutChapterInput!]
+}
+
+input ReviewUpdateManyWithWhereNestedInput {
+  data: ReviewUpdateManyDataInput!
+  where: ReviewScalarWhereInput!
+}
+
+input ReviewUpdateOneWithoutLikesInput {
+  connect: ReviewWhereUniqueInput
+  create: ReviewCreateWithoutLikesInput
+  delete: Boolean
+  disconnect: Boolean
+  update: ReviewUpdateWithoutLikesDataInput
+  upsert: ReviewUpsertWithoutLikesInput
+}
+
+input ReviewUpdateWithoutAuthorDataInput {
+  book: BookUpdateOneWithoutReviewsInput
+  chapter: ChapterUpdateOneWithoutReviewsInput
   id: Int
+  likes: LikeUpdateManyWithoutReviewInput
+  message: String
   stars: Int
-  user: UserUpdateOneWithoutSettedRetingsInput
-  voice: VoiceUpdateOneWithoutRatingsInput
 }
 
-input RatingUpdateWithoutChapterDataInput {
-  author: UserUpdateOneWithoutRatingsInput
-  book: BookUpdateOneWithoutRatingsInput
+input ReviewUpdateWithoutBookDataInput {
+  author: UserUpdateOneWithoutReviewsInput
+  chapter: ChapterUpdateOneWithoutReviewsInput
   id: Int
+  likes: LikeUpdateManyWithoutReviewInput
+  message: String
   stars: Int
-  user: UserUpdateOneWithoutSettedRetingsInput
-  voice: VoiceUpdateOneWithoutRatingsInput
 }
 
-input RatingUpdateWithoutUserDataInput {
-  author: UserUpdateOneWithoutRatingsInput
-  book: BookUpdateOneWithoutRatingsInput
-  chapter: ChapterUpdateOneWithoutRatingsInput
+input ReviewUpdateWithoutChapterDataInput {
+  author: UserUpdateOneWithoutReviewsInput
+  book: BookUpdateOneWithoutReviewsInput
   id: Int
+  likes: LikeUpdateManyWithoutReviewInput
+  message: String
   stars: Int
-  voice: VoiceUpdateOneWithoutRatingsInput
 }
 
-input RatingUpdateWithoutVoiceDataInput {
-  author: UserUpdateOneWithoutRatingsInput
-  book: BookUpdateOneWithoutRatingsInput
-  chapter: ChapterUpdateOneWithoutRatingsInput
+input ReviewUpdateWithoutLikesDataInput {
+  author: UserUpdateOneWithoutReviewsInput
+  book: BookUpdateOneWithoutReviewsInput
+  chapter: ChapterUpdateOneWithoutReviewsInput
   id: Int
+  message: String
   stars: Int
-  user: UserUpdateOneWithoutSettedRetingsInput
 }
 
-input RatingUpdateWithWhereUniqueWithoutAuthorInput {
-  data: RatingUpdateWithoutAuthorDataInput!
-  where: RatingWhereUniqueInput!
+input ReviewUpdateWithWhereUniqueWithoutAuthorInput {
+  data: ReviewUpdateWithoutAuthorDataInput!
+  where: ReviewWhereUniqueInput!
 }
 
-input RatingUpdateWithWhereUniqueWithoutBookInput {
-  data: RatingUpdateWithoutBookDataInput!
-  where: RatingWhereUniqueInput!
+input ReviewUpdateWithWhereUniqueWithoutBookInput {
+  data: ReviewUpdateWithoutBookDataInput!
+  where: ReviewWhereUniqueInput!
 }
 
-input RatingUpdateWithWhereUniqueWithoutChapterInput {
-  data: RatingUpdateWithoutChapterDataInput!
-  where: RatingWhereUniqueInput!
+input ReviewUpdateWithWhereUniqueWithoutChapterInput {
+  data: ReviewUpdateWithoutChapterDataInput!
+  where: ReviewWhereUniqueInput!
 }
 
-input RatingUpdateWithWhereUniqueWithoutUserInput {
-  data: RatingUpdateWithoutUserDataInput!
-  where: RatingWhereUniqueInput!
+input ReviewUpsertWithoutLikesInput {
+  create: ReviewCreateWithoutLikesInput!
+  update: ReviewUpdateWithoutLikesDataInput!
 }
 
-input RatingUpdateWithWhereUniqueWithoutVoiceInput {
-  data: RatingUpdateWithoutVoiceDataInput!
-  where: RatingWhereUniqueInput!
+input ReviewUpsertWithWhereUniqueWithoutAuthorInput {
+  create: ReviewCreateWithoutAuthorInput!
+  update: ReviewUpdateWithoutAuthorDataInput!
+  where: ReviewWhereUniqueInput!
 }
 
-input RatingUpsertWithWhereUniqueWithoutAuthorInput {
-  create: RatingCreateWithoutAuthorInput!
-  update: RatingUpdateWithoutAuthorDataInput!
-  where: RatingWhereUniqueInput!
+input ReviewUpsertWithWhereUniqueWithoutBookInput {
+  create: ReviewCreateWithoutBookInput!
+  update: ReviewUpdateWithoutBookDataInput!
+  where: ReviewWhereUniqueInput!
 }
 
-input RatingUpsertWithWhereUniqueWithoutBookInput {
-  create: RatingCreateWithoutBookInput!
-  update: RatingUpdateWithoutBookDataInput!
-  where: RatingWhereUniqueInput!
+input ReviewUpsertWithWhereUniqueWithoutChapterInput {
+  create: ReviewCreateWithoutChapterInput!
+  update: ReviewUpdateWithoutChapterDataInput!
+  where: ReviewWhereUniqueInput!
 }
 
-input RatingUpsertWithWhereUniqueWithoutChapterInput {
-  create: RatingCreateWithoutChapterInput!
-  update: RatingUpdateWithoutChapterDataInput!
-  where: RatingWhereUniqueInput!
-}
-
-input RatingUpsertWithWhereUniqueWithoutUserInput {
-  create: RatingCreateWithoutUserInput!
-  update: RatingUpdateWithoutUserDataInput!
-  where: RatingWhereUniqueInput!
-}
-
-input RatingUpsertWithWhereUniqueWithoutVoiceInput {
-  create: RatingCreateWithoutVoiceInput!
-  update: RatingUpdateWithoutVoiceDataInput!
-  where: RatingWhereUniqueInput!
-}
-
-input RatingWhereInput {
-  AND: [RatingWhereInput!]
+input ReviewWhereInput {
+  AND: [ReviewWhereInput!]
   author: UserWhereInput
   authorUsername: NullableStringFilter
   book: BookWhereInput
@@ -862,16 +1961,14 @@ input RatingWhereInput {
   chapter: ChapterWhereInput
   chapterId: NullableIntFilter
   id: IntFilter
-  NOT: [RatingWhereInput!]
-  OR: [RatingWhereInput!]
+  likes: LikeFilter
+  message: NullableStringFilter
+  NOT: [ReviewWhereInput!]
+  OR: [ReviewWhereInput!]
   stars: IntFilter
-  user: UserWhereInput
-  userUsername: NullableStringFilter
-  voice: VoiceWhereInput
-  voiceId: NullableIntFilter
 }
 
-input RatingWhereUniqueInput {
+input ReviewWhereUniqueInput {
   id: Int
 }
 
@@ -889,26 +1986,167 @@ input StringFilter {
   startsWith: String
 }
 
+type Tag {
+  books: [Book!]!
+  chapters: [Chapter!]!
+  id: Int!
+  label: String!
+}
+
+input TagCreateManyWithoutBooksInput {
+  connect: [TagWhereUniqueInput!]
+  create: [TagCreateWithoutBooksInput!]
+}
+
+input TagCreateManyWithoutChaptersInput {
+  connect: [TagWhereUniqueInput!]
+  create: [TagCreateWithoutChaptersInput!]
+}
+
+input TagCreateWithoutBooksInput {
+  chapters: ChapterCreateManyWithoutTagsInput
+  label: String!
+}
+
+input TagCreateWithoutChaptersInput {
+  books: BookCreateManyWithoutTagsInput
+  label: String!
+}
+
+input TagFilter {
+  every: TagWhereInput
+  none: TagWhereInput
+  some: TagWhereInput
+}
+
+input TagScalarWhereInput {
+  AND: [TagScalarWhereInput!]
+  books: BookFilter
+  chapters: ChapterFilter
+  id: IntFilter
+  label: StringFilter
+  NOT: [TagScalarWhereInput!]
+  OR: [TagScalarWhereInput!]
+}
+
+input TagUpdateManyDataInput {
+  id: Int
+  label: String
+}
+
+input TagUpdateManyWithoutBooksInput {
+  connect: [TagWhereUniqueInput!]
+  create: [TagCreateWithoutBooksInput!]
+  delete: [TagWhereUniqueInput!]
+  deleteMany: [TagScalarWhereInput!]
+  disconnect: [TagWhereUniqueInput!]
+  set: [TagWhereUniqueInput!]
+  update: [TagUpdateWithWhereUniqueWithoutBooksInput!]
+  updateMany: [TagUpdateManyWithWhereNestedInput!]
+  upsert: [TagUpsertWithWhereUniqueWithoutBooksInput!]
+}
+
+input TagUpdateManyWithoutChaptersInput {
+  connect: [TagWhereUniqueInput!]
+  create: [TagCreateWithoutChaptersInput!]
+  delete: [TagWhereUniqueInput!]
+  deleteMany: [TagScalarWhereInput!]
+  disconnect: [TagWhereUniqueInput!]
+  set: [TagWhereUniqueInput!]
+  update: [TagUpdateWithWhereUniqueWithoutChaptersInput!]
+  updateMany: [TagUpdateManyWithWhereNestedInput!]
+  upsert: [TagUpsertWithWhereUniqueWithoutChaptersInput!]
+}
+
+input TagUpdateManyWithWhereNestedInput {
+  data: TagUpdateManyDataInput!
+  where: TagScalarWhereInput!
+}
+
+input TagUpdateWithoutBooksDataInput {
+  chapters: ChapterUpdateManyWithoutTagsInput
+  id: Int
+  label: String
+}
+
+input TagUpdateWithoutChaptersDataInput {
+  books: BookUpdateManyWithoutTagsInput
+  id: Int
+  label: String
+}
+
+input TagUpdateWithWhereUniqueWithoutBooksInput {
+  data: TagUpdateWithoutBooksDataInput!
+  where: TagWhereUniqueInput!
+}
+
+input TagUpdateWithWhereUniqueWithoutChaptersInput {
+  data: TagUpdateWithoutChaptersDataInput!
+  where: TagWhereUniqueInput!
+}
+
+input TagUpsertWithWhereUniqueWithoutBooksInput {
+  create: TagCreateWithoutBooksInput!
+  update: TagUpdateWithoutBooksDataInput!
+  where: TagWhereUniqueInput!
+}
+
+input TagUpsertWithWhereUniqueWithoutChaptersInput {
+  create: TagCreateWithoutChaptersInput!
+  update: TagUpdateWithoutChaptersDataInput!
+  where: TagWhereUniqueInput!
+}
+
+input TagWhereInput {
+  AND: [TagWhereInput!]
+  books: BookFilter
+  chapters: ChapterFilter
+  id: IntFilter
+  label: StringFilter
+  NOT: [TagWhereInput!]
+  OR: [TagWhereInput!]
+}
+
+input TagWhereUniqueInput {
+  id: Int
+}
+
 type User {
   avatar: String
   books: [Book!]!
   chapters: [Chapter!]!
+  comments: [Comment!]!
   email: String
+  followers: [User!]!
+  following: [User!]!
   id: Int!
-  ratings: [Rating!]!
+  likes: [Like!]!
+  reviews: [Review!]!
   username: String!
-  voices: [Voice!]!
 }
 
 input UserCreateInput {
   avatar: String
   books: BookCreateManyWithoutAuthorInput
   chapters: ChapterCreateManyWithoutAuthorInput
+  comments: CommentCreateManyWithoutAuthorInput
   email: String
-  ratings: RatingCreateManyWithoutAuthorInput
-  settedRetings: RatingCreateManyWithoutUserInput
+  followers: UserCreateManyWithoutFollowingInput
+  following: UserCreateManyWithoutFollowersInput
+  likes: LikeCreateManyWithoutAuthorInput
+  Notification: NotificationCreateManyWithoutAuthorInput
+  reviews: ReviewCreateManyWithoutAuthorInput
   username: String!
-  voices: VoiceCreateManyWithoutAuthorInput
+}
+
+input UserCreateManyWithoutFollowersInput {
+  connect: [UserWhereUniqueInput!]
+  create: [UserCreateWithoutFollowersInput!]
+}
+
+input UserCreateManyWithoutFollowingInput {
+  connect: [UserWhereUniqueInput!]
+  create: [UserCreateWithoutFollowingInput!]
 }
 
 input UserCreateOneWithoutBooksInput {
@@ -921,81 +2159,203 @@ input UserCreateOneWithoutChaptersInput {
   create: UserCreateWithoutChaptersInput
 }
 
-input UserCreateOneWithoutRatingsInput {
+input UserCreateOneWithoutCommentsInput {
   connect: UserWhereUniqueInput
-  create: UserCreateWithoutRatingsInput
+  create: UserCreateWithoutCommentsInput
 }
 
-input UserCreateOneWithoutSettedRetingsInput {
+input UserCreateOneWithoutLikesInput {
   connect: UserWhereUniqueInput
-  create: UserCreateWithoutSettedRetingsInput
+  create: UserCreateWithoutLikesInput
 }
 
-input UserCreateOneWithoutVoicesInput {
+input UserCreateOneWithoutNotificationInput {
   connect: UserWhereUniqueInput
-  create: UserCreateWithoutVoicesInput
+  create: UserCreateWithoutNotificationInput
+}
+
+input UserCreateOneWithoutReviewsInput {
+  connect: UserWhereUniqueInput
+  create: UserCreateWithoutReviewsInput
 }
 
 input UserCreateWithoutBooksInput {
   avatar: String
   chapters: ChapterCreateManyWithoutAuthorInput
+  comments: CommentCreateManyWithoutAuthorInput
   email: String
-  ratings: RatingCreateManyWithoutAuthorInput
-  settedRetings: RatingCreateManyWithoutUserInput
+  followers: UserCreateManyWithoutFollowingInput
+  following: UserCreateManyWithoutFollowersInput
+  likes: LikeCreateManyWithoutAuthorInput
+  Notification: NotificationCreateManyWithoutAuthorInput
+  reviews: ReviewCreateManyWithoutAuthorInput
   username: String!
-  voices: VoiceCreateManyWithoutAuthorInput
 }
 
 input UserCreateWithoutChaptersInput {
   avatar: String
   books: BookCreateManyWithoutAuthorInput
+  comments: CommentCreateManyWithoutAuthorInput
   email: String
-  ratings: RatingCreateManyWithoutAuthorInput
-  settedRetings: RatingCreateManyWithoutUserInput
+  followers: UserCreateManyWithoutFollowingInput
+  following: UserCreateManyWithoutFollowersInput
+  likes: LikeCreateManyWithoutAuthorInput
+  Notification: NotificationCreateManyWithoutAuthorInput
+  reviews: ReviewCreateManyWithoutAuthorInput
   username: String!
-  voices: VoiceCreateManyWithoutAuthorInput
 }
 
-input UserCreateWithoutRatingsInput {
+input UserCreateWithoutCommentsInput {
   avatar: String
   books: BookCreateManyWithoutAuthorInput
   chapters: ChapterCreateManyWithoutAuthorInput
   email: String
-  settedRetings: RatingCreateManyWithoutUserInput
+  followers: UserCreateManyWithoutFollowingInput
+  following: UserCreateManyWithoutFollowersInput
+  likes: LikeCreateManyWithoutAuthorInput
+  Notification: NotificationCreateManyWithoutAuthorInput
+  reviews: ReviewCreateManyWithoutAuthorInput
   username: String!
-  voices: VoiceCreateManyWithoutAuthorInput
 }
 
-input UserCreateWithoutSettedRetingsInput {
+input UserCreateWithoutFollowersInput {
   avatar: String
   books: BookCreateManyWithoutAuthorInput
   chapters: ChapterCreateManyWithoutAuthorInput
+  comments: CommentCreateManyWithoutAuthorInput
   email: String
-  ratings: RatingCreateManyWithoutAuthorInput
+  following: UserCreateManyWithoutFollowersInput
+  likes: LikeCreateManyWithoutAuthorInput
+  Notification: NotificationCreateManyWithoutAuthorInput
+  reviews: ReviewCreateManyWithoutAuthorInput
   username: String!
-  voices: VoiceCreateManyWithoutAuthorInput
 }
 
-input UserCreateWithoutVoicesInput {
+input UserCreateWithoutFollowingInput {
   avatar: String
   books: BookCreateManyWithoutAuthorInput
   chapters: ChapterCreateManyWithoutAuthorInput
+  comments: CommentCreateManyWithoutAuthorInput
   email: String
-  ratings: RatingCreateManyWithoutAuthorInput
-  settedRetings: RatingCreateManyWithoutUserInput
+  followers: UserCreateManyWithoutFollowingInput
+  likes: LikeCreateManyWithoutAuthorInput
+  Notification: NotificationCreateManyWithoutAuthorInput
+  reviews: ReviewCreateManyWithoutAuthorInput
   username: String!
+}
+
+input UserCreateWithoutLikesInput {
+  avatar: String
+  books: BookCreateManyWithoutAuthorInput
+  chapters: ChapterCreateManyWithoutAuthorInput
+  comments: CommentCreateManyWithoutAuthorInput
+  email: String
+  followers: UserCreateManyWithoutFollowingInput
+  following: UserCreateManyWithoutFollowersInput
+  Notification: NotificationCreateManyWithoutAuthorInput
+  reviews: ReviewCreateManyWithoutAuthorInput
+  username: String!
+}
+
+input UserCreateWithoutNotificationInput {
+  avatar: String
+  books: BookCreateManyWithoutAuthorInput
+  chapters: ChapterCreateManyWithoutAuthorInput
+  comments: CommentCreateManyWithoutAuthorInput
+  email: String
+  followers: UserCreateManyWithoutFollowingInput
+  following: UserCreateManyWithoutFollowersInput
+  likes: LikeCreateManyWithoutAuthorInput
+  reviews: ReviewCreateManyWithoutAuthorInput
+  username: String!
+}
+
+input UserCreateWithoutReviewsInput {
+  avatar: String
+  books: BookCreateManyWithoutAuthorInput
+  chapters: ChapterCreateManyWithoutAuthorInput
+  comments: CommentCreateManyWithoutAuthorInput
+  email: String
+  followers: UserCreateManyWithoutFollowingInput
+  following: UserCreateManyWithoutFollowersInput
+  likes: LikeCreateManyWithoutAuthorInput
+  Notification: NotificationCreateManyWithoutAuthorInput
+  username: String!
+}
+
+input UserFilter {
+  every: UserWhereInput
+  none: UserWhereInput
+  some: UserWhereInput
+}
+
+input UserScalarWhereInput {
+  AND: [UserScalarWhereInput!]
+  avatar: NullableStringFilter
+  books: BookFilter
+  chapters: ChapterFilter
+  comments: CommentFilter
+  email: NullableStringFilter
+  followers: UserFilter
+  following: UserFilter
+  id: IntFilter
+  likes: LikeFilter
+  NOT: [UserScalarWhereInput!]
+  Notification: NotificationFilter
+  OR: [UserScalarWhereInput!]
+  reviews: ReviewFilter
+  username: StringFilter
 }
 
 input UserUpdateInput {
   avatar: String
   books: BookUpdateManyWithoutAuthorInput
   chapters: ChapterUpdateManyWithoutAuthorInput
+  comments: CommentUpdateManyWithoutAuthorInput
+  email: String
+  followers: UserUpdateManyWithoutFollowingInput
+  following: UserUpdateManyWithoutFollowersInput
+  id: Int
+  likes: LikeUpdateManyWithoutAuthorInput
+  Notification: NotificationUpdateManyWithoutAuthorInput
+  reviews: ReviewUpdateManyWithoutAuthorInput
+  username: String
+}
+
+input UserUpdateManyDataInput {
+  avatar: String
   email: String
   id: Int
-  ratings: RatingUpdateManyWithoutAuthorInput
-  settedRetings: RatingUpdateManyWithoutUserInput
   username: String
-  voices: VoiceUpdateManyWithoutAuthorInput
+}
+
+input UserUpdateManyWithoutFollowersInput {
+  connect: [UserWhereUniqueInput!]
+  create: [UserCreateWithoutFollowersInput!]
+  delete: [UserWhereUniqueInput!]
+  deleteMany: [UserScalarWhereInput!]
+  disconnect: [UserWhereUniqueInput!]
+  set: [UserWhereUniqueInput!]
+  update: [UserUpdateWithWhereUniqueWithoutFollowersInput!]
+  updateMany: [UserUpdateManyWithWhereNestedInput!]
+  upsert: [UserUpsertWithWhereUniqueWithoutFollowersInput!]
+}
+
+input UserUpdateManyWithoutFollowingInput {
+  connect: [UserWhereUniqueInput!]
+  create: [UserCreateWithoutFollowingInput!]
+  delete: [UserWhereUniqueInput!]
+  deleteMany: [UserScalarWhereInput!]
+  disconnect: [UserWhereUniqueInput!]
+  set: [UserWhereUniqueInput!]
+  update: [UserUpdateWithWhereUniqueWithoutFollowingInput!]
+  updateMany: [UserUpdateManyWithWhereNestedInput!]
+  upsert: [UserUpsertWithWhereUniqueWithoutFollowingInput!]
+}
+
+input UserUpdateManyWithWhereNestedInput {
+  data: UserUpdateManyDataInput!
+  where: UserScalarWhereInput!
 }
 
 input UserUpdateOneWithoutBooksInput {
@@ -1016,86 +2376,162 @@ input UserUpdateOneWithoutChaptersInput {
   upsert: UserUpsertWithoutChaptersInput
 }
 
-input UserUpdateOneWithoutRatingsInput {
+input UserUpdateOneWithoutCommentsInput {
   connect: UserWhereUniqueInput
-  create: UserCreateWithoutRatingsInput
+  create: UserCreateWithoutCommentsInput
   delete: Boolean
   disconnect: Boolean
-  update: UserUpdateWithoutRatingsDataInput
-  upsert: UserUpsertWithoutRatingsInput
+  update: UserUpdateWithoutCommentsDataInput
+  upsert: UserUpsertWithoutCommentsInput
 }
 
-input UserUpdateOneWithoutSettedRetingsInput {
+input UserUpdateOneWithoutLikesInput {
   connect: UserWhereUniqueInput
-  create: UserCreateWithoutSettedRetingsInput
+  create: UserCreateWithoutLikesInput
   delete: Boolean
   disconnect: Boolean
-  update: UserUpdateWithoutSettedRetingsDataInput
-  upsert: UserUpsertWithoutSettedRetingsInput
+  update: UserUpdateWithoutLikesDataInput
+  upsert: UserUpsertWithoutLikesInput
 }
 
-input UserUpdateOneWithoutVoicesInput {
+input UserUpdateOneWithoutNotificationInput {
   connect: UserWhereUniqueInput
-  create: UserCreateWithoutVoicesInput
+  create: UserCreateWithoutNotificationInput
   delete: Boolean
   disconnect: Boolean
-  update: UserUpdateWithoutVoicesDataInput
-  upsert: UserUpsertWithoutVoicesInput
+  update: UserUpdateWithoutNotificationDataInput
+  upsert: UserUpsertWithoutNotificationInput
+}
+
+input UserUpdateOneWithoutReviewsInput {
+  connect: UserWhereUniqueInput
+  create: UserCreateWithoutReviewsInput
+  delete: Boolean
+  disconnect: Boolean
+  update: UserUpdateWithoutReviewsDataInput
+  upsert: UserUpsertWithoutReviewsInput
 }
 
 input UserUpdateWithoutBooksDataInput {
   avatar: String
   chapters: ChapterUpdateManyWithoutAuthorInput
+  comments: CommentUpdateManyWithoutAuthorInput
   email: String
+  followers: UserUpdateManyWithoutFollowingInput
+  following: UserUpdateManyWithoutFollowersInput
   id: Int
-  ratings: RatingUpdateManyWithoutAuthorInput
-  settedRetings: RatingUpdateManyWithoutUserInput
+  likes: LikeUpdateManyWithoutAuthorInput
+  Notification: NotificationUpdateManyWithoutAuthorInput
+  reviews: ReviewUpdateManyWithoutAuthorInput
   username: String
-  voices: VoiceUpdateManyWithoutAuthorInput
 }
 
 input UserUpdateWithoutChaptersDataInput {
   avatar: String
   books: BookUpdateManyWithoutAuthorInput
+  comments: CommentUpdateManyWithoutAuthorInput
   email: String
+  followers: UserUpdateManyWithoutFollowingInput
+  following: UserUpdateManyWithoutFollowersInput
   id: Int
-  ratings: RatingUpdateManyWithoutAuthorInput
-  settedRetings: RatingUpdateManyWithoutUserInput
+  likes: LikeUpdateManyWithoutAuthorInput
+  Notification: NotificationUpdateManyWithoutAuthorInput
+  reviews: ReviewUpdateManyWithoutAuthorInput
   username: String
-  voices: VoiceUpdateManyWithoutAuthorInput
 }
 
-input UserUpdateWithoutRatingsDataInput {
+input UserUpdateWithoutCommentsDataInput {
   avatar: String
   books: BookUpdateManyWithoutAuthorInput
   chapters: ChapterUpdateManyWithoutAuthorInput
   email: String
+  followers: UserUpdateManyWithoutFollowingInput
+  following: UserUpdateManyWithoutFollowersInput
   id: Int
-  settedRetings: RatingUpdateManyWithoutUserInput
+  likes: LikeUpdateManyWithoutAuthorInput
+  Notification: NotificationUpdateManyWithoutAuthorInput
+  reviews: ReviewUpdateManyWithoutAuthorInput
   username: String
-  voices: VoiceUpdateManyWithoutAuthorInput
 }
 
-input UserUpdateWithoutSettedRetingsDataInput {
+input UserUpdateWithoutFollowersDataInput {
   avatar: String
   books: BookUpdateManyWithoutAuthorInput
   chapters: ChapterUpdateManyWithoutAuthorInput
+  comments: CommentUpdateManyWithoutAuthorInput
   email: String
+  following: UserUpdateManyWithoutFollowersInput
   id: Int
-  ratings: RatingUpdateManyWithoutAuthorInput
+  likes: LikeUpdateManyWithoutAuthorInput
+  Notification: NotificationUpdateManyWithoutAuthorInput
+  reviews: ReviewUpdateManyWithoutAuthorInput
   username: String
-  voices: VoiceUpdateManyWithoutAuthorInput
 }
 
-input UserUpdateWithoutVoicesDataInput {
+input UserUpdateWithoutFollowingDataInput {
   avatar: String
   books: BookUpdateManyWithoutAuthorInput
   chapters: ChapterUpdateManyWithoutAuthorInput
+  comments: CommentUpdateManyWithoutAuthorInput
   email: String
+  followers: UserUpdateManyWithoutFollowingInput
   id: Int
-  ratings: RatingUpdateManyWithoutAuthorInput
-  settedRetings: RatingUpdateManyWithoutUserInput
+  likes: LikeUpdateManyWithoutAuthorInput
+  Notification: NotificationUpdateManyWithoutAuthorInput
+  reviews: ReviewUpdateManyWithoutAuthorInput
   username: String
+}
+
+input UserUpdateWithoutLikesDataInput {
+  avatar: String
+  books: BookUpdateManyWithoutAuthorInput
+  chapters: ChapterUpdateManyWithoutAuthorInput
+  comments: CommentUpdateManyWithoutAuthorInput
+  email: String
+  followers: UserUpdateManyWithoutFollowingInput
+  following: UserUpdateManyWithoutFollowersInput
+  id: Int
+  Notification: NotificationUpdateManyWithoutAuthorInput
+  reviews: ReviewUpdateManyWithoutAuthorInput
+  username: String
+}
+
+input UserUpdateWithoutNotificationDataInput {
+  avatar: String
+  books: BookUpdateManyWithoutAuthorInput
+  chapters: ChapterUpdateManyWithoutAuthorInput
+  comments: CommentUpdateManyWithoutAuthorInput
+  email: String
+  followers: UserUpdateManyWithoutFollowingInput
+  following: UserUpdateManyWithoutFollowersInput
+  id: Int
+  likes: LikeUpdateManyWithoutAuthorInput
+  reviews: ReviewUpdateManyWithoutAuthorInput
+  username: String
+}
+
+input UserUpdateWithoutReviewsDataInput {
+  avatar: String
+  books: BookUpdateManyWithoutAuthorInput
+  chapters: ChapterUpdateManyWithoutAuthorInput
+  comments: CommentUpdateManyWithoutAuthorInput
+  email: String
+  followers: UserUpdateManyWithoutFollowingInput
+  following: UserUpdateManyWithoutFollowersInput
+  id: Int
+  likes: LikeUpdateManyWithoutAuthorInput
+  Notification: NotificationUpdateManyWithoutAuthorInput
+  username: String
+}
+
+input UserUpdateWithWhereUniqueWithoutFollowersInput {
+  data: UserUpdateWithoutFollowersDataInput!
+  where: UserWhereUniqueInput!
+}
+
+input UserUpdateWithWhereUniqueWithoutFollowingInput {
+  data: UserUpdateWithoutFollowingDataInput!
+  where: UserWhereUniqueInput!
 }
 
 input UserUpsertWithoutBooksInput {
@@ -1108,19 +2544,36 @@ input UserUpsertWithoutChaptersInput {
   update: UserUpdateWithoutChaptersDataInput!
 }
 
-input UserUpsertWithoutRatingsInput {
-  create: UserCreateWithoutRatingsInput!
-  update: UserUpdateWithoutRatingsDataInput!
+input UserUpsertWithoutCommentsInput {
+  create: UserCreateWithoutCommentsInput!
+  update: UserUpdateWithoutCommentsDataInput!
 }
 
-input UserUpsertWithoutSettedRetingsInput {
-  create: UserCreateWithoutSettedRetingsInput!
-  update: UserUpdateWithoutSettedRetingsDataInput!
+input UserUpsertWithoutLikesInput {
+  create: UserCreateWithoutLikesInput!
+  update: UserUpdateWithoutLikesDataInput!
 }
 
-input UserUpsertWithoutVoicesInput {
-  create: UserCreateWithoutVoicesInput!
-  update: UserUpdateWithoutVoicesDataInput!
+input UserUpsertWithoutNotificationInput {
+  create: UserCreateWithoutNotificationInput!
+  update: UserUpdateWithoutNotificationDataInput!
+}
+
+input UserUpsertWithoutReviewsInput {
+  create: UserCreateWithoutReviewsInput!
+  update: UserUpdateWithoutReviewsDataInput!
+}
+
+input UserUpsertWithWhereUniqueWithoutFollowersInput {
+  create: UserCreateWithoutFollowersInput!
+  update: UserUpdateWithoutFollowersDataInput!
+  where: UserWhereUniqueInput!
+}
+
+input UserUpsertWithWhereUniqueWithoutFollowingInput {
+  create: UserCreateWithoutFollowingInput!
+  update: UserUpdateWithoutFollowingDataInput!
+  where: UserWhereUniqueInput!
 }
 
 input UserWhereInput {
@@ -1128,254 +2581,21 @@ input UserWhereInput {
   avatar: NullableStringFilter
   books: BookFilter
   chapters: ChapterFilter
+  comments: CommentFilter
   email: NullableStringFilter
+  followers: UserFilter
+  following: UserFilter
   id: IntFilter
+  likes: LikeFilter
   NOT: [UserWhereInput!]
+  Notification: NotificationFilter
   OR: [UserWhereInput!]
-  ratings: RatingFilter
-  settedRetings: RatingFilter
+  reviews: ReviewFilter
   username: StringFilter
-  voices: VoiceFilter
 }
 
 input UserWhereUniqueInput {
   email: String
   id: Int
   username: String
-}
-
-type Voice {
-  author: User
-  book: Book
-  chapter: Chapter
-  id: Int!
-  ratings: [Rating!]!
-  url: String!
-}
-
-input VoiceCreateInput {
-  author: UserCreateOneWithoutVoicesInput
-  book: BookCreateOneWithoutVoicesInput
-  chapter: ChapterCreateOneWithoutVoicesInput
-  ratings: RatingCreateManyWithoutVoiceInput
-  url: String!
-}
-
-input VoiceCreateManyWithoutAuthorInput {
-  connect: [VoiceWhereUniqueInput!]
-  create: [VoiceCreateWithoutAuthorInput!]
-}
-
-input VoiceCreateManyWithoutBookInput {
-  connect: [VoiceWhereUniqueInput!]
-  create: [VoiceCreateWithoutBookInput!]
-}
-
-input VoiceCreateManyWithoutChapterInput {
-  connect: [VoiceWhereUniqueInput!]
-  create: [VoiceCreateWithoutChapterInput!]
-}
-
-input VoiceCreateOneWithoutRatingsInput {
-  connect: VoiceWhereUniqueInput
-  create: VoiceCreateWithoutRatingsInput
-}
-
-input VoiceCreateWithoutAuthorInput {
-  book: BookCreateOneWithoutVoicesInput
-  chapter: ChapterCreateOneWithoutVoicesInput
-  ratings: RatingCreateManyWithoutVoiceInput
-  url: String!
-}
-
-input VoiceCreateWithoutBookInput {
-  author: UserCreateOneWithoutVoicesInput
-  chapter: ChapterCreateOneWithoutVoicesInput
-  ratings: RatingCreateManyWithoutVoiceInput
-  url: String!
-}
-
-input VoiceCreateWithoutChapterInput {
-  author: UserCreateOneWithoutVoicesInput
-  book: BookCreateOneWithoutVoicesInput
-  ratings: RatingCreateManyWithoutVoiceInput
-  url: String!
-}
-
-input VoiceCreateWithoutRatingsInput {
-  author: UserCreateOneWithoutVoicesInput
-  book: BookCreateOneWithoutVoicesInput
-  chapter: ChapterCreateOneWithoutVoicesInput
-  url: String!
-}
-
-input VoiceFilter {
-  every: VoiceWhereInput
-  none: VoiceWhereInput
-  some: VoiceWhereInput
-}
-
-input VoiceScalarWhereInput {
-  AND: [VoiceScalarWhereInput!]
-  authorUsername: NullableStringFilter
-  bookId: NullableIntFilter
-  chapterId: NullableIntFilter
-  id: IntFilter
-  NOT: [VoiceScalarWhereInput!]
-  OR: [VoiceScalarWhereInput!]
-  ratings: RatingFilter
-  url: StringFilter
-}
-
-input VoiceUpdateInput {
-  author: UserUpdateOneWithoutVoicesInput
-  book: BookUpdateOneWithoutVoicesInput
-  chapter: ChapterUpdateOneWithoutVoicesInput
-  id: Int
-  ratings: RatingUpdateManyWithoutVoiceInput
-  url: String
-}
-
-input VoiceUpdateManyDataInput {
-  id: Int
-  url: String
-}
-
-input VoiceUpdateManyWithoutAuthorInput {
-  connect: [VoiceWhereUniqueInput!]
-  create: [VoiceCreateWithoutAuthorInput!]
-  delete: [VoiceWhereUniqueInput!]
-  deleteMany: [VoiceScalarWhereInput!]
-  disconnect: [VoiceWhereUniqueInput!]
-  set: [VoiceWhereUniqueInput!]
-  update: [VoiceUpdateWithWhereUniqueWithoutAuthorInput!]
-  updateMany: [VoiceUpdateManyWithWhereNestedInput!]
-  upsert: [VoiceUpsertWithWhereUniqueWithoutAuthorInput!]
-}
-
-input VoiceUpdateManyWithoutBookInput {
-  connect: [VoiceWhereUniqueInput!]
-  create: [VoiceCreateWithoutBookInput!]
-  delete: [VoiceWhereUniqueInput!]
-  deleteMany: [VoiceScalarWhereInput!]
-  disconnect: [VoiceWhereUniqueInput!]
-  set: [VoiceWhereUniqueInput!]
-  update: [VoiceUpdateWithWhereUniqueWithoutBookInput!]
-  updateMany: [VoiceUpdateManyWithWhereNestedInput!]
-  upsert: [VoiceUpsertWithWhereUniqueWithoutBookInput!]
-}
-
-input VoiceUpdateManyWithoutChapterInput {
-  connect: [VoiceWhereUniqueInput!]
-  create: [VoiceCreateWithoutChapterInput!]
-  delete: [VoiceWhereUniqueInput!]
-  deleteMany: [VoiceScalarWhereInput!]
-  disconnect: [VoiceWhereUniqueInput!]
-  set: [VoiceWhereUniqueInput!]
-  update: [VoiceUpdateWithWhereUniqueWithoutChapterInput!]
-  updateMany: [VoiceUpdateManyWithWhereNestedInput!]
-  upsert: [VoiceUpsertWithWhereUniqueWithoutChapterInput!]
-}
-
-input VoiceUpdateManyWithWhereNestedInput {
-  data: VoiceUpdateManyDataInput!
-  where: VoiceScalarWhereInput!
-}
-
-input VoiceUpdateOneWithoutRatingsInput {
-  connect: VoiceWhereUniqueInput
-  create: VoiceCreateWithoutRatingsInput
-  delete: Boolean
-  disconnect: Boolean
-  update: VoiceUpdateWithoutRatingsDataInput
-  upsert: VoiceUpsertWithoutRatingsInput
-}
-
-input VoiceUpdateWithoutAuthorDataInput {
-  book: BookUpdateOneWithoutVoicesInput
-  chapter: ChapterUpdateOneWithoutVoicesInput
-  id: Int
-  ratings: RatingUpdateManyWithoutVoiceInput
-  url: String
-}
-
-input VoiceUpdateWithoutBookDataInput {
-  author: UserUpdateOneWithoutVoicesInput
-  chapter: ChapterUpdateOneWithoutVoicesInput
-  id: Int
-  ratings: RatingUpdateManyWithoutVoiceInput
-  url: String
-}
-
-input VoiceUpdateWithoutChapterDataInput {
-  author: UserUpdateOneWithoutVoicesInput
-  book: BookUpdateOneWithoutVoicesInput
-  id: Int
-  ratings: RatingUpdateManyWithoutVoiceInput
-  url: String
-}
-
-input VoiceUpdateWithoutRatingsDataInput {
-  author: UserUpdateOneWithoutVoicesInput
-  book: BookUpdateOneWithoutVoicesInput
-  chapter: ChapterUpdateOneWithoutVoicesInput
-  id: Int
-  url: String
-}
-
-input VoiceUpdateWithWhereUniqueWithoutAuthorInput {
-  data: VoiceUpdateWithoutAuthorDataInput!
-  where: VoiceWhereUniqueInput!
-}
-
-input VoiceUpdateWithWhereUniqueWithoutBookInput {
-  data: VoiceUpdateWithoutBookDataInput!
-  where: VoiceWhereUniqueInput!
-}
-
-input VoiceUpdateWithWhereUniqueWithoutChapterInput {
-  data: VoiceUpdateWithoutChapterDataInput!
-  where: VoiceWhereUniqueInput!
-}
-
-input VoiceUpsertWithoutRatingsInput {
-  create: VoiceCreateWithoutRatingsInput!
-  update: VoiceUpdateWithoutRatingsDataInput!
-}
-
-input VoiceUpsertWithWhereUniqueWithoutAuthorInput {
-  create: VoiceCreateWithoutAuthorInput!
-  update: VoiceUpdateWithoutAuthorDataInput!
-  where: VoiceWhereUniqueInput!
-}
-
-input VoiceUpsertWithWhereUniqueWithoutBookInput {
-  create: VoiceCreateWithoutBookInput!
-  update: VoiceUpdateWithoutBookDataInput!
-  where: VoiceWhereUniqueInput!
-}
-
-input VoiceUpsertWithWhereUniqueWithoutChapterInput {
-  create: VoiceCreateWithoutChapterInput!
-  update: VoiceUpdateWithoutChapterDataInput!
-  where: VoiceWhereUniqueInput!
-}
-
-input VoiceWhereInput {
-  AND: [VoiceWhereInput!]
-  author: UserWhereInput
-  authorUsername: NullableStringFilter
-  book: BookWhereInput
-  bookId: NullableIntFilter
-  chapter: ChapterWhereInput
-  chapterId: NullableIntFilter
-  id: IntFilter
-  NOT: [VoiceWhereInput!]
-  OR: [VoiceWhereInput!]
-  ratings: RatingFilter
-  url: StringFilter
-}
-
-input VoiceWhereUniqueInput {
-  id: Int
 }
