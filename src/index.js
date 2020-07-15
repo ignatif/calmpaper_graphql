@@ -3,6 +3,8 @@ const { makeSchema, objectType, intArg, stringArg } = require('@nexus/schema')
 const { PrismaClient } = require('@prisma/client')
 const { nexusPrismaPlugin } = require('nexus-prisma')
 const {
+  Query,
+  Mutation,
   User,
   Book,
   Chapter,
@@ -11,109 +13,24 @@ const {
   Review,
   Notification,
   Tag,
-} = require('./types')
+  Genre,
+} = require('./graphql')
+const { permissions } = require('./permissions')
 const express = require('express')
 const multer = require('multer')
 const cors = require('cors')
 require('dotenv').config()
 
+var passport = require('passport')
+const { sign } = require('jsonwebtoken')
+require('./passport/google')
+
+const APP_SECRET = 'appsecret321'
+
+var session = require('express-session'),
+  bodyParser = require('body-parser')
+
 const prisma = new PrismaClient()
-
-const Query = objectType({
-  name: 'Query',
-  definition(t) {
-    t.crud.user()
-    t.crud.users()
-    t.crud.book()
-    t.crud.books()
-    t.crud.chapter()
-    t.crud.chapters()
-    t.crud.tags()
-    t.crud.comment()
-    t.crud.comments()
-    t.crud.review()
-    t.crud.reviews()
-    t.crud.likes()
-    t.crud.notification()
-    t.crud.notifications()
-
-    t.list.field('chapterByBook', {
-      type: 'Chapter',
-      args: {
-        bookId: intArg(),
-        skip: intArg({ nullable: true }),
-      },
-      resolve: (_, { bookId, skip }, ctx) => {
-        return ctx.prisma.chapter.findMany({
-          take: 1,
-          skip,
-          where: {
-            book: {
-              id: bookId,
-            },
-          },
-          include: {
-            reviews: true,
-          },
-        })
-      },
-    })
-  },
-})
-
-const Mutation = objectType({
-  name: 'Mutation',
-  definition(t) {
-    t.crud.createOneUser()
-    t.crud.updateOneUser()
-    t.crud.deleteOneUser()
-
-    t.crud.createOneBook()
-    t.crud.updateOneBook()
-    t.crud.deleteOneBook()
-
-    t.crud.createOneChapter()
-    t.crud.updateOneChapter()
-    t.crud.deleteOneChapter()
-
-    t.crud.createOneReview()
-    t.crud.updateOneReview()
-    t.crud.upsertOneReview()
-    t.crud.deleteOneReview()
-
-    t.field('setReview', {
-      type: 'Review',
-      args: {
-        id: intArg({ nullable: true }),
-        stars: intArg(),
-        authorUsername: stringArg(),
-        bookId: intArg(),
-      },
-      resolve: (parent, { id, stars, authorUsername, bookId }, ctx) => {
-        if (id) {
-          return ctx.prisma.review.update({
-            data: { stars },
-            where: { id },
-          })
-        } else {
-          let connect
-
-          return ctx.prisma.review.create({
-            data: {
-              stars,
-              author: {
-                connect: {
-                  username: authorUsername,
-                },
-              },
-              book: { connect: { id: bookId } },
-            },
-          })
-        }
-      },
-    })
-  },
-})
 
 const server = new GraphQLServer({
   schema: makeSchema({
@@ -128,16 +45,33 @@ const server = new GraphQLServer({
       Review,
       Notification,
       Tag,
+      Genre,
     ],
     plugins: [nexusPrismaPlugin()],
-    // experimentalCRUD: true,
+    middlewares: [permissions],
+    experimentalCRUD: true,
     outputs: {
       schema: __dirname + '/../schema.graphql',
-      typegen: __dirname + '/generated/nexus.ts',
+      // typegen: __dirname + '/generated/nexus.ts',
     },
   }),
-  context: { prisma },
+  context: (request) => {
+    return {
+      ...request,
+      prisma,
+    }
+  },
 })
+
+// Allowing passport to serialize and deserialize users into sessions
+passport.serializeUser((user, done) => done(null, user))
+passport.deserializeUser((obj, done) => done(null, obj))
+
+server.express.use(express.static('public'))
+server.express.use(session({ secret: 'cats' }))
+server.express.use(bodyParser.urlencoded({ extended: false }))
+server.express.use(passport.initialize())
+server.express.use(passport.session())
 
 // server.express.use(bodyParser.json());
 server.express.use(cors())
@@ -165,6 +99,25 @@ server.express.post('/files', upload.single('file'), (req, res) => {
 
 server.express.use(express.json())
 server.express.use(express.urlencoded({ extended: false }))
+
+// auth
+
+server.express.get(
+  '/auth/google',
+  passport.authenticate('google', {
+    scope: ['https://www.googleapis.com/auth/plus.login'],
+  }),
+)
+
+server.express.get(
+  '/auth/google/callback',
+  passport.authenticate('google', { failureRedirect: '/login' }),
+  function (req, res) {
+    var token = sign({ userId: req.user.id }, APP_SECRET)
+
+    res.redirect(`http://localhost:3000?token=${token}`)
+  },
+)
 
 server.start(() =>
   console.log(

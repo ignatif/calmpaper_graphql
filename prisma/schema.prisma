@@ -9,17 +9,24 @@ datasource sqlite {
 
 
 model User {
-  id             Int        @default(autoincrement()) @id
-  username       String     @unique
+  id             Int         @default(autoincrement()) @id
+  username       String?     @unique
+  firstname      String?
+  givenname      String?
+  fullname       String?
   email          String?    @unique
   avatar         String?
-  books          Book[]
+  books          Book[]     @relation("UserBookAuthor")
+  favoriteBooks  Book[]     @relation("UserBookReader")
   chapters       Chapter[]
   reviews        Review[]
   likes          Like[]
   comments       Comment[]
   following      User[]     @relation("UserFollowers", references: [id])
   followers      User[]     @relation("UserFollowers", references: [id])
+
+  googleId       String?     @unique
+  getStreamToken String?     @unique
 }
 
 model Book {
@@ -27,10 +34,13 @@ model Book {
   name           String
   description    String
   image          String?
-  author         User?      @relation(fields: [authorUsername], references: [username])
-  authorUsername String?
+  createdAt      DateTime   @default(now())
+  author         User?      @relation("UserBookAuthor", fields: [authorId], references: [id])
+  authorId       Int?
+  readers        User[]     @relation("UserBookReader")
   chapters       Chapter[]
   tags           Tag[]      @relation(references: [id])
+  genres         Genre[]    @relation(references: [id])
   likes          Like[]
   views          Int        @default(0)
   reviews        Review[]
@@ -42,11 +52,11 @@ model Chapter {
   title          String?
   content        String
   image          String?
-  author         User?      @relation(fields: [authorUsername], references: [username])
-  authorUsername String?
+  createdAt      DateTime   @default(now())
+  author         User?      @relation(fields: [authorId], references: [id])
+  authorId       Int?
   book           Book?      @relation(fields: [bookId], references: [id])
   bookId         Int?
-  tags           Tag[]      @relation(references: [id])
   likes          Like[]
   views          Int        @default(0)
   reviews        Review[]
@@ -57,27 +67,38 @@ model Tag {
   id             Int        @default(autoincrement()) @id
   label          String
   books          Book[]     @relation(references: [id])
-  chapters       Chapter[]  @relation(references: [id])
+}
+
+model Genre {
+  id             Int        @default(autoincrement()) @id
+  label          String
+  books          Book[]     @relation(references: [id])
 }
 
 model Comment {
   id             Int        @default(autoincrement()) @id
   body           String
-  author         User?      @relation(fields: [authorUsername], references: [username])
-  authorUsername String?
+  createdAt      DateTime   @default(now())
+  author         User?      @relation(fields: [authorId], references: [id])
+  authorId       Int?
   book           Book?      @relation(fields: [bookId], references: [id])
   bookId         Int?
   chapter        Chapter?   @relation(fields: [chapterId], references: [id])
   chapterId      Int?
   likes          Like[]
+  replies        Comment[]  @relation("CommentReplies")
+  parentId       Int?
+  parent         Comment?   @relation("CommentReplies", fields: [parentId], references: [id])
+  isChild        Boolean    @default(false)
 }
 
 model Review {
   id             Int        @default(autoincrement()) @id
   stars          Int
   message        String?
-  author         User?      @relation(fields: [authorUsername], references: [username])
-  authorUsername String?
+  createdAt      DateTime   @default(now())
+  author         User?      @relation(fields: [authorId], references: [id])
+  authorId       Int?
   book           Book?      @relation(fields: [bookId], references: [id])
   bookId         Int?
   chapter        Chapter?   @relation(fields: [chapterId], references: [id])
@@ -87,8 +108,9 @@ model Review {
 
 model Like {
   id             Int        @default(autoincrement()) @id
-  author         User?      @relation(fields: [authorUsername], references: [username])
-  authorUsername String?
+  createdAt      DateTime   @default(now())
+  author         User?      @relation(fields: [authorId], references: [id])
+  authorId       Int?
   book           Book?      @relation(fields: [bookId], references: [id])
   bookId         Int?
   chapter        Chapter?   @relation(fields: [chapterId], references: [id])
@@ -102,8 +124,8 @@ model Like {
 
 model Notification {
   id             Int        @default(autoincrement()) @id
-  author         User?      @relation(fields: [authorUsername], references: [username])
-  authorUsername String?
+  author         User?      @relation(fields: [authorId], references: [id])
+  authorId       Int?
   book           Book?      @relation(fields: [bookId], references: [id])
   bookId         Int?
   chapter        Chapter?   @relation(fields: [chapterId], references: [id])
