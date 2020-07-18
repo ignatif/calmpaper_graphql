@@ -26,7 +26,8 @@
     "passport-twitter": "^1.0.4"
   },
   "scripts": {
-    "dev": "nodemon src",
+    "start": "node src/index.js",
+    "dev": "node src/index.js",
     "generate": "prisma generate",
     "postinstall": "prisma generate"
   },

@@ -1,4 +1,4 @@
-const { GraphQLServer } = require('graphql-yoga')
+const { GraphQLServerLambda } = require('graphql-yoga')
 const { makeSchema, objectType, intArg, stringArg } = require('@nexus/schema')
 const { PrismaClient } = require('@prisma/client')
 const { nexusPrismaPlugin } = require('nexus-prisma')
@@ -16,29 +16,13 @@ const {
   Genre,
 } = require('./graphql')
 const { permissions } = require('./permissions')
-const express = require('express')
-const multer = require('multer')
-const cors = require('cors')
 require('dotenv').config()
-
-var passport = require('passport')
-const { sign } = require('jsonwebtoken')
-require('./passport/google')
-
-const APP_SECRET = 'appsecret321'
-
-const stream = require('getstream').default
-const getStreamClient = stream.connect(
-  'c2u3fw52wm4t',
-  'grdr5z6ras7ugc33ezbqswq6k6pggrad4armpg3xjskpgp7gwttmqjgyfg86pn8z',
-)
-
-var session = require('express-session'),
-  bodyParser = require('body-parser')
 
 const prisma = new PrismaClient()
 
-const server = new GraphQLServer({
+const { ApolloServer } = require('apollo-server-micro')
+
+const server = new ApolloServer({
   schema: makeSchema({
     types: [
       Query,
@@ -58,7 +42,6 @@ const server = new GraphQLServer({
     experimentalCRUD: true,
     outputs: {
       schema: __dirname + '/../schema.graphql',
-      // typegen: __dirname + '/generated/nexus.ts',
     },
   }),
   context: (request) => {
@@ -67,102 +50,10 @@ const server = new GraphQLServer({
       prisma,
     }
   },
+  playground: true,
+  introspection: true,
 })
 
-// Allowing passport to serialize and deserialize users into sessions
-passport.serializeUser((user, done) => done(null, user))
-passport.deserializeUser((obj, done) => done(null, obj))
+console.log(server)
 
-server.express.use(express.static('public'))
-server.express.use(session({ secret: 'cats' }))
-server.express.use(bodyParser.urlencoded({ extended: false }))
-server.express.use(passport.initialize())
-server.express.use(passport.session())
-
-// server.express.use(bodyParser.json());
-server.express.use(cors())
-
-server.express.use('/hi', (req, res) => {
-  res.status(200).json({ ok: true })
-})
-
-const storage = multer.diskStorage({
-  destination: './files',
-  filename(req, file, cb) {
-    cb(null, `${new Date()}-${file.originalname}`)
-  },
-})
-
-const upload = multer({ storage })
-
-server.express.use('/files', express.static('files'))
-server.express.post('/files', upload.single('file'), (req, res) => {
-  const file = req.file // file passed from client
-  const meta = req.body // all other values passed from the client, like name, etc..
-
-  res.status(200).json({ path: file.path })
-})
-
-server.express.use(express.json())
-server.express.use(express.urlencoded({ extended: false }))
-
-// auth
-
-server.express.get(
-  '/auth/google',
-  passport.authenticate('google', {
-    scope: ['https://www.googleapis.com/auth/plus.login'],
-  }),
-)
-
-server.express.get(
-  '/auth/google/callback',
-  passport.authenticate('google', { failureRedirect: '/login' }),
-  async function (req, res) {
-    const { user: profile } = req
-    console.log(profile)
-    console.log(req)
-
-    const getStreamToken = getStreamClient.createUserToken(profile.id)
-    const user = await prisma.user.upsert({
-      where: {
-        googleId: profile.id,
-      },
-      create: {
-        googleId: profile.id,
-        fullname: profile.displayName,
-        firstname: profile.name.familyName,
-        givenname: profile.name.givenName,
-        avatar: profile.photos[0].value,
-        getStreamToken,
-      },
-      update: {
-        fullname: profile.displayName,
-        firstname: profile.name.familyName,
-        givenname: profile.name.givenName,
-        avatar: profile.photos[0].value,
-        getStreamToken,
-      },
-    })
-    var token = sign({ userId: user.id }, APP_SECRET)
-
-    res.redirect(`http://localhost:3000?token=${token}`)
-  },
-)
-
-server.start(() =>
-  console.log(
-    `🚀 Server ready at: http://localhost:4000\n⭐️ See sample queries: http://pris.ly/e/js/graphql#using-the-graphql-api`,
-  ),
-)
-
-module.exports = {
-  User,
-  Book,
-  Chapter,
-  Comment,
-  Like,
-  Review,
-  Notification,
-  Tag,
-}
+module.exports = server.createHandler({ path: '/api' })
