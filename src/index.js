@@ -33,6 +33,8 @@ const getStreamClient = stream.connect(
   'grdr5z6ras7ugc33ezbqswq6k6pggrad4armpg3xjskpgp7gwttmqjgyfg86pn8z',
 )
 
+console.log(process.env.FRONTEND_URL)
+
 var session = require('express-session'),
   bodyParser = require('body-parser')
 
@@ -146,7 +148,7 @@ server.express.get(
     })
     var token = sign({ userId: user.id }, APP_SECRET)
 
-    res.redirect(`http://localhost:3000?token=${token}`)
+    res.redirect(`${process.env.FRONTEND_URL}/?token=${token}`)
   },
 )
 
