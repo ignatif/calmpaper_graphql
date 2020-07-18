@@ -28,6 +28,7 @@
   "scripts": {
     "dev": "nodemon src",
     "start": "node src",
+    "startok": "node src",
     "generate": "prisma generate",
     "postinstall": "prisma generate"
   },
