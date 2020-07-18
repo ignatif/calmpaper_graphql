@@ -18,7 +18,7 @@ passport.use(
       clientID:
         '335114584327-634nqa511l75d71ov4275gp00k0qqpct.apps.googleusercontent.com',
       clientSecret: 'vTVx_tRL70hL1fCFPVUpDDpj',
-      callbackURL: 'http://localhost:4000/auth/google/callback',
+      callbackURL: `${process.env.BACKEND_URL}/auth/google/callback`,
     },
     async function (accessToken, refreshToken, profile, done) {
       // const getStreamToken = getStreamClient.createUserToken(profile.id)
