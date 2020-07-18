@@ -1,7 +1,6 @@
 var passport = require('passport')
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy
 const { PrismaClient } = require('@prisma/client')
-const prisma = new PrismaClient()
 
 const stream = require('getstream').default
 const getStreamClient = stream.connect(
@@ -22,30 +21,32 @@ passport.use(
       callbackURL: 'http://localhost:4000/auth/google/callback',
     },
     async function (accessToken, refreshToken, profile, done) {
-      const getStreamToken = getStreamClient.createUserToken(profile.id)
-      const user = await prisma.user.upsert({
-        where: {
-          googleId: profile.id,
-        },
-        create: {
-          googleId: profile.id,
-          fullname: profile.displayName,
-          firstname: profile.name.familyName,
-          givenname: profile.name.givenName,
-          avatar: profile.photos[0].value,
-          getStreamToken,
-        },
-        update: {
-          fullname: profile.displayName,
-          firstname: profile.name.familyName,
-          givenname: profile.name.givenName,
-          avatar: profile.photos[0].value,
-          getStreamToken,
-        },
-      })
+      // const getStreamToken = getStreamClient.createUserToken(profile.id)
+      // console.log(profile)
+      // const prisma = await new PrismaClient()
+      // const user = await prisma.user.upsert({
+      //   where: {
+      //     googleId: profile.id,
+      //   },
+      //   create: {
+      //     googleId: profile.id,
+      //     fullname: profile.displayName,
+      //     firstname: profile.name.familyName,
+      //     givenname: profile.name.givenName,
+      //     avatar: profile.photos[0].value,
+      //     getStreamToken,
+      //   },
+      //   update: {
+      //     fullname: profile.displayName,
+      //     firstname: profile.name.familyName,
+      //     givenname: profile.name.givenName,
+      //     avatar: profile.photos[0].value,
+      //     getStreamToken,
+      //   },
+      // })
 
       return done(null, {
-        ...user,
+        ...profile,
         token: accessToken,
       })
     },

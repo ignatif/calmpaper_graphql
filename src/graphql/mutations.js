@@ -205,15 +205,18 @@ const Mutation = objectType({
 
         const userFeed = getStreamClient.feed('all', userId)
 
-        userFeed.addActivity({
-          verb: 'follow',
-          to: [`notifications:${book.author.id}`],
-          object: `book:${book.id}`,
-          user,
-          bookId: book.id,
-          actor: getStreamClient.user(userId),
-          foreignId: `user:${userId}-book:${bookId}`,
-        })
+        const authorId = book.author.id
+        if (userId !== authorId) {
+          userFeed.addActivity({
+            verb: 'follow',
+            to: [`notifications:${book.author.id}`],
+            object: `book:${book.id}`,
+            user,
+            bookId: book.id,
+            actor: getStreamClient.user(userId),
+            foreignId: `user:${userId}-book:${bookId}`,
+          })
+        }
 
         return user
       },
@@ -271,16 +274,18 @@ const Mutation = objectType({
 
           const userFeed = getStreamClient.feed('all', authorId)
 
-          userFeed.addActivity({
-            verb: 'like',
-            to: [`notifications:${like.comment.author.id}`],
-            object: `comment:${like.comment.id}`,
-            user,
-            bookId: like.comment.bookId || like.comment.chapter.bookId,
-            chapterId: like.comment.chapterId,
-            actor: getStreamClient.user(authorId),
-            // foreignId: `user:${userId}-comment:${bookId}`,
-          })
+          if (authorId !== like.comment.author.id) {
+            userFeed.addActivity({
+              verb: 'like',
+              to: [`notifications:${like.comment.author.id}`],
+              object: `comment:${like.comment.id}`,
+              user,
+              bookId: like.comment.bookId || like.comment.chapter.bookId,
+              chapterId: like.comment.chapterId,
+              actor: getStreamClient.user(authorId),
+              // foreignId: `user:${userId}-comment:${bookId}`,
+            })
+          }
 
           return user
         },
@@ -308,16 +313,18 @@ const Mutation = objectType({
 
           const userFeed = getStreamClient.feed('all', authorId)
 
-          userFeed.addActivity({
-            verb: 'like',
-            to: [`notifications:${like.chapter.authorId}`],
-            object: `chapter:${like.chapter.id}`,
-            user,
-            bookId: like.chapter.bookId,
-            chapterId: like.chapter.id,
-            actor: getStreamClient.user(authorId),
-            // foreignId: `user:${userId}-comment:${bookId}`,
-          })
+          if (authorId !== like.chapter.authorId) {
+            userFeed.addActivity({
+              verb: 'like',
+              to: [`notifications:${like.chapter.authorId}`],
+              object: `chapter:${like.chapter.id}`,
+              user,
+              bookId: like.chapter.bookId,
+              chapterId: like.chapter.id,
+              actor: getStreamClient.user(authorId),
+              // foreignId: `user:${userId}-comment:${bookId}`,
+            })
+          }
 
           return user
         },
@@ -350,15 +357,18 @@ const Mutation = objectType({
 
         const userFeed = getStreamClient.feed('all', userId)
 
-        userFeed.addActivity({
-          actor: getStreamClient.user(userId),
-          verb: 'reply',
-          to: [`notifications:${comment.authorId}`],
-          object: `comment:${comment.id}`,
-          user,
-          bookId: comment.bookId || comment.chapter.bookId, // chapter comments only receive chapter object
-          chapterId: comment.chapterId,
-        })
+        const authorId = comment.authorId
+        if (userId !== authorId) {
+          userFeed.addActivity({
+            actor: getStreamClient.user(userId),
+            verb: 'reply',
+            to: [`notifications:${comment.authorId}`],
+            object: `comment:${comment.id}`,
+            user,
+            bookId: comment.bookId || comment.chapter.bookId, // chapter comments only receive chapter object
+            chapterId: comment.chapterId,
+          })
+        }
 
         return comment
       },
@@ -386,14 +396,17 @@ const Mutation = objectType({
 
           const userFeed = getStreamClient.feed('all', userId)
 
-          userFeed.addActivity({
-            actor: getStreamClient.user(userId),
-            verb: 'comment',
-            to: [`notifications:${comment.book.authorId}`],
-            object: `book:${comment.id}`,
-            user,
-            bookId,
-          })
+          const authorId = comment.book.authorId
+          if (userId !== authorId) {
+            userFeed.addActivity({
+              actor: getStreamClient.user(userId),
+              verb: 'comment',
+              to: [`notifications:${comment.book.authorId}`],
+              object: `book:${comment.id}`,
+              user,
+              bookId,
+            })
+          }
 
           return comment
         },
@@ -421,15 +434,18 @@ const Mutation = objectType({
 
           const userFeed = getStreamClient.feed('all', userId)
 
-          userFeed.addActivity({
-            actor: getStreamClient.user(userId),
-            verb: 'comment',
-            to: [`notifications:${comment.chapter.authorId}`],
-            object: `chapter:${comment.id}`,
-            user,
-            bookId: comment.chapter.bookId,
-            chapterId,
-          })
+          const authorId = comment.chapter.authorId
+          if (userId !== authorId) {
+            userFeed.addActivity({
+              actor: getStreamClient.user(userId),
+              verb: 'comment',
+              to: [`notifications:${comment.chapter.authorId}`],
+              object: `chapter:${comment.id}`,
+              user,
+              bookId: comment.chapter.bookId,
+              chapterId,
+            })
+          }
 
           return comment
         },

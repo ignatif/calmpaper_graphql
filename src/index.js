@@ -27,6 +27,12 @@ require('./passport/google')
 
 const APP_SECRET = 'appsecret321'
 
+const stream = require('getstream').default
+const getStreamClient = stream.connect(
+  'c2u3fw52wm4t',
+  'grdr5z6ras7ugc33ezbqswq6k6pggrad4armpg3xjskpgp7gwttmqjgyfg86pn8z',
+)
+
 var session = require('express-session'),
   bodyParser = require('body-parser')
 
@@ -112,8 +118,33 @@ server.express.get(
 server.express.get(
   '/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/login' }),
-  function (req, res) {
-    var token = sign({ userId: req.user.id }, APP_SECRET)
+  async function (req, res) {
+    const { user: profile } = req
+    console.log(profile)
+    console.log(req)
+
+    const getStreamToken = getStreamClient.createUserToken(profile.id)
+    const user = await prisma.user.upsert({
+      where: {
+        googleId: profile.id,
+      },
+      create: {
+        googleId: profile.id,
+        fullname: profile.displayName,
+        firstname: profile.name.familyName,
+        givenname: profile.name.givenName,
+        avatar: profile.photos[0].value,
+        getStreamToken,
+      },
+      update: {
+        fullname: profile.displayName,
+        firstname: profile.name.familyName,
+        givenname: profile.name.givenName,
+        avatar: profile.photos[0].value,
+        getStreamToken,
+      },
+    })
+    var token = sign({ userId: user.id }, APP_SECRET)
 
     res.redirect(`http://localhost:3000?token=${token}`)
   },
