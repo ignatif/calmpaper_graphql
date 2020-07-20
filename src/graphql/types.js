@@ -34,7 +34,7 @@ const Book = objectType({
     t.model.author()
     t.model.views()
     t.model.readers({ pagination: false })
-    t.model.chapters({ pagination: false })
+    t.model.chapters({ pagination: false, ordering: true })
     t.model.tags({ pagination: false })
     t.model.genres({ pagination: false })
     t.model.likes({ pagination: false })
