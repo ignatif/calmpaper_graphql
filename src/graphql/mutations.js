@@ -112,14 +112,23 @@ const Mutation = objectType({
         description: stringArg(),
         image: stringArg(),
         userId: intArg(),
+        tags: intArg({ list: true, nullable: true }),
+        genres: intArg({ list: true, nullable: true }),
       },
-      resolve: async (parent, { name, description, image, userId }, ctx) => {
+      resolve: async (
+        parent,
+        { name, description, image, userId, tags, genres },
+        ctx,
+      ) => {
+        console.log(tags)
         const book = await ctx.prisma.book.create({
           data: {
             name,
             description,
             image,
             author: { connect: { id: userId } },
+            tags: { connect: tags.map((tagId) => ({ id: tagId })) },
+            genres: { connect: genres.map((genreId) => ({ id: genreId })) },
           },
           include: { author: true },
         })
