@@ -35,7 +35,7 @@ const getStreamClient = stream.connect(
   'grdr5z6ras7ugc33ezbqswq6k6pggrad4armpg3xjskpgp7gwttmqjgyfg86pn8z',
 )
 
-import { applyMiddleware } from 'graphql-middleware'
+const { applyMiddleware } = require('graphql-middleware')
 
 var session = require('express-session'),
   bodyParser = require('body-parser')
