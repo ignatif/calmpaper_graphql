@@ -33,7 +33,7 @@
   },
   "scripts": {
     "dev": "nodemon -r esm src",
-    "start": "node -r esm src",
+    "start": "nodemon -r esm src",
     "generate": "prisma generate",
     "postinstall": "prisma generate"
   },
