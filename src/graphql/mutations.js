@@ -1,4 +1,5 @@
 const { objectType, intArg, stringArg } = require('@nexus/schema')
+import { getUserId } from '../utils'
 
 const stream = require('getstream').default
 const getStreamClient = stream.connect(
@@ -21,14 +22,14 @@ const Mutation = objectType({
     t.crud.updateOneChapter()
     t.crud.deleteOneChapter()
 
+    t.crud.createOneComment()
+    t.crud.updateOneComment()
+    t.crud.deleteOneComment()
+
     t.crud.createOneReview()
     t.crud.updateOneReview()
     t.crud.upsertOneReview()
     t.crud.deleteOneReview()
-
-    t.crud.createOneComment()
-    t.crud.updateOneComment()
-    t.crud.deleteOneComment()
 
     t.crud.createOneTag()
     t.crud.updateOneTag()
@@ -42,37 +43,79 @@ const Mutation = objectType({
     t.crud.updateOneLike()
     t.crud.deleteOneLike()
 
-    t.field('setReview', {
+    t.field('createReview', {
       type: 'Review',
       args: {
-        id: intArg({ nullable: true }),
         stars: intArg(),
-        authorUsername: stringArg(),
+        message: stringArg(),
         bookId: intArg(),
+        authorId: intArg(),
       },
-      resolve: (parent, { id, stars, authorUsername, bookId }, ctx) => {
-        if (id) {
-          return ctx.prisma.review.update({
-            data: { stars },
-            where: { id },
-          })
-        } else {
-          let connect
-
-          return ctx.prisma.review.create({
-            data: {
-              stars,
-              author: {
-                connect: {
-                  username: authorUsername,
-                },
+      resolve: async (parent, { stars, message, authorId, bookId }, ctx) => {
+        const result = await ctx.prisma.review.create({
+          data: {
+            stars,
+            message,
+            author: {
+              connect: {
+                id: authorId,
               },
-              book: { connect: { id: bookId } },
             },
-          })
-        }
+            book: {
+              connect: {
+                id: bookId,
+              },
+            },
+          },
+          include: { book: true },
+        })
+
+        const userId = getUserId(ctx)
+        const userFeed = getStreamClient.feed('all', userId)
+
+        userFeed.addActivity({
+          actor: getStreamClient.user(userId),
+          to: [`notifications:${result.book.authorId}`],
+          verb: 'review',
+          object: `book:${bookId}`,
+          bookId: bookId,
+          userId,
+          reviewId: result.id,
+        })
+        return result
       },
     }),
+      t.field('setReview', {
+        type: 'Review',
+        args: {
+          id: intArg({ nullable: true }),
+          stars: intArg(),
+          authorUsername: stringArg(),
+          bookId: intArg(),
+        },
+        resolve: (parent, { id, stars, authorUsername, bookId }, ctx) => {
+          if (id) {
+            return ctx.prisma.review.update({
+              data: { stars },
+              where: { id },
+            })
+          } else {
+            let connect
+
+            return ctx.prisma.review.create({
+              data: {
+                stars,
+                author: {
+                  connect: {
+                    username: authorUsername,
+                  },
+                },
+                book: { connect: { id: bookId } },
+              },
+            })
+          }
+        },
+      }),
       t.field('incrementBookViews', {
         type: 'Book',
         args: {
@@ -105,95 +148,6 @@ const Mutation = objectType({
           })
         },
       })
-    t.field('createBook', {
-      type: 'Book',
-      args: {
-        name: stringArg(),
-        description: stringArg(),
-        image: stringArg(),
-        userId: intArg(),
-        tags: intArg({ list: true, nullable: true }),
-        genres: intArg({ list: true, nullable: true }),
-      },
-      resolve: async (
-        parent,
-        { name, description, image, userId, tags, genres },
-        ctx,
-      ) => {
-        console.log(tags)
-        const book = await ctx.prisma.book.create({
-          data: {
-            name,
-            description,
-            image,
-            author: { connect: { id: userId } },
-            tags: { connect: tags.map((tagId) => ({ id: tagId })) },
-            genres: { connect: genres.map((genreId) => ({ id: genreId })) },
-          },
-          include: { author: true },
-        })
-
-        const user = await ctx.prisma.user.findOne({
-          where: {
-            id: userId,
-          },
-        })
-
-        const userFeed = getStreamClient.feed('user', userId)
-
-        userFeed.addActivity({
-          actor: getStreamClient.user(userId),
-          // to: [`book:${book.id}`],
-          verb: 'start',
-          object: `book:${book.id}`,
-          bookId: book.id,
-          user,
-        })
-
-        return book
-      },
-    })
-
-    t.field('createChapter', {
-      type: 'Chapter',
-      args: {
-        title: stringArg(),
-        content: stringArg(),
-        userId: intArg(),
-        bookId: intArg(),
-      },
-      resolve: async (parent, { title, content, userId, bookId }, ctx) => {
-        const chapter = await ctx.prisma.chapter.create({
-          data: {
-            title,
-            content,
-            author: { connect: { id: userId } },
-            book: { connect: { id: bookId } },
-          },
-          include: { author: true, book: true },
-        })
-
-        const user = await ctx.prisma.user.findOne({
-          where: {
-            id: userId,
-          },
-        })
-
-        const userFeed = getStreamClient.feed('user', userId)
-
-        userFeed.addActivity({
-          to: [`book:${chapter.book.id}`],
-          actor: getStreamClient.user(userId),
-          verb: 'add',
-          object: `chapter:${chapter.id}`,
-          bookId: chapter.book.id,
-          chapterId: chapter.id,
-          user,
-        })
-
-        return chapter
-      },
-    })
 
     t.field('addBookToFavorites', {
       type: 'User',
@@ -220,10 +174,10 @@ const Mutation = objectType({
             verb: 'follow',
             to: [`notifications:${book.author.id}`],
             object: `book:${book.id}`,
-            user,
+            userId,
             bookId: book.id,
             actor: getStreamClient.user(userId),
-            foreignId: `user:${userId}-book:${bookId}`,
+            foreignId: `user:${userId}-follow-book:${bookId}`,
           })
         }
 
@@ -251,8 +205,7 @@ const Mutation = objectType({
         const userFeed = getStreamClient.feed('all', userId)
 
         userFeed.removeActivity({
-          foreignId: `user:${userId}-book:${bookId}`,
-          // to: [`notifications:${book.author.id}`],
+          foreignId: `user:${userId}-follow-book:${bookId}`,
         })
 
         return user
@@ -272,7 +225,13 @@ const Mutation = objectType({
             },
             include: {
               comment: {
-                select: { author: true, chapter: true },
+                select: {
+                  bookId: true,
+                  authorId: true,
+                  id: true,
+                  chapter: true,
+                  parent: true,
+                },
               },
               author: true,
             },
@@ -281,18 +240,21 @@ const Mutation = objectType({
             where: { id: authorId },
           })
 
-          const userFeed = getStreamClient.feed('all', authorId)
+          const userId = getUserId(ctx)
+          const userFeed = getStreamClient.feed('all', userId)
 
-          if (authorId !== like.comment.author.id) {
+          if (authorId !== like.comment.authorId) {
             userFeed.addActivity({
               verb: 'like',
-              to: [`notifications:${like.comment.author.id}`],
+              to: [`notifications:${like.comment.authorId}`],
               object: `comment:${like.comment.id}`,
-              user,
-              bookId: like.comment.bookId || like.comment.chapter.bookId,
+              userId,
+              bookId: like.comment.parent
+                ? like.comment.parent.bookId
+                : like.comment.bookId || like.comment.chapter.bookId,
               chapterId: like.comment.chapterId,
               actor: getStreamClient.user(authorId),
-              // foreignId: `user:${userId}-comment:${bookId}`,
+              foreignId: `user:${userId}-like-comment:${like.id}`,
             })
           }
 
@@ -327,7 +289,7 @@ const Mutation = objectType({
               verb: 'like',
               to: [`notifications:${like.chapter.authorId}`],
               object: `chapter:${like.chapter.id}`,
-              user,
+              userId,
               bookId: like.chapter.bookId,
               chapterId: like.chapter.id,
               actor: getStreamClient.user(authorId),
@@ -373,7 +335,7 @@ const Mutation = objectType({
             verb: 'reply',
             to: [`notifications:${comment.authorId}`],
             object: `comment:${comment.id}`,
-            user,
+            userId,
             bookId: comment.bookId || comment.chapter.bookId, // chapter comments only receive chapter object
             chapterId: comment.chapterId,
           })
@@ -412,8 +374,9 @@ const Mutation = objectType({
               verb: 'comment',
               to: [`notifications:${comment.book.authorId}`],
               object: `book:${comment.id}`,
-              user,
+              userId,
               bookId,
+              commentId: comment.id,
             })
           }
 
@@ -450,9 +413,10 @@ const Mutation = objectType({
               verb: 'comment',
               to: [`notifications:${comment.chapter.authorId}`],
               object: `chapter:${comment.id}`,
-              user,
+              userId,
               bookId: comment.chapter.bookId,
               chapterId,
+              commentId: comment.id,
             })
           }
 

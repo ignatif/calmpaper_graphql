@@ -15,9 +15,11 @@ const {
   Tag,
   Genre,
 } = require('./graphql')
-const { permissions } = require('./permissions')
+const { permissions } = require('./middlewares/permissions')
+const { notifications } = require('./middlewares/notifications')
 const express = require('express')
 const multer = require('multer')
+const multerS3 = require('multer-s3')
 const cors = require('cors')
 require('dotenv').config()
 
@@ -33,36 +35,41 @@ const getStreamClient = stream.connect(
   'grdr5z6ras7ugc33ezbqswq6k6pggrad4armpg3xjskpgp7gwttmqjgyfg86pn8z',
 )
 
-console.log(process.env.FRONTEND_URL)
+import { applyMiddleware } from 'graphql-middleware'
 
 var session = require('express-session'),
   bodyParser = require('body-parser')
 
 const prisma = new PrismaClient()
 
+let schema = makeSchema({
+  types: [
+    Query,
+    Mutation,
+    User,
+    Book,
+    Chapter,
+    Comment,
+    Like,
+    Review,
+    Notification,
+    Tag,
+    Genre,
+  ],
+  // middlewares: [permissions, notifications],
+  plugins: [nexusPrismaPlugin()],
+  experimentalCRUD: true,
+  outputs: {
+    schema: __dirname + '/../schema.graphql',
+    // typegen: __dirname + '/generated/nexus.ts',
+  },
+})
+
+schema = applyMiddleware(schema, notifications)
+
 const server = new GraphQLServer({
-  schema: makeSchema({
-    types: [
-      Query,
-      Mutation,
-      User,
-      Book,
-      Chapter,
-      Comment,
-      Like,
-      Review,
-      Notification,
-      Tag,
-      Genre,
-    ],
-    plugins: [nexusPrismaPlugin()],
-    middlewares: [permissions],
-    experimentalCRUD: true,
-    outputs: {
-      schema: __dirname + '/../schema.graphql',
-      // typegen: __dirname + '/generated/nexus.ts',
-    },
-  }),
+  schema,
+  // middlewares: [permissions],
   context: (request) => {
     return {
       ...request,
@@ -87,6 +94,31 @@ server.express.use(cors())
 server.express.use('/hi', (req, res) => {
   res.status(200).json({ ok: true })
 })
+
+// const aws = require('aws-sdk')
+// aws.config.update({
+//   accessKeyId: process.env.AWS_ACCESS_KEY,
+//   secretAccessKey: process.env.AWS_SECRET,
+//   region: 'us-east-1',
+// })
+
+// const s3 = new aws.S3({
+//   /* ... */
+// })
+// const storage = multerS3({
+//   s3: s3,
+//   bucket: 'calmpaper-bucket',
+//   acl: 'public-read',
+//   metadata: function (req, file, cb) {
+//     cb(null, { fieldName: file.fieldname })
+//   },
+//   filename(req, file, cb) {
+//     cb(null, `${new Date()}-${file.originalname}`)
+//   },
+//   key: function (req, file, cb) {
+//     cb(null, Date.now().toString())
+//   },
+// })
 
 const storage = multer.diskStorage({
   destination: './files',
@@ -122,8 +154,8 @@ server.express.get(
   passport.authenticate('google', { failureRedirect: '/login' }),
   async function (req, res) {
     const { user: profile } = req
-    console.log(profile)
-    console.log(req)
+    // console.log(profile)
+    // console.log(req)
 
     const getStreamToken = getStreamClient.createUserToken(profile.id)
     const user = await prisma.user.upsert({
