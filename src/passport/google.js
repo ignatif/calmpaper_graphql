@@ -21,30 +21,6 @@ passport.use(
       callbackURL: `${process.env.BACKEND_URL}/auth/google/callback`,
     },
     async function (accessToken, refreshToken, profile, done) {
-      // const getStreamToken = getStreamClient.createUserToken(profile.id)
-      // console.log(profile)
-      // const prisma = await new PrismaClient()
-      // const user = await prisma.user.upsert({
-      //   where: {
-      //     googleId: profile.id,
-      //   },
-      //   create: {
-      //     googleId: profile.id,
-      //     fullname: profile.displayName,
-      //     firstname: profile.name.familyName,
-      //     givenname: profile.name.givenName,
-      //     avatar: profile.photos[0].value,
-      //     getStreamToken,
-      //   },
-      //   update: {
-      //     fullname: profile.displayName,
-      //     firstname: profile.name.familyName,
-      //     givenname: profile.name.givenName,
-      //     avatar: profile.photos[0].value,
-      //     getStreamToken,
-      //   },
-      // })
-
       return done(null, {
         ...profile,
         token: accessToken,

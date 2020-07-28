@@ -65,7 +65,7 @@ let schema = makeSchema({
   },
 })
 
-schema = applyMiddleware(schema, notifications)
+schema = applyMiddleware(schema, permissions, notifications)
 
 const server = new GraphQLServer({
   schema,
@@ -77,6 +77,9 @@ const server = new GraphQLServer({
     }
   },
 })
+
+// var Analytics = require('analytics-node');
+// var analytics = new Analytics('aNRRikzxFRcUEi0MVQwIVE8SfWnuTdsR');
 
 // Allowing passport to serialize and deserialize users into sessions
 passport.serializeUser((user, done) => done(null, user))
@@ -145,7 +148,10 @@ server.express.use(express.urlencoded({ extended: false }))
 server.express.get(
   '/auth/google',
   passport.authenticate('google', {
-    scope: ['https://www.googleapis.com/auth/plus.login'],
+    scope: [
+      'https://www.googleapis.com/auth/plus.login',
+      'https://www.googleapis.com/auth/userinfo.email',
+    ],
   }),
 )
 
@@ -154,8 +160,6 @@ server.express.get(
   passport.authenticate('google', { failureRedirect: '/login' }),
   async function (req, res) {
     const { user: profile } = req
-    // console.log(profile)
-    // console.log(req)
 
     const getStreamToken = getStreamClient.createUserToken(profile.id)
     const user = await prisma.user.upsert({
@@ -168,6 +172,7 @@ server.express.get(
         firstname: profile.name.familyName,
         givenname: profile.name.givenName,
         avatar: profile.photos[0].value,
+        email: profile.emails[0].value,
         getStreamToken,
       },
       update: {
@@ -175,6 +180,7 @@ server.express.get(
         firstname: profile.name.familyName,
         givenname: profile.name.givenName,
         avatar: profile.photos[0].value,
+        email: profile.emails[0].value,
         getStreamToken,
       },
     })
