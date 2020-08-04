@@ -11,7 +11,6 @@ const {
   Comment,
   Like,
   Review,
-  Notification,
   Tag,
   Genre,
 } = require('./graphql')
@@ -52,7 +51,6 @@ let schema = makeSchema({
     Comment,
     Like,
     Review,
-    Notification,
     Tag,
     Genre,
   ],
@@ -203,6 +201,5 @@ module.exports = {
   Comment,
   Like,
   Review,
-  Notification,
   Tag,
 }
