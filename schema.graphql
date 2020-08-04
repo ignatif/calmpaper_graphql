@@ -4,7 +4,7 @@
 
 type Book {
   author: User
-  chapters: [Chapter!]!
+  chapters(orderBy: ChapterOrderByInput): [Chapter!]!
   comments(orderBy: CommentOrderByInput, skip: Int): [Comment!]!
   createdAt: DateTime!
   description: String!
@@ -29,7 +29,6 @@ input BookCreateInput {
   image: String
   likes: LikeCreateManyWithoutBookInput
   name: String!
-  Notification: NotificationCreateManyWithoutBookInput
   readers: UserCreateManyWithoutFavoriteBooksInput
   reviews: ReviewCreateManyWithoutBookInput
   tags: TagCreateManyWithoutBooksInput
@@ -71,11 +70,6 @@ input BookCreateOneWithoutLikesInput {
   create: BookCreateWithoutLikesInput
 }
 
-input BookCreateOneWithoutNotificationInput {
-  connect: BookWhereUniqueInput
-  create: BookCreateWithoutNotificationInput
-}
-
 input BookCreateOneWithoutReviewsInput {
   connect: BookWhereUniqueInput
   create: BookCreateWithoutReviewsInput
@@ -90,7 +84,6 @@ input BookCreateWithoutAuthorInput {
   image: String
   likes: LikeCreateManyWithoutBookInput
   name: String!
-  Notification: NotificationCreateManyWithoutBookInput
   readers: UserCreateManyWithoutFavoriteBooksInput
   reviews: ReviewCreateManyWithoutBookInput
   tags: TagCreateManyWithoutBooksInput
@@ -106,7 +99,6 @@ input BookCreateWithoutChaptersInput {
   image: String
   likes: LikeCreateManyWithoutBookInput
   name: String!
-  Notification: NotificationCreateManyWithoutBookInput
   readers: UserCreateManyWithoutFavoriteBooksInput
   reviews: ReviewCreateManyWithoutBookInput
   tags: TagCreateManyWithoutBooksInput
@@ -122,7 +114,6 @@ input BookCreateWithoutCommentsInput {
   image: String
   likes: LikeCreateManyWithoutBookInput
   name: String!
-  Notification: NotificationCreateManyWithoutBookInput
   readers: UserCreateManyWithoutFavoriteBooksInput
   reviews: ReviewCreateManyWithoutBookInput
   tags: TagCreateManyWithoutBooksInput
@@ -138,7 +129,6 @@ input BookCreateWithoutGenresInput {
   image: String
   likes: LikeCreateManyWithoutBookInput
   name: String!
-  Notification: NotificationCreateManyWithoutBookInput
   readers: UserCreateManyWithoutFavoriteBooksInput
   reviews: ReviewCreateManyWithoutBookInput
   tags: TagCreateManyWithoutBooksInput
@@ -153,23 +143,6 @@ input BookCreateWithoutLikesInput {
   description: String!
   genres: GenreCreateManyWithoutBooksInput
   image: String
-  name: String!
-  Notification: NotificationCreateManyWithoutBookInput
-  readers: UserCreateManyWithoutFavoriteBooksInput
-  reviews: ReviewCreateManyWithoutBookInput
-  tags: TagCreateManyWithoutBooksInput
-  views: Int
-}
-
-input BookCreateWithoutNotificationInput {
-  author: UserCreateOneWithoutBooksInput
-  chapters: ChapterCreateManyWithoutBookInput
-  comments: CommentCreateManyWithoutBookInput
-  createdAt: DateTime
-  description: String!
-  genres: GenreCreateManyWithoutBooksInput
-  image: String
-  likes: LikeCreateManyWithoutBookInput
   name: String!
   readers: UserCreateManyWithoutFavoriteBooksInput
   reviews: ReviewCreateManyWithoutBookInput
@@ -187,7 +160,6 @@ input BookCreateWithoutReadersInput {
   image: String
   likes: LikeCreateManyWithoutBookInput
   name: String!
-  Notification: NotificationCreateManyWithoutBookInput
   reviews: ReviewCreateManyWithoutBookInput
   tags: TagCreateManyWithoutBooksInput
   views: Int
@@ -203,7 +175,6 @@ input BookCreateWithoutReviewsInput {
   image: String
   likes: LikeCreateManyWithoutBookInput
   name: String!
-  Notification: NotificationCreateManyWithoutBookInput
   readers: UserCreateManyWithoutFavoriteBooksInput
   tags: TagCreateManyWithoutBooksInput
   views: Int
@@ -219,7 +190,6 @@ input BookCreateWithoutTagsInput {
   image: String
   likes: LikeCreateManyWithoutBookInput
   name: String!
-  Notification: NotificationCreateManyWithoutBookInput
   readers: UserCreateManyWithoutFavoriteBooksInput
   reviews: ReviewCreateManyWithoutBookInput
   views: Int
@@ -254,7 +224,6 @@ input BookScalarWhereInput {
   likes: LikeFilter
   name: StringFilter
   NOT: [BookScalarWhereInput!]
-  Notification: NotificationFilter
   OR: [BookScalarWhereInput!]
   readers: UserFilter
   reviews: ReviewFilter
@@ -269,11 +238,9 @@ input BookUpdateInput {
   createdAt: DateTime
   description: String
   genres: GenreUpdateManyWithoutBooksInput
-  id: Int
   image: String
   likes: LikeUpdateManyWithoutBookInput
   name: String
-  Notification: NotificationUpdateManyWithoutBookInput
   readers: UserUpdateManyWithoutFavoriteBooksInput
   reviews: ReviewUpdateManyWithoutBookInput
   tags: TagUpdateManyWithoutBooksInput
@@ -283,7 +250,6 @@ input BookUpdateInput {
 input BookUpdateManyDataInput {
   createdAt: DateTime
   description: String
-  id: Int
   image: String
   name: String
   views: Int
@@ -369,15 +335,6 @@ input BookUpdateOneWithoutLikesInput {
   upsert: BookUpsertWithoutLikesInput
 }
 
-input BookUpdateOneWithoutNotificationInput {
-  connect: BookWhereUniqueInput
-  create: BookCreateWithoutNotificationInput
-  delete: Boolean
-  disconnect: Boolean
-  update: BookUpdateWithoutNotificationDataInput
-  upsert: BookUpsertWithoutNotificationInput
-}
-
 input BookUpdateOneWithoutReviewsInput {
   connect: BookWhereUniqueInput
   create: BookCreateWithoutReviewsInput
@@ -393,11 +350,9 @@ input BookUpdateWithoutAuthorDataInput {
   createdAt: DateTime
   description: String
   genres: GenreUpdateManyWithoutBooksInput
-  id: Int
   image: String
   likes: LikeUpdateManyWithoutBookInput
   name: String
-  Notification: NotificationUpdateManyWithoutBookInput
   readers: UserUpdateManyWithoutFavoriteBooksInput
   reviews: ReviewUpdateManyWithoutBookInput
   tags: TagUpdateManyWithoutBooksInput
@@ -410,11 +365,9 @@ input BookUpdateWithoutChaptersDataInput {
   createdAt: DateTime
   description: String
   genres: GenreUpdateManyWithoutBooksInput
-  id: Int
   image: String
   likes: LikeUpdateManyWithoutBookInput
   name: String
-  Notification: NotificationUpdateManyWithoutBookInput
   readers: UserUpdateManyWithoutFavoriteBooksInput
   reviews: ReviewUpdateManyWithoutBookInput
   tags: TagUpdateManyWithoutBooksInput
@@ -427,11 +380,9 @@ input BookUpdateWithoutCommentsDataInput {
   createdAt: DateTime
   description: String
   genres: GenreUpdateManyWithoutBooksInput
-  id: Int
   image: String
   likes: LikeUpdateManyWithoutBookInput
   name: String
-  Notification: NotificationUpdateManyWithoutBookInput
   readers: UserUpdateManyWithoutFavoriteBooksInput
   reviews: ReviewUpdateManyWithoutBookInput
   tags: TagUpdateManyWithoutBooksInput
@@ -444,11 +395,9 @@ input BookUpdateWithoutGenresDataInput {
   comments: CommentUpdateManyWithoutBookInput
   createdAt: DateTime
   description: String
-  id: Int
   image: String
   likes: LikeUpdateManyWithoutBookInput
   name: String
-  Notification: NotificationUpdateManyWithoutBookInput
   readers: UserUpdateManyWithoutFavoriteBooksInput
   reviews: ReviewUpdateManyWithoutBookInput
   tags: TagUpdateManyWithoutBooksInput
@@ -462,26 +411,7 @@ input BookUpdateWithoutLikesDataInput {
   createdAt: DateTime
   description: String
   genres: GenreUpdateManyWithoutBooksInput
-  id: Int
   image: String
-  name: String
-  Notification: NotificationUpdateManyWithoutBookInput
-  readers: UserUpdateManyWithoutFavoriteBooksInput
-  reviews: ReviewUpdateManyWithoutBookInput
-  tags: TagUpdateManyWithoutBooksInput
-  views: Int
-}
-
-input BookUpdateWithoutNotificationDataInput {
-  author: UserUpdateOneWithoutBooksInput
-  chapters: ChapterUpdateManyWithoutBookInput
-  comments: CommentUpdateManyWithoutBookInput
-  createdAt: DateTime
-  description: String
-  genres: GenreUpdateManyWithoutBooksInput
-  id: Int
-  image: String
-  likes: LikeUpdateManyWithoutBookInput
   name: String
   readers: UserUpdateManyWithoutFavoriteBooksInput
   reviews: ReviewUpdateManyWithoutBookInput
@@ -496,11 +426,9 @@ input BookUpdateWithoutReadersDataInput {
   createdAt: DateTime
   description: String
   genres: GenreUpdateManyWithoutBooksInput
-  id: Int
   image: String
   likes: LikeUpdateManyWithoutBookInput
   name: String
-  Notification: NotificationUpdateManyWithoutBookInput
   reviews: ReviewUpdateManyWithoutBookInput
   tags: TagUpdateManyWithoutBooksInput
   views: Int
@@ -513,11 +441,9 @@ input BookUpdateWithoutReviewsDataInput {
   createdAt: DateTime
   description: String
   genres: GenreUpdateManyWithoutBooksInput
-  id: Int
   image: String
   likes: LikeUpdateManyWithoutBookInput
   name: String
-  Notification: NotificationUpdateManyWithoutBookInput
   readers: UserUpdateManyWithoutFavoriteBooksInput
   tags: TagUpdateManyWithoutBooksInput
   views: Int
@@ -530,11 +456,9 @@ input BookUpdateWithoutTagsDataInput {
   createdAt: DateTime
   description: String
   genres: GenreUpdateManyWithoutBooksInput
-  id: Int
   image: String
   likes: LikeUpdateManyWithoutBookInput
   name: String
-  Notification: NotificationUpdateManyWithoutBookInput
   readers: UserUpdateManyWithoutFavoriteBooksInput
   reviews: ReviewUpdateManyWithoutBookInput
   views: Int
@@ -573,11 +497,6 @@ input BookUpsertWithoutCommentsInput {
 input BookUpsertWithoutLikesInput {
   create: BookCreateWithoutLikesInput!
   update: BookUpdateWithoutLikesDataInput!
-}
-
-input BookUpsertWithoutNotificationInput {
-  create: BookCreateWithoutNotificationInput!
-  update: BookUpdateWithoutNotificationDataInput!
 }
 
 input BookUpsertWithoutReviewsInput {
@@ -623,7 +542,6 @@ input BookWhereInput {
   likes: LikeFilter
   name: StringFilter
   NOT: [BookWhereInput!]
-  Notification: NotificationFilter
   OR: [BookWhereInput!]
   readers: UserFilter
   reviews: ReviewFilter
@@ -662,7 +580,6 @@ input ChapterCreateInput {
   createdAt: DateTime
   image: String
   likes: LikeCreateManyWithoutChapterInput
-  Notification: NotificationCreateManyWithoutChapterInput
   reviews: ReviewCreateManyWithoutChapterInput
   title: String
   views: Int
@@ -688,11 +605,6 @@ input ChapterCreateOneWithoutLikesInput {
   create: ChapterCreateWithoutLikesInput
 }
 
-input ChapterCreateOneWithoutNotificationInput {
-  connect: ChapterWhereUniqueInput
-  create: ChapterCreateWithoutNotificationInput
-}
-
 input ChapterCreateOneWithoutReviewsInput {
   connect: ChapterWhereUniqueInput
   create: ChapterCreateWithoutReviewsInput
@@ -705,7 +617,6 @@ input ChapterCreateWithoutAuthorInput {
   createdAt: DateTime
   image: String
   likes: LikeCreateManyWithoutChapterInput
-  Notification: NotificationCreateManyWithoutChapterInput
   reviews: ReviewCreateManyWithoutChapterInput
   title: String
   views: Int
@@ -718,7 +629,6 @@ input ChapterCreateWithoutBookInput {
   createdAt: DateTime
   image: String
   likes: LikeCreateManyWithoutChapterInput
-  Notification: NotificationCreateManyWithoutChapterInput
   reviews: ReviewCreateManyWithoutChapterInput
   title: String
   views: Int
@@ -731,7 +641,6 @@ input ChapterCreateWithoutCommentsInput {
   createdAt: DateTime
   image: String
   likes: LikeCreateManyWithoutChapterInput
-  Notification: NotificationCreateManyWithoutChapterInput
   reviews: ReviewCreateManyWithoutChapterInput
   title: String
   views: Int
@@ -744,20 +653,6 @@ input ChapterCreateWithoutLikesInput {
   content: String!
   createdAt: DateTime
   image: String
-  Notification: NotificationCreateManyWithoutChapterInput
-  reviews: ReviewCreateManyWithoutChapterInput
-  title: String
-  views: Int
-}
-
-input ChapterCreateWithoutNotificationInput {
-  author: UserCreateOneWithoutChaptersInput
-  book: BookCreateOneWithoutChaptersInput
-  comments: CommentCreateManyWithoutChapterInput
-  content: String!
-  createdAt: DateTime
-  image: String
-  likes: LikeCreateManyWithoutChapterInput
   reviews: ReviewCreateManyWithoutChapterInput
   title: String
   views: Int
@@ -771,7 +666,6 @@ input ChapterCreateWithoutReviewsInput {
   createdAt: DateTime
   image: String
   likes: LikeCreateManyWithoutChapterInput
-  Notification: NotificationCreateManyWithoutChapterInput
   title: String
   views: Int
 }
@@ -804,7 +698,6 @@ input ChapterScalarWhereInput {
   image: NullableStringFilter
   likes: LikeFilter
   NOT: [ChapterScalarWhereInput!]
-  Notification: NotificationFilter
   OR: [ChapterScalarWhereInput!]
   reviews: ReviewFilter
   title: NullableStringFilter
@@ -817,10 +710,8 @@ input ChapterUpdateInput {
   comments: CommentUpdateManyWithoutChapterInput
   content: String
   createdAt: DateTime
-  id: Int
   image: String
   likes: LikeUpdateManyWithoutChapterInput
-  Notification: NotificationUpdateManyWithoutChapterInput
   reviews: ReviewUpdateManyWithoutChapterInput
   title: String
   views: Int
@@ -829,7 +720,6 @@ input ChapterUpdateInput {
 input ChapterUpdateManyDataInput {
   content: String
   createdAt: DateTime
-  id: Int
   image: String
   title: String
   views: Int
@@ -882,15 +772,6 @@ input ChapterUpdateOneWithoutLikesInput {
   upsert: ChapterUpsertWithoutLikesInput
 }
 
-input ChapterUpdateOneWithoutNotificationInput {
-  connect: ChapterWhereUniqueInput
-  create: ChapterCreateWithoutNotificationInput
-  delete: Boolean
-  disconnect: Boolean
-  update: ChapterUpdateWithoutNotificationDataInput
-  upsert: ChapterUpsertWithoutNotificationInput
-}
-
 input ChapterUpdateOneWithoutReviewsInput {
   connect: ChapterWhereUniqueInput
   create: ChapterCreateWithoutReviewsInput
@@ -905,10 +786,8 @@ input ChapterUpdateWithoutAuthorDataInput {
   comments: CommentUpdateManyWithoutChapterInput
   content: String
   createdAt: DateTime
-  id: Int
   image: String
   likes: LikeUpdateManyWithoutChapterInput
-  Notification: NotificationUpdateManyWithoutChapterInput
   reviews: ReviewUpdateManyWithoutChapterInput
   title: String
   views: Int
@@ -919,10 +798,8 @@ input ChapterUpdateWithoutBookDataInput {
   comments: CommentUpdateManyWithoutChapterInput
   content: String
   createdAt: DateTime
-  id: Int
   image: String
   likes: LikeUpdateManyWithoutChapterInput
-  Notification: NotificationUpdateManyWithoutChapterInput
   reviews: ReviewUpdateManyWithoutChapterInput
   title: String
   views: Int
@@ -933,10 +810,8 @@ input ChapterUpdateWithoutCommentsDataInput {
   book: BookUpdateOneWithoutChaptersInput
   content: String
   createdAt: DateTime
-  id: Int
   image: String
   likes: LikeUpdateManyWithoutChapterInput
-  Notification: NotificationUpdateManyWithoutChapterInput
   reviews: ReviewUpdateManyWithoutChapterInput
   title: String
   views: Int
@@ -948,23 +823,7 @@ input ChapterUpdateWithoutLikesDataInput {
   comments: CommentUpdateManyWithoutChapterInput
   content: String
   createdAt: DateTime
-  id: Int
   image: String
-  Notification: NotificationUpdateManyWithoutChapterInput
-  reviews: ReviewUpdateManyWithoutChapterInput
-  title: String
-  views: Int
-}
-
-input ChapterUpdateWithoutNotificationDataInput {
-  author: UserUpdateOneWithoutChaptersInput
-  book: BookUpdateOneWithoutChaptersInput
-  comments: CommentUpdateManyWithoutChapterInput
-  content: String
-  createdAt: DateTime
-  id: Int
-  image: String
-  likes: LikeUpdateManyWithoutChapterInput
   reviews: ReviewUpdateManyWithoutChapterInput
   title: String
   views: Int
@@ -976,10 +835,8 @@ input ChapterUpdateWithoutReviewsDataInput {
   comments: CommentUpdateManyWithoutChapterInput
   content: String
   createdAt: DateTime
-  id: Int
   image: String
   likes: LikeUpdateManyWithoutChapterInput
-  Notification: NotificationUpdateManyWithoutChapterInput
   title: String
   views: Int
 }
@@ -1002,11 +859,6 @@ input ChapterUpsertWithoutCommentsInput {
 input ChapterUpsertWithoutLikesInput {
   create: ChapterCreateWithoutLikesInput!
   update: ChapterUpdateWithoutLikesDataInput!
-}
-
-input ChapterUpsertWithoutNotificationInput {
-  create: ChapterCreateWithoutNotificationInput!
-  update: ChapterUpdateWithoutNotificationDataInput!
 }
 
 input ChapterUpsertWithoutReviewsInput {
@@ -1039,7 +891,6 @@ input ChapterWhereInput {
   image: NullableStringFilter
   likes: LikeFilter
   NOT: [ChapterWhereInput!]
-  Notification: NotificationFilter
   OR: [ChapterWhereInput!]
   reviews: ReviewFilter
   title: NullableStringFilter
@@ -1071,7 +922,6 @@ input CommentCreateInput {
   createdAt: DateTime
   isChild: Boolean
   likes: LikeCreateManyWithoutCommentInput
-  Notification: NotificationCreateManyWithoutReviewInput
   parent: CommentCreateOneWithoutRepliesInput
   replies: CommentCreateManyWithoutParentInput
 }
@@ -1101,11 +951,6 @@ input CommentCreateOneWithoutLikesInput {
   create: CommentCreateWithoutLikesInput
 }
 
-input CommentCreateOneWithoutNotificationInput {
-  connect: CommentWhereUniqueInput
-  create: CommentCreateWithoutNotificationInput
-}
-
 input CommentCreateOneWithoutRepliesInput {
   connect: CommentWhereUniqueInput
   create: CommentCreateWithoutRepliesInput
@@ -1118,7 +963,6 @@ input CommentCreateWithoutAuthorInput {
   createdAt: DateTime
   isChild: Boolean
   likes: LikeCreateManyWithoutCommentInput
-  Notification: NotificationCreateManyWithoutReviewInput
   parent: CommentCreateOneWithoutRepliesInput
   replies: CommentCreateManyWithoutParentInput
 }
@@ -1130,7 +974,6 @@ input CommentCreateWithoutBookInput {
   createdAt: DateTime
   isChild: Boolean
   likes: LikeCreateManyWithoutCommentInput
-  Notification: NotificationCreateManyWithoutReviewInput
   parent: CommentCreateOneWithoutRepliesInput
   replies: CommentCreateManyWithoutParentInput
 }
@@ -1142,7 +985,6 @@ input CommentCreateWithoutChapterInput {
   createdAt: DateTime
   isChild: Boolean
   likes: LikeCreateManyWithoutCommentInput
-  Notification: NotificationCreateManyWithoutReviewInput
   parent: CommentCreateOneWithoutRepliesInput
   replies: CommentCreateManyWithoutParentInput
 }
@@ -1154,19 +996,6 @@ input CommentCreateWithoutLikesInput {
   chapter: ChapterCreateOneWithoutCommentsInput
   createdAt: DateTime
   isChild: Boolean
-  Notification: NotificationCreateManyWithoutReviewInput
-  parent: CommentCreateOneWithoutRepliesInput
-  replies: CommentCreateManyWithoutParentInput
-}
-
-input CommentCreateWithoutNotificationInput {
-  author: UserCreateOneWithoutCommentsInput
-  body: String!
-  book: BookCreateOneWithoutCommentsInput
-  chapter: ChapterCreateOneWithoutCommentsInput
-  createdAt: DateTime
-  isChild: Boolean
-  likes: LikeCreateManyWithoutCommentInput
   parent: CommentCreateOneWithoutRepliesInput
   replies: CommentCreateManyWithoutParentInput
 }
@@ -1179,7 +1008,6 @@ input CommentCreateWithoutParentInput {
   createdAt: DateTime
   isChild: Boolean
   likes: LikeCreateManyWithoutCommentInput
-  Notification: NotificationCreateManyWithoutReviewInput
   replies: CommentCreateManyWithoutParentInput
 }
 
@@ -1191,7 +1019,6 @@ input CommentCreateWithoutRepliesInput {
   createdAt: DateTime
   isChild: Boolean
   likes: LikeCreateManyWithoutCommentInput
-  Notification: NotificationCreateManyWithoutReviewInput
   parent: CommentCreateOneWithoutRepliesInput
 }
 
@@ -1223,7 +1050,6 @@ input CommentScalarWhereInput {
   isChild: BooleanFilter
   likes: LikeFilter
   NOT: [CommentScalarWhereInput!]
-  Notification: NotificationFilter
   OR: [CommentScalarWhereInput!]
   parentId: NullableIntFilter
   replies: CommentFilter
@@ -1235,10 +1061,8 @@ input CommentUpdateInput {
   book: BookUpdateOneWithoutCommentsInput
   chapter: ChapterUpdateOneWithoutCommentsInput
   createdAt: DateTime
-  id: Int
   isChild: Boolean
   likes: LikeUpdateManyWithoutCommentInput
-  Notification: NotificationUpdateManyWithoutReviewInput
   parent: CommentUpdateOneWithoutRepliesInput
   replies: CommentUpdateManyWithoutParentInput
 }
@@ -1246,7 +1070,6 @@ input CommentUpdateInput {
 input CommentUpdateManyDataInput {
   body: String
   createdAt: DateTime
-  id: Int
   isChild: Boolean
 }
 
@@ -1312,15 +1135,6 @@ input CommentUpdateOneWithoutLikesInput {
   upsert: CommentUpsertWithoutLikesInput
 }
 
-input CommentUpdateOneWithoutNotificationInput {
-  connect: CommentWhereUniqueInput
-  create: CommentCreateWithoutNotificationInput
-  delete: Boolean
-  disconnect: Boolean
-  update: CommentUpdateWithoutNotificationDataInput
-  upsert: CommentUpsertWithoutNotificationInput
-}
-
 input CommentUpdateOneWithoutRepliesInput {
   connect: CommentWhereUniqueInput
   create: CommentCreateWithoutRepliesInput
@@ -1335,10 +1149,8 @@ input CommentUpdateWithoutAuthorDataInput {
   book: BookUpdateOneWithoutCommentsInput
   chapter: ChapterUpdateOneWithoutCommentsInput
   createdAt: DateTime
-  id: Int
   isChild: Boolean
   likes: LikeUpdateManyWithoutCommentInput
-  Notification: NotificationUpdateManyWithoutReviewInput
   parent: CommentUpdateOneWithoutRepliesInput
   replies: CommentUpdateManyWithoutParentInput
 }
@@ -1348,10 +1160,8 @@ input CommentUpdateWithoutBookDataInput {
   body: String
   chapter: ChapterUpdateOneWithoutCommentsInput
   createdAt: DateTime
-  id: Int
   isChild: Boolean
   likes: LikeUpdateManyWithoutCommentInput
-  Notification: NotificationUpdateManyWithoutReviewInput
   parent: CommentUpdateOneWithoutRepliesInput
   replies: CommentUpdateManyWithoutParentInput
 }
@@ -1361,10 +1171,8 @@ input CommentUpdateWithoutChapterDataInput {
   body: String
   book: BookUpdateOneWithoutCommentsInput
   createdAt: DateTime
-  id: Int
   isChild: Boolean
   likes: LikeUpdateManyWithoutCommentInput
-  Notification: NotificationUpdateManyWithoutReviewInput
   parent: CommentUpdateOneWithoutRepliesInput
   replies: CommentUpdateManyWithoutParentInput
 }
@@ -1375,22 +1183,7 @@ input CommentUpdateWithoutLikesDataInput {
   book: BookUpdateOneWithoutCommentsInput
   chapter: ChapterUpdateOneWithoutCommentsInput
   createdAt: DateTime
-  id: Int
   isChild: Boolean
-  Notification: NotificationUpdateManyWithoutReviewInput
-  parent: CommentUpdateOneWithoutRepliesInput
-  replies: CommentUpdateManyWithoutParentInput
-}
-
-input CommentUpdateWithoutNotificationDataInput {
-  author: UserUpdateOneWithoutCommentsInput
-  body: String
-  book: BookUpdateOneWithoutCommentsInput
-  chapter: ChapterUpdateOneWithoutCommentsInput
-  createdAt: DateTime
-  id: Int
-  isChild: Boolean
-  likes: LikeUpdateManyWithoutCommentInput
   parent: CommentUpdateOneWithoutRepliesInput
   replies: CommentUpdateManyWithoutParentInput
 }
@@ -1401,10 +1194,8 @@ input CommentUpdateWithoutParentDataInput {
   book: BookUpdateOneWithoutCommentsInput
   chapter: ChapterUpdateOneWithoutCommentsInput
   createdAt: DateTime
-  id: Int
   isChild: Boolean
   likes: LikeUpdateManyWithoutCommentInput
-  Notification: NotificationUpdateManyWithoutReviewInput
   replies: CommentUpdateManyWithoutParentInput
 }
 
@@ -1414,10 +1205,8 @@ input CommentUpdateWithoutRepliesDataInput {
   book: BookUpdateOneWithoutCommentsInput
   chapter: ChapterUpdateOneWithoutCommentsInput
   createdAt: DateTime
-  id: Int
   isChild: Boolean
   likes: LikeUpdateManyWithoutCommentInput
-  Notification: NotificationUpdateManyWithoutReviewInput
   parent: CommentUpdateOneWithoutRepliesInput
 }
 
@@ -1444,11 +1233,6 @@ input CommentUpdateWithWhereUniqueWithoutParentInput {
 input CommentUpsertWithoutLikesInput {
   create: CommentCreateWithoutLikesInput!
   update: CommentUpdateWithoutLikesDataInput!
-}
-
-input CommentUpsertWithoutNotificationInput {
-  create: CommentCreateWithoutNotificationInput!
-  update: CommentUpdateWithoutNotificationDataInput!
 }
 
 input CommentUpsertWithoutRepliesInput {
@@ -1494,7 +1278,6 @@ input CommentWhereInput {
   isChild: BooleanFilter
   likes: LikeFilter
   NOT: [CommentWhereInput!]
-  Notification: NotificationFilter
   OR: [CommentWhereInput!]
   parent: CommentWhereInput
   parentId: NullableIntFilter
@@ -1555,12 +1338,10 @@ input GenreScalarWhereInput {
 
 input GenreUpdateInput {
   books: BookUpdateManyWithoutGenresInput
-  id: Int
   label: String
 }
 
 input GenreUpdateManyDataInput {
-  id: Int
   label: String
 }
 
@@ -1582,7 +1363,6 @@ input GenreUpdateManyWithWhereNestedInput {
 }
 
 input GenreUpdateWithoutBooksDataInput {
-  id: Int
   label: String
 }
 
@@ -1730,13 +1510,11 @@ input LikeUpdateInput {
   chapter: ChapterUpdateOneWithoutLikesInput
   comment: CommentUpdateOneWithoutLikesInput
   createdAt: DateTime
-  id: Int
   review: ReviewUpdateOneWithoutLikesInput
 }
 
 input LikeUpdateManyDataInput {
   createdAt: DateTime
-  id: Int
 }
 
 input LikeUpdateManyWithoutAuthorInput {
@@ -1809,7 +1587,6 @@ input LikeUpdateWithoutAuthorDataInput {
   chapter: ChapterUpdateOneWithoutLikesInput
   comment: CommentUpdateOneWithoutLikesInput
   createdAt: DateTime
-  id: Int
   review: ReviewUpdateOneWithoutLikesInput
 }
 
@@ -1818,7 +1595,6 @@ input LikeUpdateWithoutBookDataInput {
   chapter: ChapterUpdateOneWithoutLikesInput
   comment: CommentUpdateOneWithoutLikesInput
   createdAt: DateTime
-  id: Int
   review: ReviewUpdateOneWithoutLikesInput
 }
 
@@ -1827,7 +1603,6 @@ input LikeUpdateWithoutChapterDataInput {
   book: BookUpdateOneWithoutLikesInput
   comment: CommentUpdateOneWithoutLikesInput
   createdAt: DateTime
-  id: Int
   review: ReviewUpdateOneWithoutLikesInput
 }
 
@@ -1836,7 +1611,6 @@ input LikeUpdateWithoutCommentDataInput {
   book: BookUpdateOneWithoutLikesInput
   chapter: ChapterUpdateOneWithoutLikesInput
   createdAt: DateTime
-  id: Int
   review: ReviewUpdateOneWithoutLikesInput
 }
 
@@ -1846,7 +1620,6 @@ input LikeUpdateWithoutReviewDataInput {
   chapter: ChapterUpdateOneWithoutLikesInput
   comment: CommentUpdateOneWithoutLikesInput
   createdAt: DateTime
-  id: Int
 }
 
 input LikeUpdateWithWhereUniqueWithoutAuthorInput {
@@ -1928,8 +1701,6 @@ input LikeWhereUniqueInput {
 
 type Mutation {
   addBookToFavorites(bookId: Int, userId: Int): User!
-  createBook(description: String, image: String, name: String, userId: Int): Book!
-  createChapter(bookId: Int, content: String, title: String, userId: Int): Chapter!
   createOneBook(data: BookCreateInput!): Book!
   createOneChapter(data: ChapterCreateInput!): Chapter!
   createOneComment(data: CommentCreateInput!): Comment!
@@ -1938,6 +1709,7 @@ type Mutation {
   createOneReview(data: ReviewCreateInput!): Review!
   createOneTag(data: TagCreateInput!): Tag!
   createOneUser(data: UserCreateInput!): User!
+  createReview(authorId: Int, bookId: Int, message: String, stars: Int): Review!
   deleteOneBook(where: BookWhereUniqueInput!): Book
   deleteOneChapter(where: ChapterWhereUniqueInput!): Chapter
   deleteOneComment(where: CommentWhereUniqueInput!): Comment
@@ -1964,223 +1736,6 @@ type Mutation {
   updateOneTag(data: TagUpdateInput!, where: TagWhereUniqueInput!): Tag
   updateOneUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   upsertOneReview(create: ReviewCreateInput!, update: ReviewUpdateInput!, where: ReviewWhereUniqueInput!): Review!
-}
-
-type Notification {
-  author: User
-  book: Book
-  chapter: Chapter
-  id: Int!
-  review: Comment
-}
-
-input NotificationCreateManyWithoutAuthorInput {
-  connect: [NotificationWhereUniqueInput!]
-  create: [NotificationCreateWithoutAuthorInput!]
-}
-
-input NotificationCreateManyWithoutBookInput {
-  connect: [NotificationWhereUniqueInput!]
-  create: [NotificationCreateWithoutBookInput!]
-}
-
-input NotificationCreateManyWithoutChapterInput {
-  connect: [NotificationWhereUniqueInput!]
-  create: [NotificationCreateWithoutChapterInput!]
-}
-
-input NotificationCreateManyWithoutReviewInput {
-  connect: [NotificationWhereUniqueInput!]
-  create: [NotificationCreateWithoutReviewInput!]
-}
-
-input NotificationCreateWithoutAuthorInput {
-  book: BookCreateOneWithoutNotificationInput
-  chapter: ChapterCreateOneWithoutNotificationInput
-  review: CommentCreateOneWithoutNotificationInput
-}
-
-input NotificationCreateWithoutBookInput {
-  author: UserCreateOneWithoutNotificationInput
-  chapter: ChapterCreateOneWithoutNotificationInput
-  review: CommentCreateOneWithoutNotificationInput
-}
-
-input NotificationCreateWithoutChapterInput {
-  author: UserCreateOneWithoutNotificationInput
-  book: BookCreateOneWithoutNotificationInput
-  review: CommentCreateOneWithoutNotificationInput
-}
-
-input NotificationCreateWithoutReviewInput {
-  author: UserCreateOneWithoutNotificationInput
-  book: BookCreateOneWithoutNotificationInput
-  chapter: ChapterCreateOneWithoutNotificationInput
-}
-
-input NotificationFilter {
-  every: NotificationWhereInput
-  none: NotificationWhereInput
-  some: NotificationWhereInput
-}
-
-input NotificationScalarWhereInput {
-  AND: [NotificationScalarWhereInput!]
-  authorId: NullableIntFilter
-  bookId: NullableIntFilter
-  chapterId: NullableIntFilter
-  id: IntFilter
-  NOT: [NotificationScalarWhereInput!]
-  OR: [NotificationScalarWhereInput!]
-  reviewId: NullableIntFilter
-}
-
-input NotificationUpdateManyDataInput {
-  id: Int
-}
-
-input NotificationUpdateManyWithoutAuthorInput {
-  connect: [NotificationWhereUniqueInput!]
-  create: [NotificationCreateWithoutAuthorInput!]
-  delete: [NotificationWhereUniqueInput!]
-  deleteMany: [NotificationScalarWhereInput!]
-  disconnect: [NotificationWhereUniqueInput!]
-  set: [NotificationWhereUniqueInput!]
-  update: [NotificationUpdateWithWhereUniqueWithoutAuthorInput!]
-  updateMany: [NotificationUpdateManyWithWhereNestedInput!]
-  upsert: [NotificationUpsertWithWhereUniqueWithoutAuthorInput!]
-}
-
-input NotificationUpdateManyWithoutBookInput {
-  connect: [NotificationWhereUniqueInput!]
-  create: [NotificationCreateWithoutBookInput!]
-  delete: [NotificationWhereUniqueInput!]
-  deleteMany: [NotificationScalarWhereInput!]
-  disconnect: [NotificationWhereUniqueInput!]
-  set: [NotificationWhereUniqueInput!]
-  update: [NotificationUpdateWithWhereUniqueWithoutBookInput!]
-  updateMany: [NotificationUpdateManyWithWhereNestedInput!]
-  upsert: [NotificationUpsertWithWhereUniqueWithoutBookInput!]
-}
-
-input NotificationUpdateManyWithoutChapterInput {
-  connect: [NotificationWhereUniqueInput!]
-  create: [NotificationCreateWithoutChapterInput!]
-  delete: [NotificationWhereUniqueInput!]
-  deleteMany: [NotificationScalarWhereInput!]
-  disconnect: [NotificationWhereUniqueInput!]
-  set: [NotificationWhereUniqueInput!]
-  update: [NotificationUpdateWithWhereUniqueWithoutChapterInput!]
-  updateMany: [NotificationUpdateManyWithWhereNestedInput!]
-  upsert: [NotificationUpsertWithWhereUniqueWithoutChapterInput!]
-}
-
-input NotificationUpdateManyWithoutReviewInput {
-  connect: [NotificationWhereUniqueInput!]
-  create: [NotificationCreateWithoutReviewInput!]
-  delete: [NotificationWhereUniqueInput!]
-  deleteMany: [NotificationScalarWhereInput!]
-  disconnect: [NotificationWhereUniqueInput!]
-  set: [NotificationWhereUniqueInput!]
-  update: [NotificationUpdateWithWhereUniqueWithoutReviewInput!]
-  updateMany: [NotificationUpdateManyWithWhereNestedInput!]
-  upsert: [NotificationUpsertWithWhereUniqueWithoutReviewInput!]
-}
-
-input NotificationUpdateManyWithWhereNestedInput {
-  data: NotificationUpdateManyDataInput!
-  where: NotificationScalarWhereInput!
-}
-
-input NotificationUpdateWithoutAuthorDataInput {
-  book: BookUpdateOneWithoutNotificationInput
-  chapter: ChapterUpdateOneWithoutNotificationInput
-  id: Int
-  review: CommentUpdateOneWithoutNotificationInput
-}
-
-input NotificationUpdateWithoutBookDataInput {
-  author: UserUpdateOneWithoutNotificationInput
-  chapter: ChapterUpdateOneWithoutNotificationInput
-  id: Int
-  review: CommentUpdateOneWithoutNotificationInput
-}
-
-input NotificationUpdateWithoutChapterDataInput {
-  author: UserUpdateOneWithoutNotificationInput
-  book: BookUpdateOneWithoutNotificationInput
-  id: Int
-  review: CommentUpdateOneWithoutNotificationInput
-}
-
-input NotificationUpdateWithoutReviewDataInput {
-  author: UserUpdateOneWithoutNotificationInput
-  book: BookUpdateOneWithoutNotificationInput
-  chapter: ChapterUpdateOneWithoutNotificationInput
-  id: Int
-}
-
-input NotificationUpdateWithWhereUniqueWithoutAuthorInput {
-  data: NotificationUpdateWithoutAuthorDataInput!
-  where: NotificationWhereUniqueInput!
-}
-
-input NotificationUpdateWithWhereUniqueWithoutBookInput {
-  data: NotificationUpdateWithoutBookDataInput!
-  where: NotificationWhereUniqueInput!
-}
-
-input NotificationUpdateWithWhereUniqueWithoutChapterInput {
-  data: NotificationUpdateWithoutChapterDataInput!
-  where: NotificationWhereUniqueInput!
-}
-
-input NotificationUpdateWithWhereUniqueWithoutReviewInput {
-  data: NotificationUpdateWithoutReviewDataInput!
-  where: NotificationWhereUniqueInput!
-}
-
-input NotificationUpsertWithWhereUniqueWithoutAuthorInput {
-  create: NotificationCreateWithoutAuthorInput!
-  update: NotificationUpdateWithoutAuthorDataInput!
-  where: NotificationWhereUniqueInput!
-}
-
-input NotificationUpsertWithWhereUniqueWithoutBookInput {
-  create: NotificationCreateWithoutBookInput!
-  update: NotificationUpdateWithoutBookDataInput!
-  where: NotificationWhereUniqueInput!
-}
-
-input NotificationUpsertWithWhereUniqueWithoutChapterInput {
-  create: NotificationCreateWithoutChapterInput!
-  update: NotificationUpdateWithoutChapterDataInput!
-  where: NotificationWhereUniqueInput!
-}
-
-input NotificationUpsertWithWhereUniqueWithoutReviewInput {
-  create: NotificationCreateWithoutReviewInput!
-  update: NotificationUpdateWithoutReviewDataInput!
-  where: NotificationWhereUniqueInput!
-}
-
-input NotificationWhereInput {
-  AND: [NotificationWhereInput!]
-  author: UserWhereInput
-  authorId: NullableIntFilter
-  book: BookWhereInput
-  bookId: NullableIntFilter
-  chapter: ChapterWhereInput
-  chapterId: NullableIntFilter
-  id: IntFilter
-  NOT: [NotificationWhereInput!]
-  OR: [NotificationWhereInput!]
-  review: CommentWhereInput
-  reviewId: NullableIntFilter
-}
-
-input NotificationWhereUniqueInput {
-  id: Int
 }
 
 input NullableIntFilter {
@@ -2224,8 +1779,6 @@ type Query {
   genres(skip: Int): [Genre!]!
   likes(skip: Int): [Like!]!
   me: User
-  notification(where: NotificationWhereUniqueInput!): Notification
-  notifications(skip: Int): [Notification!]!
   review(where: ReviewWhereUniqueInput!): Review
   reviews(skip: Int): [Review!]!
   tags(skip: Int): [Tag!]!
@@ -2335,7 +1888,6 @@ input ReviewUpdateInput {
   book: BookUpdateOneWithoutReviewsInput
   chapter: ChapterUpdateOneWithoutReviewsInput
   createdAt: DateTime
-  id: Int
   likes: LikeUpdateManyWithoutReviewInput
   message: String
   stars: Int
@@ -2343,7 +1895,6 @@ input ReviewUpdateInput {
 
 input ReviewUpdateManyDataInput {
   createdAt: DateTime
-  id: Int
   message: String
   stars: Int
 }
@@ -2402,7 +1953,6 @@ input ReviewUpdateWithoutAuthorDataInput {
   book: BookUpdateOneWithoutReviewsInput
   chapter: ChapterUpdateOneWithoutReviewsInput
   createdAt: DateTime
-  id: Int
   likes: LikeUpdateManyWithoutReviewInput
   message: String
   stars: Int
@@ -2412,7 +1962,6 @@ input ReviewUpdateWithoutBookDataInput {
   author: UserUpdateOneWithoutReviewsInput
   chapter: ChapterUpdateOneWithoutReviewsInput
   createdAt: DateTime
-  id: Int
   likes: LikeUpdateManyWithoutReviewInput
   message: String
   stars: Int
@@ -2422,7 +1971,6 @@ input ReviewUpdateWithoutChapterDataInput {
   author: UserUpdateOneWithoutReviewsInput
   book: BookUpdateOneWithoutReviewsInput
   createdAt: DateTime
-  id: Int
   likes: LikeUpdateManyWithoutReviewInput
   message: String
   stars: Int
@@ -2433,7 +1981,6 @@ input ReviewUpdateWithoutLikesDataInput {
   book: BookUpdateOneWithoutReviewsInput
   chapter: ChapterUpdateOneWithoutReviewsInput
   createdAt: DateTime
-  id: Int
   message: String
   stars: Int
 }
@@ -2548,12 +2095,10 @@ input TagScalarWhereInput {
 
 input TagUpdateInput {
   books: BookUpdateManyWithoutTagsInput
-  id: Int
   label: String
 }
 
 input TagUpdateManyDataInput {
-  id: Int
   label: String
 }
 
@@ -2575,7 +2120,6 @@ input TagUpdateManyWithWhereNestedInput {
 }
 
 input TagUpdateWithoutBooksDataInput {
-  id: Int
   label: String
 }
 
@@ -2638,7 +2182,6 @@ input UserCreateInput {
   givenname: String
   googleId: String
   likes: LikeCreateManyWithoutAuthorInput
-  Notification: NotificationCreateManyWithoutAuthorInput
   reviews: ReviewCreateManyWithoutAuthorInput
   username: String
 }
@@ -2678,11 +2221,6 @@ input UserCreateOneWithoutLikesInput {
   create: UserCreateWithoutLikesInput
 }
 
-input UserCreateOneWithoutNotificationInput {
-  connect: UserWhereUniqueInput
-  create: UserCreateWithoutNotificationInput
-}
-
 input UserCreateOneWithoutReviewsInput {
   connect: UserWhereUniqueInput
   create: UserCreateWithoutReviewsInput
@@ -2702,7 +2240,6 @@ input UserCreateWithoutBooksInput {
   givenname: String
   googleId: String
   likes: LikeCreateManyWithoutAuthorInput
-  Notification: NotificationCreateManyWithoutAuthorInput
   reviews: ReviewCreateManyWithoutAuthorInput
   username: String
 }
@@ -2721,7 +2258,6 @@ input UserCreateWithoutChaptersInput {
   givenname: String
   googleId: String
   likes: LikeCreateManyWithoutAuthorInput
-  Notification: NotificationCreateManyWithoutAuthorInput
   reviews: ReviewCreateManyWithoutAuthorInput
   username: String
 }
@@ -2740,7 +2276,6 @@ input UserCreateWithoutCommentsInput {
   givenname: String
   googleId: String
   likes: LikeCreateManyWithoutAuthorInput
-  Notification: NotificationCreateManyWithoutAuthorInput
   reviews: ReviewCreateManyWithoutAuthorInput
   username: String
 }
@@ -2759,7 +2294,6 @@ input UserCreateWithoutFavoriteBooksInput {
   givenname: String
   googleId: String
   likes: LikeCreateManyWithoutAuthorInput
-  Notification: NotificationCreateManyWithoutAuthorInput
   reviews: ReviewCreateManyWithoutAuthorInput
   username: String
 }
@@ -2778,7 +2312,6 @@ input UserCreateWithoutFollowersInput {
   givenname: String
   googleId: String
   likes: LikeCreateManyWithoutAuthorInput
-  Notification: NotificationCreateManyWithoutAuthorInput
   reviews: ReviewCreateManyWithoutAuthorInput
   username: String
 }
@@ -2797,7 +2330,6 @@ input UserCreateWithoutFollowingInput {
   givenname: String
   googleId: String
   likes: LikeCreateManyWithoutAuthorInput
-  Notification: NotificationCreateManyWithoutAuthorInput
   reviews: ReviewCreateManyWithoutAuthorInput
   username: String
 }
@@ -2816,26 +2348,6 @@ input UserCreateWithoutLikesInput {
   getStreamToken: String
   givenname: String
   googleId: String
-  Notification: NotificationCreateManyWithoutAuthorInput
-  reviews: ReviewCreateManyWithoutAuthorInput
-  username: String
-}
-
-input UserCreateWithoutNotificationInput {
-  avatar: String
-  books: BookCreateManyWithoutAuthorInput
-  chapters: ChapterCreateManyWithoutAuthorInput
-  comments: CommentCreateManyWithoutAuthorInput
-  email: String
-  favoriteBooks: BookCreateManyWithoutReadersInput
-  firstname: String
-  followers: UserCreateManyWithoutFollowingInput
-  following: UserCreateManyWithoutFollowersInput
-  fullname: String
-  getStreamToken: String
-  givenname: String
-  googleId: String
-  likes: LikeCreateManyWithoutAuthorInput
   reviews: ReviewCreateManyWithoutAuthorInput
   username: String
 }
@@ -2855,7 +2367,6 @@ input UserCreateWithoutReviewsInput {
   givenname: String
   googleId: String
   likes: LikeCreateManyWithoutAuthorInput
-  Notification: NotificationCreateManyWithoutAuthorInput
   username: String
 }
 
@@ -2883,7 +2394,6 @@ input UserScalarWhereInput {
   id: IntFilter
   likes: LikeFilter
   NOT: [UserScalarWhereInput!]
-  Notification: NotificationFilter
   OR: [UserScalarWhereInput!]
   reviews: ReviewFilter
   username: NullableStringFilter
@@ -2903,9 +2413,7 @@ input UserUpdateInput {
   getStreamToken: String
   givenname: String
   googleId: String
-  id: Int
   likes: LikeUpdateManyWithoutAuthorInput
-  Notification: NotificationUpdateManyWithoutAuthorInput
   reviews: ReviewUpdateManyWithoutAuthorInput
   username: String
 }
@@ -2918,7 +2426,6 @@ input UserUpdateManyDataInput {
   getStreamToken: String
   givenname: String
   googleId: String
-  id: Int
   username: String
 }
 
@@ -2999,15 +2506,6 @@ input UserUpdateOneWithoutLikesInput {
   upsert: UserUpsertWithoutLikesInput
 }
 
-input UserUpdateOneWithoutNotificationInput {
-  connect: UserWhereUniqueInput
-  create: UserCreateWithoutNotificationInput
-  delete: Boolean
-  disconnect: Boolean
-  update: UserUpdateWithoutNotificationDataInput
-  upsert: UserUpsertWithoutNotificationInput
-}
-
 input UserUpdateOneWithoutReviewsInput {
   connect: UserWhereUniqueInput
   create: UserCreateWithoutReviewsInput
@@ -3030,9 +2528,7 @@ input UserUpdateWithoutBooksDataInput {
   getStreamToken: String
   givenname: String
   googleId: String
-  id: Int
   likes: LikeUpdateManyWithoutAuthorInput
-  Notification: NotificationUpdateManyWithoutAuthorInput
   reviews: ReviewUpdateManyWithoutAuthorInput
   username: String
 }
@@ -3050,9 +2546,7 @@ input UserUpdateWithoutChaptersDataInput {
   getStreamToken: String
   givenname: String
   googleId: String
-  id: Int
   likes: LikeUpdateManyWithoutAuthorInput
-  Notification: NotificationUpdateManyWithoutAuthorInput
   reviews: ReviewUpdateManyWithoutAuthorInput
   username: String
 }
@@ -3070,9 +2564,7 @@ input UserUpdateWithoutCommentsDataInput {
   getStreamToken: String
   givenname: String
   googleId: String
-  id: Int
   likes: LikeUpdateManyWithoutAuthorInput
-  Notification: NotificationUpdateManyWithoutAuthorInput
   reviews: ReviewUpdateManyWithoutAuthorInput
   username: String
 }
@@ -3090,9 +2582,7 @@ input UserUpdateWithoutFavoriteBooksDataInput {
   getStreamToken: String
   givenname: String
   googleId: String
-  id: Int
   likes: LikeUpdateManyWithoutAuthorInput
-  Notification: NotificationUpdateManyWithoutAuthorInput
   reviews: ReviewUpdateManyWithoutAuthorInput
   username: String
 }
@@ -3110,9 +2600,7 @@ input UserUpdateWithoutFollowersDataInput {
   getStreamToken: String
   givenname: String
   googleId: String
-  id: Int
   likes: LikeUpdateManyWithoutAuthorInput
-  Notification: NotificationUpdateManyWithoutAuthorInput
   reviews: ReviewUpdateManyWithoutAuthorInput
   username: String
 }
@@ -3130,9 +2618,7 @@ input UserUpdateWithoutFollowingDataInput {
   getStreamToken: String
   givenname: String
   googleId: String
-  id: Int
   likes: LikeUpdateManyWithoutAuthorInput
-  Notification: NotificationUpdateManyWithoutAuthorInput
   reviews: ReviewUpdateManyWithoutAuthorInput
   username: String
 }
@@ -3151,28 +2637,6 @@ input UserUpdateWithoutLikesDataInput {
   getStreamToken: String
   givenname: String
   googleId: String
-  id: Int
-  Notification: NotificationUpdateManyWithoutAuthorInput
-  reviews: ReviewUpdateManyWithoutAuthorInput
-  username: String
-}
-
-input UserUpdateWithoutNotificationDataInput {
-  avatar: String
-  books: BookUpdateManyWithoutAuthorInput
-  chapters: ChapterUpdateManyWithoutAuthorInput
-  comments: CommentUpdateManyWithoutAuthorInput
-  email: String
-  favoriteBooks: BookUpdateManyWithoutReadersInput
-  firstname: String
-  followers: UserUpdateManyWithoutFollowingInput
-  following: UserUpdateManyWithoutFollowersInput
-  fullname: String
-  getStreamToken: String
-  givenname: String
-  googleId: String
-  id: Int
-  likes: LikeUpdateManyWithoutAuthorInput
   reviews: ReviewUpdateManyWithoutAuthorInput
   username: String
 }
@@ -3191,9 +2655,7 @@ input UserUpdateWithoutReviewsDataInput {
   getStreamToken: String
   givenname: String
   googleId: String
-  id: Int
   likes: LikeUpdateManyWithoutAuthorInput
-  Notification: NotificationUpdateManyWithoutAuthorInput
   username: String
 }
 
@@ -3230,11 +2692,6 @@ input UserUpsertWithoutCommentsInput {
 input UserUpsertWithoutLikesInput {
   create: UserCreateWithoutLikesInput!
   update: UserUpdateWithoutLikesDataInput!
-}
-
-input UserUpsertWithoutNotificationInput {
-  create: UserCreateWithoutNotificationInput!
-  update: UserUpdateWithoutNotificationDataInput!
 }
 
 input UserUpsertWithoutReviewsInput {
@@ -3278,7 +2735,6 @@ input UserWhereInput {
   id: IntFilter
   likes: LikeFilter
   NOT: [UserWhereInput!]
-  Notification: NotificationFilter
   OR: [UserWhereInput!]
   reviews: ReviewFilter
   username: NullableStringFilter

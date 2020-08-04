@@ -123,14 +123,3 @@ model Like {
 }
 
 
-model Notification {
-  id             Int        @default(autoincrement()) @id
-  author         User?      @relation(fields: [authorId], references: [id])
-  authorId       Int?
-  book           Book?      @relation(fields: [bookId], references: [id])
-  bookId         Int?
-  chapter        Chapter?   @relation(fields: [chapterId], references: [id])
-  chapterId      Int?
-  review         Comment?   @relation(fields: [reviewId], references: [id])
-  reviewId       Int?
-}

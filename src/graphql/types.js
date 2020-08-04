@@ -132,17 +132,6 @@ const Like = objectType({
   },
 })
 
-const Notification = objectType({
-  name: 'Notification',
-  definition(t) {
-    t.model.id()
-    t.model.author()
-    t.model.book()
-    t.model.chapter()
-    t.model.review()
-  },
-})
-
 module.exports = {
   User,
   Book,
@@ -152,5 +141,4 @@ module.exports = {
   Comment,
   Review,
   Like,
-  Notification,
 }

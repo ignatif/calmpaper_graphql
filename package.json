@@ -6,7 +6,7 @@
   "dependencies": {
     "@nexus/schema": "0.14.0",
     "@prisma/client": "2.2.2",
-    "apollo-server-micro": "^2.16.0",
+    "apollo-server-micro": "^2.16.1",
     "aws-sdk": "^2.717.0",
     "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.5",
@@ -32,8 +32,8 @@
     "passport-twitter": "^1.0.4"
   },
   "scripts": {
-    "dev": "nodemon -r esm src",
-    "start": "node src",
+    "dev": "npx micro src/index.js --port 4000",
+    "start": "npx micro src/index.js --port 4000",
     "generate": "prisma generate",
     "postinstall": "prisma generate"
   },
