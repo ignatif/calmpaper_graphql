@@ -1,0 +1,14 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "UpdateArgument",
+      "location": {
+        "tag": "Source",
+        "source": "sqlite"
+      },
+      "argument": "provider",
+      "newValue": "[\"sqlite\", \"postgres\"]"
+    }
+  ]
+}
