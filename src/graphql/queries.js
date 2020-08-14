@@ -23,8 +23,8 @@ const Query = objectType({
     t.crud.review()
     t.crud.reviews()
     t.crud.likes()
-    t.crud.notification()
-    t.crud.notifications()
+    t.crud.donation()
+    t.crud.donations()
 
     t.field('me', {
       type: 'User',

@@ -11,9 +11,9 @@ const {
   Comment,
   Like,
   Review,
-  Notification,
   Tag,
   Genre,
+  Donation,
 } = require('./graphql')
 const { permissions } = require('./middlewares/permissions')
 const { notifications } = require('./middlewares/notifications')
@@ -52,11 +52,10 @@ let schema = makeSchema({
     Comment,
     Like,
     Review,
-    Notification,
     Tag,
     Genre,
+    Donation,
   ],
-  // middlewares: [permissions, notifications],
   plugins: [nexusPrismaPlugin()],
   experimentalCRUD: true,
   outputs: {
@@ -65,15 +64,20 @@ let schema = makeSchema({
   },
 })
 
-schema = applyMiddleware(schema, permissions, notifications)
+// schema = applyMiddleware(schema, permissions, notifications)
+schema = applyMiddleware(schema, notifications)
+
+const stipeNode = require('stripe')
+
+const stripe = stipeNode(process.env.STRIPE_SECRET_KEY)
 
 const server = new GraphQLServer({
   schema,
-  // middlewares: [permissions],
   context: (request) => {
     return {
       ...request,
       prisma,
+      stripe,
     }
   },
 })
@@ -202,6 +206,5 @@ module.exports = {
   Comment,
   Like,
   Review,
-  Notification,
   Tag,
 }

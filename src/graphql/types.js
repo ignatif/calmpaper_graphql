@@ -20,6 +20,7 @@ const User = objectType({
     t.model.followers({ pagination: false })
     t.model.googleId()
     t.model.getStreamToken()
+    t.model.stripeId()
   },
 })
 
@@ -39,6 +40,7 @@ const Book = objectType({
     t.model.genres({ pagination: false })
     t.model.likes({ pagination: false })
     t.model.reviews({ pagination: false })
+    t.model.donations({ pagination: false })
     t.model.comments({
       pagination: true,
       ordering: true,
@@ -60,6 +62,7 @@ const Chapter = objectType({
     t.model.views()
     t.model.likes({ pagination: false })
     t.model.reviews({ pagination: false })
+    t.model.donations({ pagination: false })
     t.model.comments({
       pagination: true,
       ordering: true,
@@ -143,6 +146,23 @@ const Notification = objectType({
   },
 })
 
+const Donation = objectType({
+  name: 'Donation',
+  definition(t) {
+    t.model.id()
+    t.model.amount()
+    t.model.currency()
+    t.model.message()
+    t.model.paymentId()
+    t.model.book()
+    t.model.chapter()
+    t.model.payer()
+    t.model.recipient()
+    t.model.paymentRequestSecret()
+    t.model.createdAt()
+  },
+})
+
 module.exports = {
   User,
   Book,
@@ -153,4 +173,5 @@ module.exports = {
   Review,
   Like,
   Notification,
+  Donation,
 }
