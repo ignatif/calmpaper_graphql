@@ -1,5 +1,7 @@
 const { objectType, intArg, stringArg } = require('@nexus/schema')
+const fetch = require('isomorphic-unfetch')
 const { getUserId } = require('../utils')
+const stripe = require('../stripe')
 
 const stream = require('getstream').default
 const getStreamClient = stream.connect(
@@ -422,9 +424,212 @@ const Mutation = objectType({
 
           return comment
         },
+      }),
+      t.field('newChapterDonation', {
+        type: 'Donation',
+        args: {
+          chapterId: intArg(),
+          amount: intArg(),
+          message: stringArg({ nullable: true }),
+        },
+        resolve: async (parent, { chapterId, amount, message }, ctx) => {
+          const userId = getUserId(ctx)
+
+          const chapter = await ctx.prisma.chapter.findOne({
+            where: { id: chapterId },
+            include: { author: true },
+          })
+          const author = chapter.author
+          const authorStripeId = author.stripeId
+
+          let payParams = {
+            payment_method_types: ['card'],
+            amount: amount,
+            currency: 'usd',
+            // on_behalf_of: authorStripeId,
+            // transfer_data: {
+            //   destination: authorStripeId,
+            //   amount,
+            // },
+          }
+
+          const capability = await ctx.stripe.accounts.updateCapability(
+            authorStripeId,
+            'transfers',
+            { requested: true },
+          )
+
+          const paymentIntent = await ctx.stripe.paymentIntents.create(
+            payParams,
+            {
+              stripe_account: authorStripeId,
+            },
+          )
+          console.log('paymentIntent')
+          console.log(paymentIntent)
+          console.log('authorStripeId')
+          console.log(authorStripeId)
+
+          const donation = await ctx.prisma.donation.create({
+            data: {
+              chapter: {
+                connect: {
+                  id: chapterId,
+                },
+              },
+              payer: {
+                connect: {
+                  id: userId,
+                },
+              },
+              recipient: {
+                connect: {
+                  id: author.id,
+                },
+              },
+              amount,
+              currency: 'usd',
+              message,
+              paymentId: paymentIntent.id,
+            },
+          })
+
+          const response = {
+            ...donation,
+            paymentRequestSecret: paymentIntent.client_secret,
+          }
+
+          return response
+        },
+      })
+
+    t.field('newBookDonation', {
+      type: 'Donation',
+      args: {
+        bookId: intArg(),
+        amount: intArg(),
+        message: stringArg({ nullable: true }),
+      },
+
+      resolve: async (parent, { bookId, amount, message }, ctx) => {
+        const userId = getUserId(ctx)
+
+        const book = await ctx.prisma.book.findOne({
+          where: { id: bookId },
+          include: { author: true },
+        })
+        const author = book.author
+        const authorStripeId = author.stripeId
+
+        let payParams = {
+          payment_method_types: ['card'],
+          amount: amount,
+          currency: 'usd',
+          // on_behalf_of: authorStripeId,
+          // transfer_data: {
+          //   destination: authorStripeId,
+          //   amount,
+          // },
+        }
+
+        const paymentIntent = await ctx.stripe.paymentIntents.create(
+          payParams,
+          {
+            stripe_account: authorStripeId,
+          },
+        )
+
+        const donation = await ctx.prisma.donation.create({
+          data: {
+            book: {
+              connect: {
+                id: bookId,
+              },
+            },
+            payer: {
+              connect: {
+                id: userId,
+              },
+            },
+            recipient: {
+              connect: {
+                id: author.id,
+              },
+            },
+            amount,
+            currency: 'usd',
+            message,
+            paymentId: paymentIntent.id,
+          },
+        })
+
+        const response = {
+          ...donation,
+          paymentRequestSecret: paymentIntent.client_secret,
+        }
+
+        return response
+      },
+    }),
+      t.field('setupStripe', {
+        type: 'Donation',
+        args: {
+          stripeCode: stringArg(),
+        },
+        resolve: async (parent, { stripeCode }, ctx) => {
+          console.log('setup stripe')
+          const userId = getUserId(ctx)
+
+          const stripeConnectRequest = await makeStripeConnectRequest(
+            stripeCode,
+          )
+          console.log('---------------stripeConnectRequest')
+          console.log(stripeConnectRequest)
+          const stripeUserId = stripeConnectRequest.stripe_user_id
+
+          if (!stripeUserId) {
+            console.log('Connect request to Stripe failed')
+          }
+
+          const user = await ctx.prisma.user.update({
+            where: { id: userId },
+            data: {
+              stripeId: stripeUserId,
+            },
+          })
+
+          return user
+        },
       })
   },
 })
+
+let makeStripeConnectRequest = async (code) => {
+  let clientId = process.env.STRIPE_CLIENT_ID
+  let secretKey = process.env.STRIPE_SECRET_KEY
+
+  let params = {
+    grant_type: 'authorization_code',
+    client_id: clientId,
+    client_secret: secretKey,
+    code: code,
+    requested_capabilities: ['legacy_payments', 'transfers'],
+    suggested_capabilities: ['legacy_payments', 'transfers'],
+    assert_capabilities: ['transfers'],
+  }
+
+  let url = 'https://connect.stripe.com/oauth/token'
+
+  return await fetch(url, {
+    method: 'POST',
+    body: JSON.stringify(params),
+    headers: { 'Content-Type': 'application/json' },
+  })
+    .then((res) => res.json())
+    .catch((err) => {
+      // logger.log('StripeSetup.makeStripeConnectRequest.error', err);
+    })
+}
 
 module.exports = {
   Mutation,

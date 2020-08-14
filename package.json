@@ -21,6 +21,7 @@
     "graphql-middleware-apollo-upload-server": "^1.0.10",
     "graphql-shield": "^7.3.2",
     "graphql-yoga": "^1.18.3",
+    "isomorphic-unfetch": "^3.0.0",
     "jsonwebtoken": "^8.5.1",
     "log4js": "^6.3.0",
     "multer": "^1.4.2",
@@ -29,7 +30,8 @@
     "passport": "^0.4.1",
     "passport-facebook": "^3.0.0",
     "passport-google-oauth": "^2.0.0",
-    "passport-twitter": "^1.0.4"
+    "passport-twitter": "^1.0.4",
+    "stripe": "^8.84.0"
   },
   "scripts": {
     "dev": "nodemon -r esm src",

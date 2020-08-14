@@ -28,6 +28,10 @@ model User {
 
   googleId       String?     @unique
   getStreamToken String?     @unique
+  stripeId       String?     @unique
+
+  receivedDonations Donation[]  @relation("DonationReceiver")
+  sentDonations     Donation[]  @relation("DonationPayer")
 }
 
 model Book {
@@ -46,6 +50,7 @@ model Book {
   views          Int        @default(0)
   reviews        Review[]
   comments       Comment[]
+  donations      Donation[]
 }
 
 model Chapter {
@@ -62,6 +67,7 @@ model Chapter {
   views          Int        @default(0)
   reviews        Review[]
   comments       Comment[]
+  donations      Donation[]
 }
 
 model Tag {
@@ -122,15 +128,21 @@ model Like {
   reviewId       Int?
 }
 
-
-model Notification {
+model Donation {
   id             Int        @default(autoincrement()) @id
-  author         User?      @relation(fields: [authorId], references: [id])
-  authorId       Int?
+  amount         Int
+  currency       String
+  message        String?
+  paymentId      String
+  paymentRequestSecret String?
   book           Book?      @relation(fields: [bookId], references: [id])
   bookId         Int?
   chapter        Chapter?   @relation(fields: [chapterId], references: [id])
   chapterId      Int?
-  review         Comment?   @relation(fields: [reviewId], references: [id])
-  reviewId       Int?
+  createdAt      DateTime   @default(now())
+
+  payerId        Int?
+  payer          User?      @relation("DonationPayer", fields: [payerId], references: [id])
+  recipientId    Int?
+  recipient      User?      @relation("DonationReceiver", fields: [recipientId], references: [id])
 }

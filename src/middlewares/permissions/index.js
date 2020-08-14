@@ -6,56 +6,58 @@ const rules = {
     const userId = getUserId(context)
     return Boolean(userId)
   }),
-  isBookAuthor: rule()(async (parent, { id }, context) => {
+  isBookAuthor: rule()(async (parent, { where: { id } }, context) => {
     const userId = getUserId(context)
     const author = await context.prisma.book
-      .findOne({ where: { id: Number(id) } })
+      .findOne({
+        where: { id: parseInt(id) },
+      })
       .author()
     return userId === author.id
   }),
-  isChapterAuthor: rule()(async (parent, { id }, context) => {
+  isChapterAuthor: rule()(async (parent, { where: { id } }, context) => {
     const userId = getUserId(context)
     const author = await context.prisma.chapter
       .findOne({ where: { id: Number(id) } })
       .author()
     return userId === author.id
   }),
-  isCommentAuthor: rule()(async (parent, { id }, context) => {
+  isCommentAuthor: rule()(async (parent, { where: { id } }, context) => {
     const userId = getUserId(context)
     const author = await context.prisma.comment
       .findOne({ where: { id: Number(id) } })
       .author()
     return userId === author.id
   }),
-  isReviewAuthor: rule()(async (parent, { id }, context) => {
+  isReviewAuthor: rule()(async (parent, { where: { id } }, context) => {
     const userId = getUserId(context)
     const author = await context.prisma.review
       .findOne({ where: { id: Number(id) } })
       .author()
     return userId === author.id
   }),
-  isTagAuthor: rule()(async (parent, { id }, context) => {
+  isTagAuthor: rule()(async (parent, { where: { id } }, context) => {
     const userId = getUserId(context)
     const author = await context.prisma.tag
       .findOne({ where: { id: Number(id) } })
       .author()
     return userId === author.id
   }),
-  isGenreAuthor: rule()(async (parent, { id }, context) => {
+  isGenreAuthor: rule()(async (parent, { where: { id } }, context) => {
     const userId = getUserId(context)
     const author = await context.prisma.genre
       .findOne({ where: { id: Number(id) } })
       .author()
     return userId === author.id
   }),
-  isLikeAuthor: rule()(async (parent, { id }, context) => {
+  isLikeAuthor: rule()(async (parent, { where: { id } }, context) => {
     const userId = getUserId(context)
     const author = await context.prisma.like
       .findOne({ where: { id: Number(id) } })
       .author()
     return userId === author.id
   }),
-  isGetMeRequest: rule()(async (parent, { id }, context, info) => {
+  isGetMeRequest: rule()(async (parent, { where: { id } }, context, info) => {
     const userId = getUserId(context)
     return parent && parent.id === userId
   }),
