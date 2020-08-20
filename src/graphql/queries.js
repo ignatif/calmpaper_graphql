@@ -72,6 +72,21 @@ const Query = objectType({
         })
       },
     })
+
+    t.list.field('chaptersFeed', {
+      type: 'Chapter',
+      args: {
+        skip: intArg({ nullable: true }),
+      },
+      resolve: (_, { skip = 0 }, ctx) => {
+        return ctx.prisma.chapter.findMany({
+          take: 4,
+          skip,
+          orderBy: { createdAt: 'desc' },
+          where: { NOT: { book: null } },
+        })
+      },
+    })
   },
 })
 
