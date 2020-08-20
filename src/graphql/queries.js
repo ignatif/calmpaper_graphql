@@ -15,7 +15,7 @@ const Query = objectType({
     t.crud.book()
     t.crud.books({ ordering: true })
     t.crud.chapter()
-    t.crud.chapters({ ordering: true, filtering: true })
+    t.crud.chapters({ ordering: true, filtering: true, pagination: true })
     t.crud.tags()
     t.crud.genres()
     t.crud.comment()
