@@ -15,7 +15,7 @@ const Query = objectType({
     t.crud.book()
     t.crud.books({ ordering: true })
     t.crud.chapter()
-    t.crud.chapters({ ordering: true, filtering: true })
+    t.crud.chapters({ ordering: true, filtering: true, pagination: true })
     t.crud.tags()
     t.crud.genres()
     t.crud.comment()
@@ -69,6 +69,21 @@ const Query = objectType({
             reviews: true,
             comments: true,
           },
+        })
+      },
+    })
+
+    t.list.field('chaptersFeed', {
+      type: 'Chapter',
+      args: {
+        skip: intArg({ nullable: true }),
+      },
+      resolve: (_, { skip = 0 }, ctx) => {
+        return ctx.prisma.chapter.findMany({
+          take: 4,
+          skip,
+          orderBy: { createdAt: 'desc' },
+          where: { NOT: { book: null } },
         })
       },
     })
