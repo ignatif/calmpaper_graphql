@@ -4,6 +4,7 @@ const prisma = new PrismaClient()
 
 const genres = [
 <<<<<<< HEAD
+<<<<<<< HEAD
   'Fiction',
   'Action and adventure',
   'Art/architecture',
@@ -62,6 +63,8 @@ const genres = [
   'Young adult',
   'True crime',
 =======
+=======
+>>>>>>> 0211aec... m
   'Cookbook',
 
   'Comic book',
@@ -152,6 +155,9 @@ const genres = [
 
   'True crime',
   ,
+<<<<<<< HEAD
+>>>>>>> 0211aec... m
+=======
 >>>>>>> 0211aec... m
 ]
 
@@ -163,7 +169,11 @@ async function main() {
       },
     })
 <<<<<<< HEAD
+<<<<<<< HEAD
     console.log('seed', genre)
+=======
+    console.log(genre, 'seed')
+>>>>>>> 0211aec... m
 =======
     console.log(genre, 'seed')
 >>>>>>> 0211aec... m
@@ -178,6 +188,10 @@ main()
     await prisma.disconnect()
   })
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+>>>>>>> 0211aec... m
 =======
 
 >>>>>>> 0211aec... m
