@@ -42,6 +42,7 @@ const Book = objectType({
     t.model.image()
     t.model.createdAt()
     t.model.author()
+    t.model.archived()
     t.model.views()
     t.model.readers({ pagination: false })
     t.model.chapters({ pagination: false, ordering: true })
