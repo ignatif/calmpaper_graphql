@@ -40,6 +40,7 @@ model Book {
   name           String
   description    String
   image          String?
+  archived       Boolean?   @default(false)
   createdAt      DateTime   @default(now())
   author         User?      @relation("UserBookAuthor", fields: [authorId], references: [id])
   authorId       Int?
