@@ -14,6 +14,7 @@ const {
   Tag,
   Genre,
   Donation,
+  AuthPayload,
 } = require('./graphql')
 const { permissions } = require('./middlewares/permissions')
 const { notifications } = require('./middlewares/notifications')
@@ -55,6 +56,7 @@ let schema = makeSchema({
     Tag,
     Genre,
     Donation,
+    AuthPayload,
   ],
   plugins: [nexusPrismaPlugin()],
   experimentalCRUD: true,
@@ -91,11 +93,18 @@ passport.deserializeUser((obj, done) => done(null, obj))
 
 server.express.use(express.static('public'))
 server.express.use(session({ secret: 'cats' }))
-server.express.use(bodyParser.urlencoded({ extended: false }))
+server.express.use(
+  bodyParser.urlencoded({
+    parameterLimit: 100000,
+    limit: '50mb',
+    extended: false,
+  }),
+)
 server.express.use(passport.initialize())
 server.express.use(passport.session())
 
-// server.express.use(bodyParser.json());
+server.express.use(bodyParser.json({ limit: '50mb', type: 'application/json' }))
+server.express.use(bodyParser.json())
 server.express.use(cors())
 
 server.express.use('/hi', (req, res) => {
@@ -145,7 +154,13 @@ server.express.post('/files', upload.single('file'), (req, res) => {
 })
 
 server.express.use(express.json())
-server.express.use(express.urlencoded({ extended: false }))
+server.express.use(
+  express.urlencoded({
+    parameterLimit: 100000,
+    limit: '100mb',
+    extended: false,
+  }),
+)
 
 // auth
 
