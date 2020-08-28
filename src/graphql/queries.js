@@ -13,7 +13,7 @@ const Query = objectType({
     t.crud.user()
     t.crud.users()
     t.crud.book()
-    t.crud.books({ ordering: true })
+    t.crud.books({ ordering: true, filtering: true })
     t.crud.chapter()
     t.crud.chapters({ ordering: true, filtering: true, pagination: true })
     t.crud.tags()
@@ -80,7 +80,7 @@ const Query = objectType({
       },
       resolve: (_, { skip = 0 }, ctx) => {
         return ctx.prisma.chapter.findMany({
-          take: 4,
+          take: 3,
           skip,
           orderBy: { createdAt: 'desc' },
           where: { NOT: { book: null } },
