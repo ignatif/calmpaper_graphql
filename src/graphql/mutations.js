@@ -23,11 +23,15 @@ const Mutation = objectType({
 
     t.crud.createOneBook()
     t.crud.updateOneBook()
+    t.crud.updateManyBook()
     t.crud.deleteOneBook()
+    t.crud.deleteManyBook()
 
     t.crud.createOneChapter()
     t.crud.updateOneChapter()
+    t.crud.updateManyChapter()
     t.crud.deleteOneChapter()
+    t.crud.deleteManyChapter()
 
     t.crud.createOneComment()
     t.crud.updateOneComment()

@@ -80,10 +80,15 @@ const Query = objectType({
       },
       resolve: (_, { skip = 0 }, ctx) => {
         return ctx.prisma.chapter.findMany({
-          take: 4,
+          take: 3,
           skip,
           orderBy: { createdAt: 'desc' },
-          where: { NOT: { book: null } },
+          where: {
+            and: [
+              { book: { not: undefined } },
+              { book: { archived: { not: true } } },
+            ],
+          },
         })
       },
     })
