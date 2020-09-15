@@ -6,10 +6,10 @@
 
 
 ```
-1) yarn
+1) yarn / npm i
 2) npx prisma migrate save --name 'init' --experimental && npx prisma migrate up --experimental
 3) npx prisma generate
-4) yarn dev
+4) yarn dev / npm run dev
 ```
 
 The project should be up and running on http://localhost:4000
