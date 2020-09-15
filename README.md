@@ -4,6 +4,12 @@
 
 ## Set up a project
 
+add .env file inside prisma folder with the following:
+
+```
+DB_URL=file:dev.db
+```
+
 
 ```
 1) yarn
