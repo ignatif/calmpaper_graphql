@@ -2,7 +2,17 @@
 ### Do not make changes to this file directly
 
 
+type AuthPayload {
+  token: String!
+  user: User!
+}
+
+type BatchPayload {
+  count: Int!
+}
+
 type Book {
+  archived: Boolean
   author: User
   chapters(orderBy: ChapterOrderByInput): [Chapter!]!
   comments(orderBy: CommentOrderByInput, skip: Int): [Comment!]!
@@ -21,6 +31,7 @@ type Book {
 }
 
 input BookCreateInput {
+  archived: Boolean
   author: UserCreateOneWithoutBooksInput
   chapters: ChapterCreateManyWithoutBookInput
   comments: CommentCreateManyWithoutBookInput
@@ -83,6 +94,7 @@ input BookCreateOneWithoutReviewsInput {
 }
 
 input BookCreateWithoutAuthorInput {
+  archived: Boolean
   chapters: ChapterCreateManyWithoutBookInput
   comments: CommentCreateManyWithoutBookInput
   createdAt: DateTime
@@ -99,6 +111,7 @@ input BookCreateWithoutAuthorInput {
 }
 
 input BookCreateWithoutChaptersInput {
+  archived: Boolean
   author: UserCreateOneWithoutBooksInput
   comments: CommentCreateManyWithoutBookInput
   createdAt: DateTime
@@ -115,6 +128,7 @@ input BookCreateWithoutChaptersInput {
 }
 
 input BookCreateWithoutCommentsInput {
+  archived: Boolean
   author: UserCreateOneWithoutBooksInput
   chapters: ChapterCreateManyWithoutBookInput
   createdAt: DateTime
@@ -131,6 +145,7 @@ input BookCreateWithoutCommentsInput {
 }
 
 input BookCreateWithoutDonationsInput {
+  archived: Boolean
   author: UserCreateOneWithoutBooksInput
   chapters: ChapterCreateManyWithoutBookInput
   comments: CommentCreateManyWithoutBookInput
@@ -147,6 +162,7 @@ input BookCreateWithoutDonationsInput {
 }
 
 input BookCreateWithoutGenresInput {
+  archived: Boolean
   author: UserCreateOneWithoutBooksInput
   chapters: ChapterCreateManyWithoutBookInput
   comments: CommentCreateManyWithoutBookInput
@@ -163,6 +179,7 @@ input BookCreateWithoutGenresInput {
 }
 
 input BookCreateWithoutLikesInput {
+  archived: Boolean
   author: UserCreateOneWithoutBooksInput
   chapters: ChapterCreateManyWithoutBookInput
   comments: CommentCreateManyWithoutBookInput
@@ -179,6 +196,7 @@ input BookCreateWithoutLikesInput {
 }
 
 input BookCreateWithoutReadersInput {
+  archived: Boolean
   author: UserCreateOneWithoutBooksInput
   chapters: ChapterCreateManyWithoutBookInput
   comments: CommentCreateManyWithoutBookInput
@@ -195,6 +213,7 @@ input BookCreateWithoutReadersInput {
 }
 
 input BookCreateWithoutReviewsInput {
+  archived: Boolean
   author: UserCreateOneWithoutBooksInput
   chapters: ChapterCreateManyWithoutBookInput
   comments: CommentCreateManyWithoutBookInput
@@ -211,6 +230,7 @@ input BookCreateWithoutReviewsInput {
 }
 
 input BookCreateWithoutTagsInput {
+  archived: Boolean
   author: UserCreateOneWithoutBooksInput
   chapters: ChapterCreateManyWithoutBookInput
   comments: CommentCreateManyWithoutBookInput
@@ -233,6 +253,7 @@ input BookFilter {
 }
 
 input BookOrderByInput {
+  archived: OrderByArg
   authorId: OrderByArg
   createdAt: OrderByArg
   description: OrderByArg
@@ -244,6 +265,7 @@ input BookOrderByInput {
 
 input BookScalarWhereInput {
   AND: [BookScalarWhereInput!]
+  archived: NullableBooleanFilter
   authorId: NullableIntFilter
   chapters: ChapterFilter
   comments: CommentFilter
@@ -264,6 +286,7 @@ input BookScalarWhereInput {
 }
 
 input BookUpdateInput {
+  archived: Boolean
   author: UserUpdateOneWithoutBooksInput
   chapters: ChapterUpdateManyWithoutBookInput
   comments: CommentUpdateManyWithoutBookInput
@@ -282,6 +305,17 @@ input BookUpdateInput {
 }
 
 input BookUpdateManyDataInput {
+  archived: Boolean
+  createdAt: DateTime
+  description: String
+  id: Int
+  image: String
+  name: String
+  views: Int
+}
+
+input BookUpdateManyMutationInput {
+  archived: Boolean
   createdAt: DateTime
   description: String
   id: Int
@@ -389,6 +423,7 @@ input BookUpdateOneWithoutReviewsInput {
 }
 
 input BookUpdateWithoutAuthorDataInput {
+  archived: Boolean
   chapters: ChapterUpdateManyWithoutBookInput
   comments: CommentUpdateManyWithoutBookInput
   createdAt: DateTime
@@ -406,6 +441,7 @@ input BookUpdateWithoutAuthorDataInput {
 }
 
 input BookUpdateWithoutChaptersDataInput {
+  archived: Boolean
   author: UserUpdateOneWithoutBooksInput
   comments: CommentUpdateManyWithoutBookInput
   createdAt: DateTime
@@ -423,6 +459,7 @@ input BookUpdateWithoutChaptersDataInput {
 }
 
 input BookUpdateWithoutCommentsDataInput {
+  archived: Boolean
   author: UserUpdateOneWithoutBooksInput
   chapters: ChapterUpdateManyWithoutBookInput
   createdAt: DateTime
@@ -440,6 +477,7 @@ input BookUpdateWithoutCommentsDataInput {
 }
 
 input BookUpdateWithoutDonationsDataInput {
+  archived: Boolean
   author: UserUpdateOneWithoutBooksInput
   chapters: ChapterUpdateManyWithoutBookInput
   comments: CommentUpdateManyWithoutBookInput
@@ -457,6 +495,7 @@ input BookUpdateWithoutDonationsDataInput {
 }
 
 input BookUpdateWithoutGenresDataInput {
+  archived: Boolean
   author: UserUpdateOneWithoutBooksInput
   chapters: ChapterUpdateManyWithoutBookInput
   comments: CommentUpdateManyWithoutBookInput
@@ -474,6 +513,7 @@ input BookUpdateWithoutGenresDataInput {
 }
 
 input BookUpdateWithoutLikesDataInput {
+  archived: Boolean
   author: UserUpdateOneWithoutBooksInput
   chapters: ChapterUpdateManyWithoutBookInput
   comments: CommentUpdateManyWithoutBookInput
@@ -491,6 +531,7 @@ input BookUpdateWithoutLikesDataInput {
 }
 
 input BookUpdateWithoutReadersDataInput {
+  archived: Boolean
   author: UserUpdateOneWithoutBooksInput
   chapters: ChapterUpdateManyWithoutBookInput
   comments: CommentUpdateManyWithoutBookInput
@@ -508,6 +549,7 @@ input BookUpdateWithoutReadersDataInput {
 }
 
 input BookUpdateWithoutReviewsDataInput {
+  archived: Boolean
   author: UserUpdateOneWithoutBooksInput
   chapters: ChapterUpdateManyWithoutBookInput
   comments: CommentUpdateManyWithoutBookInput
@@ -525,6 +567,7 @@ input BookUpdateWithoutReviewsDataInput {
 }
 
 input BookUpdateWithoutTagsDataInput {
+  archived: Boolean
   author: UserUpdateOneWithoutBooksInput
   chapters: ChapterUpdateManyWithoutBookInput
   comments: CommentUpdateManyWithoutBookInput
@@ -612,6 +655,7 @@ input BookUpsertWithWhereUniqueWithoutTagsInput {
 
 input BookWhereInput {
   AND: [BookWhereInput!]
+  archived: NullableBooleanFilter
   author: UserWhereInput
   authorId: NullableIntFilter
   chapters: ChapterFilter
@@ -829,6 +873,15 @@ input ChapterUpdateInput {
 }
 
 input ChapterUpdateManyDataInput {
+  content: String
+  createdAt: DateTime
+  id: Int
+  image: String
+  title: String
+  views: Int
+}
+
+input ChapterUpdateManyMutationInput {
   content: String
   createdAt: DateTime
   id: Int
@@ -2168,6 +2221,8 @@ type Mutation {
   createOneTag(data: TagCreateInput!): Tag!
   createOneUser(data: UserCreateInput!): User!
   createReview(authorId: Int, bookId: Int, message: String, stars: Int): Review!
+  deleteManyBook(where: BookWhereInput): BatchPayload!
+  deleteManyChapter(where: ChapterWhereInput): BatchPayload!
   deleteOneBook(where: BookWhereUniqueInput!): Book
   deleteOneChapter(where: ChapterWhereUniqueInput!): Chapter
   deleteOneComment(where: CommentWhereUniqueInput!): Comment
@@ -2178,6 +2233,7 @@ type Mutation {
   deleteOneUser(where: UserWhereUniqueInput!): User
   incrementBookViews(bookId: Int): Book!
   incrementChapterViews(chapterId: Int): Chapter!
+  login(email: String, password: String): AuthPayload!
   newBookDonation(amount: Int, bookId: Int, message: String): Donation!
   newChapterDonation(amount: Int, chapterId: Int, message: String): Donation!
   removeBookFromFavorites(bookId: Int, userId: Int): User!
@@ -2188,6 +2244,9 @@ type Mutation {
   setCommentLike(authorId: Int, commentId: Int): Like!
   setReview(authorUsername: String, bookId: Int, id: Int, stars: Int): Review!
   setupStripe(stripeCode: String): Donation!
+  signup(email: String, password: String, username: String): AuthPayload!
+  updateManyBook(data: BookUpdateManyMutationInput!, where: BookWhereInput): BatchPayload!
+  updateManyChapter(data: ChapterUpdateManyMutationInput!, where: ChapterWhereInput): BatchPayload!
   updateOneBook(data: BookUpdateInput!, where: BookWhereUniqueInput!): Book
   updateOneChapter(data: ChapterUpdateInput!, where: ChapterWhereUniqueInput!): Chapter
   updateOneComment(data: CommentUpdateInput!, where: CommentWhereUniqueInput!): Comment
@@ -2197,6 +2256,11 @@ type Mutation {
   updateOneTag(data: TagUpdateInput!, where: TagWhereUniqueInput!): Tag
   updateOneUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   upsertOneReview(create: ReviewCreateInput!, update: ReviewUpdateInput!, where: ReviewWhereUniqueInput!): Review!
+}
+
+input NullableBooleanFilter {
+  equals: Boolean
+  not: Boolean
 }
 
 input NullableIntFilter {
@@ -2231,10 +2295,11 @@ enum OrderByArg {
 
 type Query {
   book(where: BookWhereUniqueInput!): Book
-  books(orderBy: BookOrderByInput, skip: Int): [Book!]!
+  books(orderBy: BookOrderByInput, skip: Int, where: BookWhereInput): [Book!]!
   chapter(where: ChapterWhereUniqueInput!): Chapter
   chapterByBook(bookId: Int, skip: Int): [Chapter!]!
   chapters(orderBy: ChapterOrderByInput, skip: Int, where: ChapterWhereInput): [Chapter!]!
+  chaptersFeed(skip: Int): [Chapter!]!
   comment(where: CommentWhereUniqueInput!): Comment
   comments(skip: Int): [Comment!]!
   donation(where: DonationWhereUniqueInput!): Donation
@@ -2635,6 +2700,7 @@ type User {
   googleId: String
   id: Int!
   likes: [Like!]!
+  password: String
   reviews: [Review!]!
   stripeId: String
   username: String
@@ -2655,6 +2721,7 @@ input UserCreateInput {
   givenname: String
   googleId: String
   likes: LikeCreateManyWithoutAuthorInput
+  password: String
   receivedDonations: DonationCreateManyWithoutRecipientInput
   reviews: ReviewCreateManyWithoutAuthorInput
   sentDonations: DonationCreateManyWithoutPayerInput
@@ -2726,6 +2793,7 @@ input UserCreateWithoutBooksInput {
   givenname: String
   googleId: String
   likes: LikeCreateManyWithoutAuthorInput
+  password: String
   receivedDonations: DonationCreateManyWithoutRecipientInput
   reviews: ReviewCreateManyWithoutAuthorInput
   sentDonations: DonationCreateManyWithoutPayerInput
@@ -2747,6 +2815,7 @@ input UserCreateWithoutChaptersInput {
   givenname: String
   googleId: String
   likes: LikeCreateManyWithoutAuthorInput
+  password: String
   receivedDonations: DonationCreateManyWithoutRecipientInput
   reviews: ReviewCreateManyWithoutAuthorInput
   sentDonations: DonationCreateManyWithoutPayerInput
@@ -2768,6 +2837,7 @@ input UserCreateWithoutCommentsInput {
   givenname: String
   googleId: String
   likes: LikeCreateManyWithoutAuthorInput
+  password: String
   receivedDonations: DonationCreateManyWithoutRecipientInput
   reviews: ReviewCreateManyWithoutAuthorInput
   sentDonations: DonationCreateManyWithoutPayerInput
@@ -2789,6 +2859,7 @@ input UserCreateWithoutFavoriteBooksInput {
   givenname: String
   googleId: String
   likes: LikeCreateManyWithoutAuthorInput
+  password: String
   receivedDonations: DonationCreateManyWithoutRecipientInput
   reviews: ReviewCreateManyWithoutAuthorInput
   sentDonations: DonationCreateManyWithoutPayerInput
@@ -2810,6 +2881,7 @@ input UserCreateWithoutFollowersInput {
   givenname: String
   googleId: String
   likes: LikeCreateManyWithoutAuthorInput
+  password: String
   receivedDonations: DonationCreateManyWithoutRecipientInput
   reviews: ReviewCreateManyWithoutAuthorInput
   sentDonations: DonationCreateManyWithoutPayerInput
@@ -2831,6 +2903,7 @@ input UserCreateWithoutFollowingInput {
   givenname: String
   googleId: String
   likes: LikeCreateManyWithoutAuthorInput
+  password: String
   receivedDonations: DonationCreateManyWithoutRecipientInput
   reviews: ReviewCreateManyWithoutAuthorInput
   sentDonations: DonationCreateManyWithoutPayerInput
@@ -2852,6 +2925,7 @@ input UserCreateWithoutLikesInput {
   getStreamToken: String
   givenname: String
   googleId: String
+  password: String
   receivedDonations: DonationCreateManyWithoutRecipientInput
   reviews: ReviewCreateManyWithoutAuthorInput
   sentDonations: DonationCreateManyWithoutPayerInput
@@ -2874,6 +2948,7 @@ input UserCreateWithoutReceivedDonationsInput {
   givenname: String
   googleId: String
   likes: LikeCreateManyWithoutAuthorInput
+  password: String
   reviews: ReviewCreateManyWithoutAuthorInput
   sentDonations: DonationCreateManyWithoutPayerInput
   stripeId: String
@@ -2895,6 +2970,7 @@ input UserCreateWithoutReviewsInput {
   givenname: String
   googleId: String
   likes: LikeCreateManyWithoutAuthorInput
+  password: String
   receivedDonations: DonationCreateManyWithoutRecipientInput
   sentDonations: DonationCreateManyWithoutPayerInput
   stripeId: String
@@ -2916,6 +2992,7 @@ input UserCreateWithoutSentDonationsInput {
   givenname: String
   googleId: String
   likes: LikeCreateManyWithoutAuthorInput
+  password: String
   receivedDonations: DonationCreateManyWithoutRecipientInput
   reviews: ReviewCreateManyWithoutAuthorInput
   stripeId: String
@@ -2947,6 +3024,7 @@ input UserScalarWhereInput {
   likes: LikeFilter
   NOT: [UserScalarWhereInput!]
   OR: [UserScalarWhereInput!]
+  password: NullableStringFilter
   receivedDonations: DonationFilter
   reviews: ReviewFilter
   sentDonations: DonationFilter
@@ -2970,6 +3048,7 @@ input UserUpdateInput {
   googleId: String
   id: Int
   likes: LikeUpdateManyWithoutAuthorInput
+  password: String
   receivedDonations: DonationUpdateManyWithoutRecipientInput
   reviews: ReviewUpdateManyWithoutAuthorInput
   sentDonations: DonationUpdateManyWithoutPayerInput
@@ -2986,6 +3065,7 @@ input UserUpdateManyDataInput {
   givenname: String
   googleId: String
   id: Int
+  password: String
   stripeId: String
   username: String
 }
@@ -3109,6 +3189,7 @@ input UserUpdateWithoutBooksDataInput {
   googleId: String
   id: Int
   likes: LikeUpdateManyWithoutAuthorInput
+  password: String
   receivedDonations: DonationUpdateManyWithoutRecipientInput
   reviews: ReviewUpdateManyWithoutAuthorInput
   sentDonations: DonationUpdateManyWithoutPayerInput
@@ -3131,6 +3212,7 @@ input UserUpdateWithoutChaptersDataInput {
   googleId: String
   id: Int
   likes: LikeUpdateManyWithoutAuthorInput
+  password: String
   receivedDonations: DonationUpdateManyWithoutRecipientInput
   reviews: ReviewUpdateManyWithoutAuthorInput
   sentDonations: DonationUpdateManyWithoutPayerInput
@@ -3153,6 +3235,7 @@ input UserUpdateWithoutCommentsDataInput {
   googleId: String
   id: Int
   likes: LikeUpdateManyWithoutAuthorInput
+  password: String
   receivedDonations: DonationUpdateManyWithoutRecipientInput
   reviews: ReviewUpdateManyWithoutAuthorInput
   sentDonations: DonationUpdateManyWithoutPayerInput
@@ -3175,6 +3258,7 @@ input UserUpdateWithoutFavoriteBooksDataInput {
   googleId: String
   id: Int
   likes: LikeUpdateManyWithoutAuthorInput
+  password: String
   receivedDonations: DonationUpdateManyWithoutRecipientInput
   reviews: ReviewUpdateManyWithoutAuthorInput
   sentDonations: DonationUpdateManyWithoutPayerInput
@@ -3197,6 +3281,7 @@ input UserUpdateWithoutFollowersDataInput {
   googleId: String
   id: Int
   likes: LikeUpdateManyWithoutAuthorInput
+  password: String
   receivedDonations: DonationUpdateManyWithoutRecipientInput
   reviews: ReviewUpdateManyWithoutAuthorInput
   sentDonations: DonationUpdateManyWithoutPayerInput
@@ -3219,6 +3304,7 @@ input UserUpdateWithoutFollowingDataInput {
   googleId: String
   id: Int
   likes: LikeUpdateManyWithoutAuthorInput
+  password: String
   receivedDonations: DonationUpdateManyWithoutRecipientInput
   reviews: ReviewUpdateManyWithoutAuthorInput
   sentDonations: DonationUpdateManyWithoutPayerInput
@@ -3241,6 +3327,7 @@ input UserUpdateWithoutLikesDataInput {
   givenname: String
   googleId: String
   id: Int
+  password: String
   receivedDonations: DonationUpdateManyWithoutRecipientInput
   reviews: ReviewUpdateManyWithoutAuthorInput
   sentDonations: DonationUpdateManyWithoutPayerInput
@@ -3264,6 +3351,7 @@ input UserUpdateWithoutReceivedDonationsDataInput {
   googleId: String
   id: Int
   likes: LikeUpdateManyWithoutAuthorInput
+  password: String
   reviews: ReviewUpdateManyWithoutAuthorInput
   sentDonations: DonationUpdateManyWithoutPayerInput
   stripeId: String
@@ -3286,6 +3374,7 @@ input UserUpdateWithoutReviewsDataInput {
   googleId: String
   id: Int
   likes: LikeUpdateManyWithoutAuthorInput
+  password: String
   receivedDonations: DonationUpdateManyWithoutRecipientInput
   sentDonations: DonationUpdateManyWithoutPayerInput
   stripeId: String
@@ -3308,6 +3397,7 @@ input UserUpdateWithoutSentDonationsDataInput {
   googleId: String
   id: Int
   likes: LikeUpdateManyWithoutAuthorInput
+  password: String
   receivedDonations: DonationUpdateManyWithoutRecipientInput
   reviews: ReviewUpdateManyWithoutAuthorInput
   stripeId: String
@@ -3401,6 +3491,7 @@ input UserWhereInput {
   likes: LikeFilter
   NOT: [UserWhereInput!]
   OR: [UserWhereInput!]
+  password: NullableStringFilter
   receivedDonations: DonationFilter
   reviews: ReviewFilter
   sentDonations: DonationFilter

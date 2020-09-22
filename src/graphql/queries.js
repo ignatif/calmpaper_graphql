@@ -84,11 +84,10 @@ const Query = objectType({
           skip,
           orderBy: { createdAt: 'desc' },
           where: {
-            and: [
-              { book: { not: undefined } },
-              { book: { archived: { not: true } } },
-            ],
-          },
+              book: {
+		      archived: { not:  true  }
+	       },
+	       },
         })
       },
     })
