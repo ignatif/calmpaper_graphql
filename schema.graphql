@@ -253,6 +253,7 @@ input BookListRelationFilter {
 }
 
 input BookOrderByInput {
+<<<<<<< HEAD
   archived: SortOrder
   authorId: SortOrder
   createdAt: SortOrder
@@ -261,12 +262,29 @@ input BookOrderByInput {
   image: SortOrder
   name: SortOrder
   views: SortOrder
+=======
+  archived: OrderByArg
+  authorId: OrderByArg
+  createdAt: OrderByArg
+  description: OrderByArg
+  id: OrderByArg
+  image: OrderByArg
+  name: OrderByArg
+  views: OrderByArg
+>>>>>>> 345896f... .
 }
 
 input BookScalarWhereInput {
   AND: [BookScalarWhereInput!]
+<<<<<<< HEAD
   archived: BoolNullableFilter
   authorId: IntNullableFilter
+=======
+  archived: NullableBooleanFilter
+  authorId: NullableIntFilter
+  chapters: ChapterFilter
+  comments: CommentFilter
+>>>>>>> 345896f... .
   createdAt: DateTimeFilter
   description: StringFilter
   id: IntFilter
@@ -299,6 +317,10 @@ input BookUpdateManyDataInput {
   archived: Boolean
   createdAt: DateTime
   description: String
+<<<<<<< HEAD
+=======
+  id: Int
+>>>>>>> 345896f... .
   image: String
   name: String
   views: Int
@@ -635,7 +657,11 @@ input BookUpsertWithWhereUniqueWithoutTagsInput {
 
 input BookWhereInput {
   AND: [BookWhereInput!]
+<<<<<<< HEAD
   archived: BoolNullableFilter
+=======
+  archived: NullableBooleanFilter
+>>>>>>> 345896f... .
   author: UserWhereInput
   authorId: IntNullableFilter
   chapters: ChapterListRelationFilter
@@ -863,6 +889,15 @@ input ChapterUpdateManyDataInput {
 input ChapterUpdateManyMutationInput {
   content: String
   createdAt: DateTime
+  image: String
+  title: String
+  views: Int
+}
+
+input ChapterUpdateManyMutationInput {
+  content: String
+  createdAt: DateTime
+  id: Int
   image: String
   title: String
   views: Int
@@ -2203,7 +2238,10 @@ type Mutation {
   setReview(authorUsername: String, bookId: Int, id: Int, stars: Int): Review!
   setupStripe(stripeCode: String): Donation!
   signup(email: String, password: String, username: String): AuthPayload!
+<<<<<<< HEAD
   unfollowUser(followerId: Int, followingId: Int): User!
+=======
+>>>>>>> 345896f... .
   updateManyBook(data: BookUpdateManyMutationInput!, where: BookWhereInput): BatchPayload!
   updateManyChapter(data: ChapterUpdateManyMutationInput!, where: ChapterWhereInput): BatchPayload!
   updateOneBook(data: BookUpdateInput!, where: BookWhereUniqueInput!): Book
@@ -2217,6 +2255,7 @@ type Mutation {
   upsertOneReview(create: ReviewCreateInput!, update: ReviewUpdateInput!, where: ReviewWhereUniqueInput!): Review!
 }
 
+<<<<<<< HEAD
 input NestedBoolFilter {
   equals: Boolean
   not: NestedBoolFilter
@@ -2250,6 +2289,14 @@ input NestedIntFilter {
 }
 
 input NestedIntNullableFilter {
+=======
+input NullableBooleanFilter {
+  equals: Boolean
+  not: Boolean
+}
+
+input NullableIntFilter {
+>>>>>>> 345896f... .
   equals: Int
   gt: Int
   gte: Int
@@ -2290,6 +2337,7 @@ input NestedStringNullableFilter {
 
 type Query {
   book(where: BookWhereUniqueInput!): Book
+<<<<<<< HEAD
   books(orderBy: [BookOrderByInput!], skip: Int, where: BookWhereInput): [Book!]!
   chapter(where: ChapterWhereUniqueInput!): Chapter
   chapterByBook(bookId: Int, skip: Int): [Chapter!]!
@@ -2298,6 +2346,13 @@ type Query {
   chaptersFeedByAuthor(authorId: Int, skip: Int): [Chapter!]!
   chaptersFeedByAuthorCount(authorId: Int): Int!
   chaptersFeedCount(userId: Int): Int!
+=======
+  books(orderBy: BookOrderByInput, skip: Int, where: BookWhereInput): [Book!]!
+  chapter(where: ChapterWhereUniqueInput!): Chapter
+  chapterByBook(bookId: Int, skip: Int): [Chapter!]!
+  chapters(orderBy: ChapterOrderByInput, skip: Int, where: ChapterWhereInput): [Chapter!]!
+  chaptersFeed(skip: Int): [Chapter!]!
+>>>>>>> 345896f... .
   comment(where: CommentWhereUniqueInput!): Comment
   comments(orderBy: [CommentOrderByInput!], skip: Int, where: CommentWhereInput): [Comment!]!
   donation(where: DonationWhereUniqueInput!): Donation
@@ -3016,8 +3071,11 @@ input UserCreateWithoutLikesInput {
   getStreamToken: String
   givenname: String
   googleId: String
+<<<<<<< HEAD
   invited: UserCreateManyWithoutInviterInput
   inviter: UserCreateOneWithoutInvitedInput
+=======
+>>>>>>> 345896f... .
   password: String
   receivedDonations: DonationCreateManyWithoutRecipientInput
   reviews: ReviewCreateManyWithoutAuthorInput
@@ -3121,9 +3179,18 @@ input UserScalarWhereInput {
   inviterId: IntNullableFilter
   NOT: [UserScalarWhereInput!]
   OR: [UserScalarWhereInput!]
+<<<<<<< HEAD
   password: StringNullableFilter
   stripeId: StringNullableFilter
   username: StringNullableFilter
+=======
+  password: NullableStringFilter
+  receivedDonations: DonationFilter
+  reviews: ReviewFilter
+  sentDonations: DonationFilter
+  stripeId: NullableStringFilter
+  username: NullableStringFilter
+>>>>>>> 345896f... .
 }
 
 input UserUpdateInput {
@@ -3161,6 +3228,10 @@ input UserUpdateManyDataInput {
   getStreamToken: String
   givenname: String
   googleId: String
+<<<<<<< HEAD
+=======
+  id: Int
+>>>>>>> 345896f... .
   password: String
   stripeId: String
   username: String
@@ -3506,8 +3577,12 @@ input UserUpdateWithoutLikesDataInput {
   getStreamToken: String
   givenname: String
   googleId: String
+<<<<<<< HEAD
   invited: UserUpdateManyWithoutInviterInput
   inviter: UserUpdateOneWithoutInvitedInput
+=======
+  id: Int
+>>>>>>> 345896f... .
   password: String
   receivedDonations: DonationUpdateManyWithoutRecipientInput
   reviews: ReviewUpdateManyWithoutAuthorInput
@@ -3698,12 +3773,21 @@ input UserWhereInput {
   likes: LikeListRelationFilter
   NOT: [UserWhereInput!]
   OR: [UserWhereInput!]
+<<<<<<< HEAD
   password: StringNullableFilter
   receivedDonations: DonationListRelationFilter
   reviews: ReviewListRelationFilter
   sentDonations: DonationListRelationFilter
   stripeId: StringNullableFilter
   username: StringNullableFilter
+=======
+  password: NullableStringFilter
+  receivedDonations: DonationFilter
+  reviews: ReviewFilter
+  sentDonations: DonationFilter
+  stripeId: NullableStringFilter
+  username: NullableStringFilter
+>>>>>>> 345896f... .
 }
 
 input UserWhereUniqueInput {
