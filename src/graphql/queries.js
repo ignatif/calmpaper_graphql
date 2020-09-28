@@ -77,17 +77,53 @@ const Query = objectType({
       type: 'Chapter',
       args: {
         skip: intArg({ nullable: true }),
+        userId: intArg(),
       },
-      resolve: (_, { skip = 0 }, ctx) => {
+      resolve: (_, { skip = 0, userId }, ctx) => {
         return ctx.prisma.chapter.findMany({
           take: 3,
           skip,
           orderBy: { createdAt: 'desc' },
           where: {
-              book: {
-		      archived: { not:  true  }
-	       },
-	       },
+            AND: [
+              { book: { not: undefined } },
+              { book: { archived: { not: true } } },
+              {
+                book: {
+                  readers: {
+                    some: {
+                      id: { equals: userId },
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        })
+      },
+    })
+
+    t.list.field('chaptersFeedByAuthor', {
+      type: 'Chapter',
+      args: {
+        skip: intArg({ nullable: true }),
+        authorId: intArg(),
+      },
+      resolve: (_, { skip = 0, authorId }, ctx) => {
+        return ctx.prisma.chapter.findMany({
+          take: 3,
+          skip,
+          orderBy: { createdAt: 'desc' },
+          where: {
+            // book: {
+            //   not: undefined,
+            // },
+            AND: [
+              { book: { not: undefined } },
+              { book: { archived: { not: true } } },
+              { author: { id: authorId } },
+            ],
+          },
         })
       },
     })
