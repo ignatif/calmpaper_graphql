@@ -2,12 +2,6 @@ var passport = require('passport')
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy
 const { PrismaClient } = require('@prisma/client')
 
-const stream = require('getstream').default
-const getStreamClient = stream.connect(
-  'c2u3fw52wm4t',
-  'grdr5z6ras7ugc33ezbqswq6k6pggrad4armpg3xjskpgp7gwttmqjgyfg86pn8z',
-)
-
 // Use the GoogleStrategy within Passport.
 //   Strategies in Passport require a `verify` function, which accept
 //   credentials (in this case, an accessToken, refreshToken, and Google
@@ -15,9 +9,8 @@ const getStreamClient = stream.connect(
 passport.use(
   new GoogleStrategy(
     {
-      clientID:
-        '335114584327-634nqa511l75d71ov4275gp00k0qqpct.apps.googleusercontent.com',
-      clientSecret: 'vTVx_tRL70hL1fCFPVUpDDpj',
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL: `${process.env.BACKEND_URL}/auth/google/callback`,
     },
     async function (accessToken, refreshToken, profile, done) {
