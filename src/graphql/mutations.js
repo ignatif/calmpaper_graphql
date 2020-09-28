@@ -8,8 +8,8 @@ const { sign } = require('jsonwebtoken')
 
 const stream = require('getstream').default
 const getStreamClient = stream.connect(
-  'c2u3fw52wm4t',
-  'grdr5z6ras7ugc33ezbqswq6k6pggrad4armpg3xjskpgp7gwttmqjgyfg86pn8z',
+  process.env.GETSTREAM_KEY,
+  process.env.GETSTREAM_SECRET,
 )
 
 const APP_SECRET = 'appsecret321'
@@ -586,14 +586,11 @@ const Mutation = objectType({
           stripeCode: stringArg(),
         },
         resolve: async (parent, { stripeCode }, ctx) => {
-          console.log('setup stripe')
           const userId = getUserId(ctx)
 
           const stripeConnectRequest = await makeStripeConnectRequest(
             stripeCode,
           )
-          console.log('---------------stripeConnectRequest')
-          console.log(stripeConnectRequest)
           const stripeUserId = stripeConnectRequest.stripe_user_id
 
           if (!stripeUserId) {

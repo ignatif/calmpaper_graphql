@@ -26,14 +26,12 @@ require('dotenv').config()
 
 var passport = require('passport')
 const { sign } = require('jsonwebtoken')
-require('./passport/google')
-
-const APP_SECRET = 'appsecret321'
+require('./middlewares/authentication/google')
 
 const stream = require('getstream').default
 const getStreamClient = stream.connect(
-  'c2u3fw52wm4t',
-  'grdr5z6ras7ugc33ezbqswq6k6pggrad4armpg3xjskpgp7gwttmqjgyfg86pn8z',
+  process.env.GETSTREAM_KEY,
+  process.env.GETSTREAM_SECRET,
 )
 
 const { applyMiddleware } = require('graphql-middleware')
@@ -62,15 +60,12 @@ let schema = makeSchema({
   experimentalCRUD: true,
   outputs: {
     schema: __dirname + '/../schema.graphql',
-    // typegen: __dirname + '/generated/nexus.ts',
   },
 })
 
-// schema = applyMiddleware(schema, permissions, notifications)
-schema = applyMiddleware(schema, notifications)
+schema = applyMiddleware(schema, permissions, notifications)
 
 const stipeNode = require('stripe')
-
 const stripe = stipeNode(process.env.STRIPE_SECRET_KEY)
 
 const server = new GraphQLServer({
@@ -84,15 +79,15 @@ const server = new GraphQLServer({
   },
 })
 
-// var Analytics = require('analytics-node');
-// var analytics = new Analytics('aNRRikzxFRcUEi0MVQwIVE8SfWnuTdsR');
+server.express.use(cors())
 
-// Allowing passport to serialize and deserialize users into sessions
-passport.serializeUser((user, done) => done(null, user))
-passport.deserializeUser((obj, done) => done(null, obj))
+// health check
+server.express.use('/hi', (req, res) => {
+  res.status(200).json({ ok: true })
+})
 
+// file upload
 server.express.use(express.static('public'))
-server.express.use(session({ secret: 'cats' }))
 server.express.use(
   bodyParser.urlencoded({
     parameterLimit: 100000,
@@ -100,41 +95,8 @@ server.express.use(
     extended: false,
   }),
 )
-server.express.use(passport.initialize())
-server.express.use(passport.session())
-
 server.express.use(bodyParser.json({ limit: '50mb', type: 'application/json' }))
 server.express.use(bodyParser.json())
-server.express.use(cors())
-
-server.express.use('/hi', (req, res) => {
-  res.status(200).json({ ok: true })
-})
-
-// const aws = require('aws-sdk')
-// aws.config.update({
-//   accessKeyId: process.env.AWS_ACCESS_KEY,
-//   secretAccessKey: process.env.AWS_SECRET,
-//   region: 'us-east-1',
-// })
-
-// const s3 = new aws.S3({
-//   /* ... */
-// })
-// const storage = multerS3({
-//   s3: s3,
-//   bucket: 'calmpaper-bucket',
-//   acl: 'public-read',
-//   metadata: function (req, file, cb) {
-//     cb(null, { fieldName: file.fieldname })
-//   },
-//   filename(req, file, cb) {
-//     cb(null, `${new Date()}-${file.originalname}`)
-//   },
-//   key: function (req, file, cb) {
-//     cb(null, Date.now().toString())
-//   },
-// })
 
 const storage = multer.diskStorage({
   destination: './files',
@@ -163,6 +125,11 @@ server.express.use(
 )
 
 // auth
+server.express.use(session({ secret: 'cats' }))
+passport.serializeUser((user, done) => done(null, user))
+passport.deserializeUser((obj, done) => done(null, obj))
+server.express.use(passport.initialize())
+server.express.use(passport.session())
 
 server.express.get(
   '/auth/google',
@@ -195,15 +162,11 @@ server.express.get(
         getStreamToken,
       },
       update: {
-        fullname: profile.displayName,
-        firstname: profile.name.familyName,
-        givenname: profile.name.givenName,
-        avatar: profile.photos[0].value,
         email: profile.emails[0].value,
         getStreamToken,
       },
     })
-    var token = sign({ userId: user.id }, APP_SECRET)
+    var token = sign({ userId: user.id }, process.env.APP_SECRET)
 
     res.redirect(`${process.env.FRONTEND_URL}/?token=${token}`)
   },
