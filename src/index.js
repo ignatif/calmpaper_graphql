@@ -1,3 +1,4 @@
+require('dotenv').config()
 const { GraphQLServer } = require('graphql-yoga')
 const { makeSchema, objectType, intArg, stringArg } = require('@nexus/schema')
 const { PrismaClient } = require('@prisma/client')
@@ -22,7 +23,6 @@ const express = require('express')
 const multer = require('multer')
 const multerS3 = require('multer-s3')
 const cors = require('cors')
-require('dotenv').config()
 
 var passport = require('passport')
 const { sign } = require('jsonwebtoken')
@@ -63,7 +63,7 @@ let schema = makeSchema({
   },
 })
 
-schema = applyMiddleware(schema, permissions, notifications)
+schema = applyMiddleware(schema, notifications)
 
 const stipeNode = require('stripe')
 const stripe = stipeNode(process.env.STRIPE_SECRET_KEY)
@@ -125,7 +125,7 @@ server.express.use(
 )
 
 // auth
-server.express.use(session({ secret: 'cats' }))
+server.express.use(session({ secret: process.env.APP_SECRET }))
 passport.serializeUser((user, done) => done(null, user))
 passport.deserializeUser((obj, done) => done(null, obj))
 server.express.use(passport.initialize())
