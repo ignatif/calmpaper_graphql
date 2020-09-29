@@ -89,13 +89,20 @@ const Query = objectType({
               { book: { not: undefined } },
               { book: { archived: { not: true } } },
               {
-                book: {
-                  readers: {
-                    some: {
-                      id: { equals: userId },
+                OR: [
+                  {
+                    book: {
+                      readers: {
+                        some: {
+                          id: { equals: userId },
+                        },
+                      },
                     },
                   },
-                },
+                  {
+                    author: { followers: { some: { id: { equals: userId } } } },
+                  },
+                ],
               },
             ],
           },

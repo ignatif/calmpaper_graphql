@@ -27,6 +27,10 @@ model User {
   following      User[]     @relation("UserFollowers", references: [id])
   followers      User[]     @relation("UserFollowers", references: [id])
 
+  inviterId      Int?
+  inviter        User?      @relation("UserInvited", references: [id], fields: [inviterId])
+  invited        User[]     @relation("UserInvited")
+
   googleId       String?     @unique
   getStreamToken String?     @unique
   stripeId       String?     @unique

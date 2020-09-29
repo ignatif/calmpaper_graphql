@@ -1,6 +1,6 @@
 const { objectType, intArg, stringArg } = require('@nexus/schema')
-const fetch = require('isomorphic-unfetch')
 const { getUserId } = require('../utils')
+const fetch = require('isomorphic-unfetch')
 const stripe = require('../stripe')
 
 const { compare, hash } = require('bcryptjs')
@@ -300,7 +300,7 @@ const Mutation = objectType({
               verb: 'like',
               to: [`notifications:${like.chapter.authorId}`],
               object: `chapter:${like.chapter.id}`,
-              userId,
+              userId: authorId,
               bookId: like.chapter.bookId,
               chapterId: like.chapter.id,
               actor: getStreamClient.user(authorId),

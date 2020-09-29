@@ -1,3 +1,4 @@
+require('dotenv').config()
 const { GraphQLServer } = require('graphql-yoga')
 const { makeSchema, objectType, intArg, stringArg } = require('@nexus/schema')
 const { PrismaClient } = require('@prisma/client')
@@ -22,11 +23,12 @@ const express = require('express')
 const multer = require('multer')
 const multerS3 = require('multer-s3')
 const cors = require('cors')
-require('dotenv').config()
 
 var passport = require('passport')
 const { sign } = require('jsonwebtoken')
 require('./middlewares/authentication/google')
+
+const APP_SECRET = 'appsecret321'
 
 const stream = require('getstream').default
 const getStreamClient = stream.connect(
@@ -63,7 +65,8 @@ let schema = makeSchema({
   },
 })
 
-schema = applyMiddleware(schema, permissions, notifications)
+// schema = applyMiddleware(schema, permissions, notifications)
+schema = applyMiddleware(schema, notifications)
 
 const stipeNode = require('stripe')
 const stripe = stipeNode(process.env.STRIPE_SECRET_KEY)
@@ -78,8 +81,6 @@ const server = new GraphQLServer({
     }
   },
 })
-
-server.express.use(cors())
 
 // health check
 server.express.use('/hi', (req, res) => {
@@ -125,14 +126,20 @@ server.express.use(
 )
 
 // auth
-server.express.use(session({ secret: 'cats' }))
 passport.serializeUser((user, done) => done(null, user))
 passport.deserializeUser((obj, done) => done(null, obj))
+server.express.use(session({ secret: 'cats' }))
 server.express.use(passport.initialize())
 server.express.use(passport.session())
 
+server.express.use(cors())
+
 server.express.get(
   '/auth/google',
+  function (req, res, next) {
+    req.session.from = req.query.from
+    next()
+  },
   passport.authenticate('google', {
     scope: [
       'https://www.googleapis.com/auth/plus.login',
@@ -141,32 +148,91 @@ server.express.get(
   }),
 )
 
+// server.express.get('/auth/google', function (req, res, next) {
+//   console.log('---Invite from:')
+//   console.log(req.query.from)
+//   passport.authenticate(
+//     'google',
+//     {
+//       scope: [
+//         'https://www.googleapis.com/auth/plus.login',
+//         'https://www.googleapis.com/auth/userinfo.email',
+//       ],
+//     },
+//     // function (err, user, info) {
+//     //   console.log('req')
+//     //   console.log(req)
+//     //   // console.log('res')
+//     //   // console.log(res)
+//     //   console.log('info')
+//     //   console.log(info)
+//     //   if (err) {
+//     //     return next(err)
+//     //   }
+//     //   if (!user) {
+//     //     return res.redirect('/login')
+//     //   }
+//     //   req.logIn(user, function (err) {
+//     //     if (err) {
+//     //       return next(err)
+//     //     }
+//     //     return res.redirect('/users/' + user.username)
+//     //   })
+//     // },
+//   )(req, res, next)
+// })
+
 server.express.get(
   '/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/login' }),
   async function (req, res) {
+    let user
     const { user: profile } = req
 
-    const getStreamToken = getStreamClient.createUserToken(profile.id)
-    const user = await prisma.user.upsert({
+    // 1) User is already registered
+    user = await prisma.user.findOne({
       where: {
         googleId: profile.id,
       },
-      create: {
-        googleId: profile.id,
-        fullname: profile.displayName,
-        firstname: profile.name.familyName,
-        givenname: profile.name.givenName,
-        avatar: profile.photos[0].value,
-        email: profile.emails[0].value,
-        getStreamToken,
-      },
-      update: {
-        email: profile.emails[0].value,
-        getStreamToken,
-      },
     })
-    var token = sign({ userId: user.id }, process.env.APP_SECRET)
+
+    // 2) No invite and not registered
+    if (!user && !req.session.from) {
+      res.redirect(`${process.env.FRONTEND_URL}/auth-fail`)
+    }
+
+    // 3) User is registering through invite
+    if (!user && req.session.from) {
+      const inviterId = parseInt(req.session.from)
+      const getStreamToken = getStreamClient.createUserToken(profile.id)
+      user = await prisma.user.create({
+        data: {
+          googleId: profile.id,
+          fullname: profile.displayName,
+          firstname: profile.name.familyName,
+          givenname: profile.name.givenName,
+          avatar: profile.photos[0].value,
+          email: profile.emails[0].value,
+          getStreamToken,
+          inviter: {
+            connect: {
+              id: inviterId,
+            },
+          },
+          following: { connect: { id: inviterId } },
+        },
+      })
+
+      const userFeed = getStreamClient.feed('notifications', user.id)
+      userFeed.follow('user', inviterId)
+
+      var token = sign({ userId: user.id }, APP_SECRET)
+      res.redirect(
+        `${process.env.FRONTEND_URL}/?token=${token}&follow=${inviterId}`,
+      )
+    }
+
+    var token = sign({ userId: user.id }, APP_SECRET)
 
     res.redirect(`${process.env.FRONTEND_URL}/?token=${token}`)
   },
