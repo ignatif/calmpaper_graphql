@@ -2700,6 +2700,8 @@ type User {
   givenname: String
   googleId: String
   id: Int!
+  invited: [User!]!
+  inviter: User
   likes: [Like!]!
   password: String
   reviews: [Review!]!
@@ -2721,6 +2723,8 @@ input UserCreateInput {
   getStreamToken: String
   givenname: String
   googleId: String
+  invited: UserCreateManyWithoutInviterInput
+  inviter: UserCreateOneWithoutInvitedInput
   likes: LikeCreateManyWithoutAuthorInput
   password: String
   receivedDonations: DonationCreateManyWithoutRecipientInput
@@ -2745,6 +2749,11 @@ input UserCreateManyWithoutFollowingInput {
   create: [UserCreateWithoutFollowingInput!]
 }
 
+input UserCreateManyWithoutInviterInput {
+  connect: [UserWhereUniqueInput!]
+  create: [UserCreateWithoutInviterInput!]
+}
+
 input UserCreateOneWithoutBooksInput {
   connect: UserWhereUniqueInput
   create: UserCreateWithoutBooksInput
@@ -2758,6 +2767,11 @@ input UserCreateOneWithoutChaptersInput {
 input UserCreateOneWithoutCommentsInput {
   connect: UserWhereUniqueInput
   create: UserCreateWithoutCommentsInput
+}
+
+input UserCreateOneWithoutInvitedInput {
+  connect: UserWhereUniqueInput
+  create: UserCreateWithoutInvitedInput
 }
 
 input UserCreateOneWithoutLikesInput {
@@ -2793,6 +2807,8 @@ input UserCreateWithoutBooksInput {
   getStreamToken: String
   givenname: String
   googleId: String
+  invited: UserCreateManyWithoutInviterInput
+  inviter: UserCreateOneWithoutInvitedInput
   likes: LikeCreateManyWithoutAuthorInput
   password: String
   receivedDonations: DonationCreateManyWithoutRecipientInput
@@ -2815,6 +2831,8 @@ input UserCreateWithoutChaptersInput {
   getStreamToken: String
   givenname: String
   googleId: String
+  invited: UserCreateManyWithoutInviterInput
+  inviter: UserCreateOneWithoutInvitedInput
   likes: LikeCreateManyWithoutAuthorInput
   password: String
   receivedDonations: DonationCreateManyWithoutRecipientInput
@@ -2837,6 +2855,8 @@ input UserCreateWithoutCommentsInput {
   getStreamToken: String
   givenname: String
   googleId: String
+  invited: UserCreateManyWithoutInviterInput
+  inviter: UserCreateOneWithoutInvitedInput
   likes: LikeCreateManyWithoutAuthorInput
   password: String
   receivedDonations: DonationCreateManyWithoutRecipientInput
@@ -2859,6 +2879,8 @@ input UserCreateWithoutFavoriteBooksInput {
   getStreamToken: String
   givenname: String
   googleId: String
+  invited: UserCreateManyWithoutInviterInput
+  inviter: UserCreateOneWithoutInvitedInput
   likes: LikeCreateManyWithoutAuthorInput
   password: String
   receivedDonations: DonationCreateManyWithoutRecipientInput
@@ -2881,6 +2903,8 @@ input UserCreateWithoutFollowersInput {
   getStreamToken: String
   givenname: String
   googleId: String
+  invited: UserCreateManyWithoutInviterInput
+  inviter: UserCreateOneWithoutInvitedInput
   likes: LikeCreateManyWithoutAuthorInput
   password: String
   receivedDonations: DonationCreateManyWithoutRecipientInput
@@ -2903,6 +2927,56 @@ input UserCreateWithoutFollowingInput {
   getStreamToken: String
   givenname: String
   googleId: String
+  invited: UserCreateManyWithoutInviterInput
+  inviter: UserCreateOneWithoutInvitedInput
+  likes: LikeCreateManyWithoutAuthorInput
+  password: String
+  receivedDonations: DonationCreateManyWithoutRecipientInput
+  reviews: ReviewCreateManyWithoutAuthorInput
+  sentDonations: DonationCreateManyWithoutPayerInput
+  stripeId: String
+  username: String
+}
+
+input UserCreateWithoutInvitedInput {
+  avatar: String
+  books: BookCreateManyWithoutAuthorInput
+  chapters: ChapterCreateManyWithoutAuthorInput
+  comments: CommentCreateManyWithoutAuthorInput
+  email: String
+  favoriteBooks: BookCreateManyWithoutReadersInput
+  firstname: String
+  followers: UserCreateManyWithoutFollowingInput
+  following: UserCreateManyWithoutFollowersInput
+  fullname: String
+  getStreamToken: String
+  givenname: String
+  googleId: String
+  inviter: UserCreateOneWithoutInvitedInput
+  likes: LikeCreateManyWithoutAuthorInput
+  password: String
+  receivedDonations: DonationCreateManyWithoutRecipientInput
+  reviews: ReviewCreateManyWithoutAuthorInput
+  sentDonations: DonationCreateManyWithoutPayerInput
+  stripeId: String
+  username: String
+}
+
+input UserCreateWithoutInviterInput {
+  avatar: String
+  books: BookCreateManyWithoutAuthorInput
+  chapters: ChapterCreateManyWithoutAuthorInput
+  comments: CommentCreateManyWithoutAuthorInput
+  email: String
+  favoriteBooks: BookCreateManyWithoutReadersInput
+  firstname: String
+  followers: UserCreateManyWithoutFollowingInput
+  following: UserCreateManyWithoutFollowersInput
+  fullname: String
+  getStreamToken: String
+  givenname: String
+  googleId: String
+  invited: UserCreateManyWithoutInviterInput
   likes: LikeCreateManyWithoutAuthorInput
   password: String
   receivedDonations: DonationCreateManyWithoutRecipientInput
@@ -2926,6 +3000,8 @@ input UserCreateWithoutLikesInput {
   getStreamToken: String
   givenname: String
   googleId: String
+  invited: UserCreateManyWithoutInviterInput
+  inviter: UserCreateOneWithoutInvitedInput
   password: String
   receivedDonations: DonationCreateManyWithoutRecipientInput
   reviews: ReviewCreateManyWithoutAuthorInput
@@ -2948,6 +3024,8 @@ input UserCreateWithoutReceivedDonationsInput {
   getStreamToken: String
   givenname: String
   googleId: String
+  invited: UserCreateManyWithoutInviterInput
+  inviter: UserCreateOneWithoutInvitedInput
   likes: LikeCreateManyWithoutAuthorInput
   password: String
   reviews: ReviewCreateManyWithoutAuthorInput
@@ -2970,6 +3048,8 @@ input UserCreateWithoutReviewsInput {
   getStreamToken: String
   givenname: String
   googleId: String
+  invited: UserCreateManyWithoutInviterInput
+  inviter: UserCreateOneWithoutInvitedInput
   likes: LikeCreateManyWithoutAuthorInput
   password: String
   receivedDonations: DonationCreateManyWithoutRecipientInput
@@ -2992,6 +3072,8 @@ input UserCreateWithoutSentDonationsInput {
   getStreamToken: String
   givenname: String
   googleId: String
+  invited: UserCreateManyWithoutInviterInput
+  inviter: UserCreateOneWithoutInvitedInput
   likes: LikeCreateManyWithoutAuthorInput
   password: String
   receivedDonations: DonationCreateManyWithoutRecipientInput
@@ -3022,6 +3104,8 @@ input UserScalarWhereInput {
   givenname: NullableStringFilter
   googleId: NullableStringFilter
   id: IntFilter
+  invited: UserFilter
+  inviterId: NullableIntFilter
   likes: LikeFilter
   NOT: [UserScalarWhereInput!]
   OR: [UserScalarWhereInput!]
@@ -3048,6 +3132,8 @@ input UserUpdateInput {
   givenname: String
   googleId: String
   id: Int
+  invited: UserUpdateManyWithoutInviterInput
+  inviter: UserUpdateOneWithoutInvitedInput
   likes: LikeUpdateManyWithoutAuthorInput
   password: String
   receivedDonations: DonationUpdateManyWithoutRecipientInput
@@ -3107,6 +3193,18 @@ input UserUpdateManyWithoutFollowingInput {
   upsert: [UserUpsertWithWhereUniqueWithoutFollowingInput!]
 }
 
+input UserUpdateManyWithoutInviterInput {
+  connect: [UserWhereUniqueInput!]
+  create: [UserCreateWithoutInviterInput!]
+  delete: [UserWhereUniqueInput!]
+  deleteMany: [UserScalarWhereInput!]
+  disconnect: [UserWhereUniqueInput!]
+  set: [UserWhereUniqueInput!]
+  update: [UserUpdateWithWhereUniqueWithoutInviterInput!]
+  updateMany: [UserUpdateManyWithWhereNestedInput!]
+  upsert: [UserUpsertWithWhereUniqueWithoutInviterInput!]
+}
+
 input UserUpdateManyWithWhereNestedInput {
   data: UserUpdateManyDataInput!
   where: UserScalarWhereInput!
@@ -3137,6 +3235,15 @@ input UserUpdateOneWithoutCommentsInput {
   disconnect: Boolean
   update: UserUpdateWithoutCommentsDataInput
   upsert: UserUpsertWithoutCommentsInput
+}
+
+input UserUpdateOneWithoutInvitedInput {
+  connect: UserWhereUniqueInput
+  create: UserCreateWithoutInvitedInput
+  delete: Boolean
+  disconnect: Boolean
+  update: UserUpdateWithoutInvitedDataInput
+  upsert: UserUpsertWithoutInvitedInput
 }
 
 input UserUpdateOneWithoutLikesInput {
@@ -3189,6 +3296,8 @@ input UserUpdateWithoutBooksDataInput {
   givenname: String
   googleId: String
   id: Int
+  invited: UserUpdateManyWithoutInviterInput
+  inviter: UserUpdateOneWithoutInvitedInput
   likes: LikeUpdateManyWithoutAuthorInput
   password: String
   receivedDonations: DonationUpdateManyWithoutRecipientInput
@@ -3212,6 +3321,8 @@ input UserUpdateWithoutChaptersDataInput {
   givenname: String
   googleId: String
   id: Int
+  invited: UserUpdateManyWithoutInviterInput
+  inviter: UserUpdateOneWithoutInvitedInput
   likes: LikeUpdateManyWithoutAuthorInput
   password: String
   receivedDonations: DonationUpdateManyWithoutRecipientInput
@@ -3235,6 +3346,8 @@ input UserUpdateWithoutCommentsDataInput {
   givenname: String
   googleId: String
   id: Int
+  invited: UserUpdateManyWithoutInviterInput
+  inviter: UserUpdateOneWithoutInvitedInput
   likes: LikeUpdateManyWithoutAuthorInput
   password: String
   receivedDonations: DonationUpdateManyWithoutRecipientInput
@@ -3258,6 +3371,8 @@ input UserUpdateWithoutFavoriteBooksDataInput {
   givenname: String
   googleId: String
   id: Int
+  invited: UserUpdateManyWithoutInviterInput
+  inviter: UserUpdateOneWithoutInvitedInput
   likes: LikeUpdateManyWithoutAuthorInput
   password: String
   receivedDonations: DonationUpdateManyWithoutRecipientInput
@@ -3281,6 +3396,8 @@ input UserUpdateWithoutFollowersDataInput {
   givenname: String
   googleId: String
   id: Int
+  invited: UserUpdateManyWithoutInviterInput
+  inviter: UserUpdateOneWithoutInvitedInput
   likes: LikeUpdateManyWithoutAuthorInput
   password: String
   receivedDonations: DonationUpdateManyWithoutRecipientInput
@@ -3304,6 +3421,58 @@ input UserUpdateWithoutFollowingDataInput {
   givenname: String
   googleId: String
   id: Int
+  invited: UserUpdateManyWithoutInviterInput
+  inviter: UserUpdateOneWithoutInvitedInput
+  likes: LikeUpdateManyWithoutAuthorInput
+  password: String
+  receivedDonations: DonationUpdateManyWithoutRecipientInput
+  reviews: ReviewUpdateManyWithoutAuthorInput
+  sentDonations: DonationUpdateManyWithoutPayerInput
+  stripeId: String
+  username: String
+}
+
+input UserUpdateWithoutInvitedDataInput {
+  avatar: String
+  books: BookUpdateManyWithoutAuthorInput
+  chapters: ChapterUpdateManyWithoutAuthorInput
+  comments: CommentUpdateManyWithoutAuthorInput
+  email: String
+  favoriteBooks: BookUpdateManyWithoutReadersInput
+  firstname: String
+  followers: UserUpdateManyWithoutFollowingInput
+  following: UserUpdateManyWithoutFollowersInput
+  fullname: String
+  getStreamToken: String
+  givenname: String
+  googleId: String
+  id: Int
+  inviter: UserUpdateOneWithoutInvitedInput
+  likes: LikeUpdateManyWithoutAuthorInput
+  password: String
+  receivedDonations: DonationUpdateManyWithoutRecipientInput
+  reviews: ReviewUpdateManyWithoutAuthorInput
+  sentDonations: DonationUpdateManyWithoutPayerInput
+  stripeId: String
+  username: String
+}
+
+input UserUpdateWithoutInviterDataInput {
+  avatar: String
+  books: BookUpdateManyWithoutAuthorInput
+  chapters: ChapterUpdateManyWithoutAuthorInput
+  comments: CommentUpdateManyWithoutAuthorInput
+  email: String
+  favoriteBooks: BookUpdateManyWithoutReadersInput
+  firstname: String
+  followers: UserUpdateManyWithoutFollowingInput
+  following: UserUpdateManyWithoutFollowersInput
+  fullname: String
+  getStreamToken: String
+  givenname: String
+  googleId: String
+  id: Int
+  invited: UserUpdateManyWithoutInviterInput
   likes: LikeUpdateManyWithoutAuthorInput
   password: String
   receivedDonations: DonationUpdateManyWithoutRecipientInput
@@ -3328,6 +3497,8 @@ input UserUpdateWithoutLikesDataInput {
   givenname: String
   googleId: String
   id: Int
+  invited: UserUpdateManyWithoutInviterInput
+  inviter: UserUpdateOneWithoutInvitedInput
   password: String
   receivedDonations: DonationUpdateManyWithoutRecipientInput
   reviews: ReviewUpdateManyWithoutAuthorInput
@@ -3351,6 +3522,8 @@ input UserUpdateWithoutReceivedDonationsDataInput {
   givenname: String
   googleId: String
   id: Int
+  invited: UserUpdateManyWithoutInviterInput
+  inviter: UserUpdateOneWithoutInvitedInput
   likes: LikeUpdateManyWithoutAuthorInput
   password: String
   reviews: ReviewUpdateManyWithoutAuthorInput
@@ -3374,6 +3547,8 @@ input UserUpdateWithoutReviewsDataInput {
   givenname: String
   googleId: String
   id: Int
+  invited: UserUpdateManyWithoutInviterInput
+  inviter: UserUpdateOneWithoutInvitedInput
   likes: LikeUpdateManyWithoutAuthorInput
   password: String
   receivedDonations: DonationUpdateManyWithoutRecipientInput
@@ -3397,6 +3572,8 @@ input UserUpdateWithoutSentDonationsDataInput {
   givenname: String
   googleId: String
   id: Int
+  invited: UserUpdateManyWithoutInviterInput
+  inviter: UserUpdateOneWithoutInvitedInput
   likes: LikeUpdateManyWithoutAuthorInput
   password: String
   receivedDonations: DonationUpdateManyWithoutRecipientInput
@@ -3420,6 +3597,11 @@ input UserUpdateWithWhereUniqueWithoutFollowingInput {
   where: UserWhereUniqueInput!
 }
 
+input UserUpdateWithWhereUniqueWithoutInviterInput {
+  data: UserUpdateWithoutInviterDataInput!
+  where: UserWhereUniqueInput!
+}
+
 input UserUpsertWithoutBooksInput {
   create: UserCreateWithoutBooksInput!
   update: UserUpdateWithoutBooksDataInput!
@@ -3433,6 +3615,11 @@ input UserUpsertWithoutChaptersInput {
 input UserUpsertWithoutCommentsInput {
   create: UserCreateWithoutCommentsInput!
   update: UserUpdateWithoutCommentsDataInput!
+}
+
+input UserUpsertWithoutInvitedInput {
+  create: UserCreateWithoutInvitedInput!
+  update: UserUpdateWithoutInvitedDataInput!
 }
 
 input UserUpsertWithoutLikesInput {
@@ -3473,6 +3660,12 @@ input UserUpsertWithWhereUniqueWithoutFollowingInput {
   where: UserWhereUniqueInput!
 }
 
+input UserUpsertWithWhereUniqueWithoutInviterInput {
+  create: UserCreateWithoutInviterInput!
+  update: UserUpdateWithoutInviterDataInput!
+  where: UserWhereUniqueInput!
+}
+
 input UserWhereInput {
   AND: [UserWhereInput!]
   avatar: NullableStringFilter
@@ -3489,6 +3682,9 @@ input UserWhereInput {
   givenname: NullableStringFilter
   googleId: NullableStringFilter
   id: IntFilter
+  invited: UserFilter
+  inviter: UserWhereInput
+  inviterId: NullableIntFilter
   likes: LikeFilter
   NOT: [UserWhereInput!]
   OR: [UserWhereInput!]

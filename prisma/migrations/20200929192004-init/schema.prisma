@@ -17,6 +17,7 @@ model User {
   fullname       String?
   email          String?    @unique
   avatar         String?
+  password       String?
   books          Book[]     @relation("UserBookAuthor")
   favoriteBooks  Book[]     @relation("UserBookReader")
   chapters       Chapter[]
@@ -25,6 +26,10 @@ model User {
   comments       Comment[]
   following      User[]     @relation("UserFollowers", references: [id])
   followers      User[]     @relation("UserFollowers", references: [id])
+
+  inviterId      Int?
+  inviter        User?      @relation("UserInvited", references: [id], fields: [inviterId])
+  invited        User[]     @relation("UserInvited")
 
   googleId       String?     @unique
   getStreamToken String?     @unique
@@ -39,6 +44,7 @@ model Book {
   name           String
   description    String
   image          String?
+  archived       Boolean?   @default(false)
   createdAt      DateTime   @default(now())
   author         User?      @relation("UserBookAuthor", fields: [authorId], references: [id])
   authorId       Int?

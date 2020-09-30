@@ -28,6 +28,8 @@ var passport = require('passport')
 const { sign } = require('jsonwebtoken')
 require('./middlewares/authentication/google')
 
+const APP_SECRET = 'appsecret321'
+
 const stream = require('getstream').default
 const getStreamClient = stream.connect(
   process.env.GETSTREAM_KEY,
@@ -128,11 +130,16 @@ server.express.use(
 server.express.use(session({ secret: process.env.APP_SECRET }))
 passport.serializeUser((user, done) => done(null, user))
 passport.deserializeUser((obj, done) => done(null, obj))
+server.express.use(session({ secret: 'cats' }))
 server.express.use(passport.initialize())
 server.express.use(passport.session())
 
 server.express.get(
   '/auth/google',
+  function (req, res, next) {
+    req.session.from = req.query.from
+    next()
+  },
   passport.authenticate('google', {
     scope: [
       'https://www.googleapis.com/auth/plus.login',
@@ -140,6 +147,40 @@ server.express.get(
     ],
   }),
 )
+
+// server.express.get('/auth/google', function (req, res, next) {
+//   console.log('---Invite from:')
+//   console.log(req.query.from)
+//   passport.authenticate(
+//     'google',
+//     {
+//       scope: [
+//         'https://www.googleapis.com/auth/plus.login',
+//         'https://www.googleapis.com/auth/userinfo.email',
+//       ],
+//     },
+//     // function (err, user, info) {
+//     //   console.log('req')
+//     //   console.log(req)
+//     //   // console.log('res')
+//     //   // console.log(res)
+//     //   console.log('info')
+//     //   console.log(info)
+//     //   if (err) {
+//     //     return next(err)
+//     //   }
+//     //   if (!user) {
+//     //     return res.redirect('/login')
+//     //   }
+//     //   req.logIn(user, function (err) {
+//     //     if (err) {
+//     //       return next(err)
+//     //     }
+//     //     return res.redirect('/users/' + user.username)
+//     //   })
+//     // },
+//   )(req, res, next)
+// })
 
 server.express.get(
   '/auth/google/callback',
@@ -162,11 +203,15 @@ server.express.get(
         getStreamToken,
       },
       update: {
+        fullname: profile.displayName,
+        firstname: profile.name.familyName,
+        givenname: profile.name.givenName,
+        avatar: profile.photos[0].value,
         email: profile.emails[0].value,
         getStreamToken,
       },
     })
-    var token = sign({ userId: user.id }, process.env.APP_SECRET)
+    var token = sign({ userId: user.id }, APP_SECRET)
 
     res.redirect(`${process.env.FRONTEND_URL}/?token=${token}`)
   },

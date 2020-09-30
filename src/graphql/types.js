@@ -27,6 +27,8 @@ const User = objectType({
     t.model.comments({ pagination: false })
     t.model.following({ pagination: false })
     t.model.followers({ pagination: false })
+    t.model.inviter()
+    t.model.invited({ pagination: false })
     t.model.googleId()
     t.model.getStreamToken()
     t.model.stripeId()
