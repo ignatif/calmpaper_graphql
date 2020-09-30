@@ -110,6 +110,42 @@ const Query = objectType({
       },
     })
 
+    t.int('chaptersFeedCount', {
+      args: {
+        userId: intArg(),
+      },
+      resolve: (_, { userId }, ctx) => {
+        return ctx.prisma.chapter
+          .findMany({
+            where: {
+              AND: [
+                { book: { not: undefined } },
+                { book: { archived: { not: true } } },
+                {
+                  OR: [
+                    {
+                      book: {
+                        readers: {
+                          some: {
+                            id: { equals: userId },
+                          },
+                        },
+                      },
+                    },
+                    {
+                      author: {
+                        followers: { some: { id: { equals: userId } } },
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+          })
+          .then((r) => r.length)
+      },
+    })
+
     t.list.field('chaptersFeedByAuthor', {
       type: 'Chapter',
       args: {
@@ -132,6 +168,25 @@ const Query = objectType({
             ],
           },
         })
+      },
+    })
+
+    t.int('chaptersFeedByAuthorCount', {
+      args: {
+        authorId: intArg(),
+      },
+      resolve: (_, { authorId }, ctx) => {
+        return ctx.prisma.chapter
+          .findMany({
+            where: {
+              AND: [
+                { book: { not: undefined } },
+                { book: { archived: { not: true } } },
+                { author: { id: authorId } },
+              ],
+            },
+          })
+          .then((r) => r.length)
       },
     })
   },

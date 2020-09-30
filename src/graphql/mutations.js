@@ -247,6 +247,7 @@ const Mutation = objectType({
               author: true,
             },
           })
+
           const user = await ctx.prisma.user.findOne({
             where: { id: authorId },
           })
@@ -269,7 +270,7 @@ const Mutation = objectType({
             })
           }
 
-          return user
+          return like
         },
       }),
       t.field('setChapterLike', {
@@ -654,6 +655,79 @@ const Mutation = objectType({
           token: sign({ userId: user.id }, APP_SECRET),
           user,
         }
+      },
+    })
+
+    t.field('followUser', {
+      type: 'User',
+      args: {
+        followerId: intArg(),
+        followingId: intArg(),
+      },
+      resolve: async (parent, { followerId, followingId }, ctx) => {
+        console.log('start')
+        const user = await ctx.prisma.user.update({
+          where: { id: followerId },
+          data: { following: { connect: { id: followingId } } },
+        })
+        console.log('after')
+
+        // const user = await ctx.prisma.user.update({
+        //   where: { id: followingId },
+        //   data: { followers: { connect: { id: followerId } } },
+        // })
+
+        // const folloingNotificationFeed = getStreamClient.feed(
+        //   'notification',
+        //   followingId,
+        // )
+
+        // const folloingUserFeed = getStreamClient.feed('user', followingId)
+
+        // folloingNotificationFeed.addActivity({
+        //   actor: getStreamClient.user(followerId),
+        //   verb: 'follow',
+        //   object: `follow:${followingUserId}`,
+        //   followerId,
+        // })
+
+        // folloingUserFeed.addActivity({
+        //   actor: getStreamClient.user(followerId),
+        //   verb: 'follow',
+        //   object: `follow:${followingUserId}`,
+        //   followerId,
+        // })
+        console.log('finish')
+
+        return user
+      },
+    })
+
+    t.field('unfollowUser', {
+      type: 'User',
+      args: {
+        followerId: intArg(),
+        followingId: intArg(),
+      },
+      resolve: async (parent, { followerId, followingId }, ctx) => {
+        const user = await ctx.prisma.user.update({
+          where: { id: followerId },
+          data: { following: { disconnect: { id: followingId } } },
+        })
+
+        const folloingNotificationFeed = getStreamClient.feed(
+          'notifications',
+          followingId,
+        )
+
+        // folloingNotificationFeed.addActivity({
+        //   actor: getStreamClient.user(followerId),
+        //   verb: 'follow',
+        //   object: `follow:${followingUserId}`,
+        //   followerId,
+        // })
+
+        return user
       },
     })
   },
