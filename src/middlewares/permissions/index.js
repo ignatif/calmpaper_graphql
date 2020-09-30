@@ -2,6 +2,9 @@ const { rule, shield, allow, deny } = require('graphql-shield')
 const { getUserId } = require('../../utils')
 
 const rules = {
+  any: rule()((parent, args, context) => {
+    return true
+  }),
   isAuthenticatedUser: rule()((parent, args, context) => {
     const userId = getUserId(context)
     return Boolean(userId)
@@ -101,6 +104,9 @@ const permissions = shield(
       createOneLike: rules.isAuthenticatedUser,
       updateOneLike: rules.isLikeAuthor,
       deleteOneLike: rules.isLikeAuthor,
+
+      followUser: rules.any,
+      unfollowUser: rules.any,
     },
     User: {
       email: rules.isGetMeRequest,

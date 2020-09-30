@@ -23,6 +23,7 @@ const express = require('express')
 const multer = require('multer')
 const multerS3 = require('multer-s3')
 const cors = require('cors')
+const CryptoJS = require('crypto-js')
 
 var passport = require('passport')
 const { sign } = require('jsonwebtoken')
@@ -65,7 +66,7 @@ let schema = makeSchema({
   },
 })
 
-schema = applyMiddleware(schema, notifications)
+schema = applyMiddleware(schema, notifications, permissions)
 
 const stipeNode = require('stripe')
 const stripe = stipeNode(process.env.STRIPE_SECRET_KEY)
@@ -148,74 +149,111 @@ server.express.get(
   }),
 )
 
-// server.express.get('/auth/google', function (req, res, next) {
-//   console.log('---Invite from:')
-//   console.log(req.query.from)
-//   passport.authenticate(
-//     'google',
-//     {
-//       scope: [
-//         'https://www.googleapis.com/auth/plus.login',
-//         'https://www.googleapis.com/auth/userinfo.email',
-//       ],
-//     },
-//     // function (err, user, info) {
-//     //   console.log('req')
-//     //   console.log(req)
-//     //   // console.log('res')
-//     //   // console.log(res)
-//     //   console.log('info')
-//     //   console.log(info)
-//     //   if (err) {
-//     //     return next(err)
-//     //   }
-//     //   if (!user) {
-//     //     return res.redirect('/login')
-//     //   }
-//     //   req.logIn(user, function (err) {
-//     //     if (err) {
-//     //       return next(err)
-//     //     }
-//     //     return res.redirect('/users/' + user.username)
-//     //   })
-//     // },
-//   )(req, res, next)
-// })
+// Uncomment to create first user
+// server.express.get(
+//   '/auth/google/callback',
+//   passport.authenticate('google', { failureRedirect: '/login' }),
+//   async function (req, res) {
+//     const { user: profile } = req
+
+//     const getStreamToken = getStreamClient.createUserToken(profile.id)
+//     const user = await prisma.user.create({
+//       data: {
+//         googleId: profile.id,
+//         fullname: profile.displayName,
+//         firstname: profile.name.familyName,
+//         givenname: profile.name.givenName,
+//         avatar: profile.photos[0].value,
+//         email: profile.emails[0].value,
+//         getStreamToken,
+//       },
+//     })
+//     var token = sign({ userId: user.id }, APP_SECRET)
+
+//     res.redirect(`${process.env.FRONTEND_URL}/?token=${token}`)
+//   },
+// )
+//
 
 server.express.get(
   '/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/login' }),
   async function (req, res) {
+    let user
     const { user: profile } = req
 
-    const getStreamToken = getStreamClient.createUserToken(profile.id)
-    const user = await prisma.user.upsert({
+    // 1) User is already registered
+    user = await prisma.user.findOne({
       where: {
         googleId: profile.id,
       },
-      create: {
-        googleId: profile.id,
-        fullname: profile.displayName,
-        firstname: profile.name.familyName,
-        givenname: profile.name.givenName,
-        avatar: profile.photos[0].value,
-        email: profile.emails[0].value,
-        getStreamToken,
-      },
-      update: {
-        fullname: profile.displayName,
-        firstname: profile.name.familyName,
-        givenname: profile.name.givenName,
-        avatar: profile.photos[0].value,
-        email: profile.emails[0].value,
-        getStreamToken,
-      },
     })
+
+    // 2) No invite and not registered
+    if (!user && !req.session.from) {
+      res.redirect(`${process.env.FRONTEND_URL}/auth-fail`)
+    }
+
+    // 3) User is registering through invite
+    if (!user && req.session.from) {
+      // decrypt inviter
+      var bytes = CryptoJS.AES.decrypt(req.session.from, 'Look, a smart ass!')
+      var originalText = bytes.toString(CryptoJS.enc.Utf8)
+      const inviterId = parseInt(originalText.substring(4))
+
+      const getStreamToken = getStreamClient.createUserToken(profile.id)
+      user = await prisma.user.create({
+        data: {
+          googleId: profile.id,
+          fullname: profile.displayName,
+          firstname: profile.name.familyName,
+          givenname: profile.name.givenName,
+          avatar: profile.photos[0].value,
+          email: profile.emails[0].value,
+          getStreamToken,
+          inviter: {
+            connect: {
+              id: inviterId,
+            },
+          },
+          following: { connect: { id: inviterId } },
+        },
+      })
+
+      const userFeed = getStreamClient.feed('notifications', user.id)
+      userFeed.follow('user', inviterId)
+      userFeed.addActivity({
+        actor: getStreamClient.user(inviterId),
+        verb: 'follow',
+        to: [`notifications:${user.id}`],
+        object: `follow:${user.id}`,
+        userId: user.id,
+        inviterId,
+      })
+
+      const inviterFeed = getStreamClient.feed('notifications', inviterId)
+      inviterFeed.follow('user', user.id)
+      inviterFeed.addActivity({
+        actor: getStreamClient.user(user.id),
+        verb: 'follow',
+        to: [`notifications:${inviterId}`],
+        object: `follow:${inviterId}`,
+        userId: user.id,
+        inviterId,
+      })
+
+      var token = sign({ userId: user.id }, APP_SECRET)
+      res.redirect(
+        `${process.env.FRONTEND_URL}/?token=${token}&follow=${inviterId}`,
+      )
+    }
+
     var token = sign({ userId: user.id }, APP_SECRET)
 
     res.redirect(`${process.env.FRONTEND_URL}/?token=${token}`)
   },
 )
+
 
 server.start({
 	port: 3000

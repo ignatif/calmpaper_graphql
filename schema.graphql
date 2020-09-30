@@ -2231,6 +2231,7 @@ type Mutation {
   deleteOneReview(where: ReviewWhereUniqueInput!): Review
   deleteOneTag(where: TagWhereUniqueInput!): Tag
   deleteOneUser(where: UserWhereUniqueInput!): User
+  followUser(followerId: Int, followingId: Int): User!
   incrementBookViews(bookId: Int): Book!
   incrementChapterViews(chapterId: Int): Chapter!
   login(email: String, password: String): AuthPayload!
@@ -2245,6 +2246,7 @@ type Mutation {
   setReview(authorUsername: String, bookId: Int, id: Int, stars: Int): Review!
   setupStripe(stripeCode: String): Donation!
   signup(email: String, password: String, username: String): AuthPayload!
+  unfollowUser(followerId: Int, followingId: Int): User!
   updateManyBook(data: BookUpdateManyMutationInput!, where: BookWhereInput): BatchPayload!
   updateManyChapter(data: ChapterUpdateManyMutationInput!, where: ChapterWhereInput): BatchPayload!
   updateOneBook(data: BookUpdateInput!, where: BookWhereUniqueInput!): Book
@@ -2301,6 +2303,8 @@ type Query {
   chapters(orderBy: ChapterOrderByInput, skip: Int, where: ChapterWhereInput): [Chapter!]!
   chaptersFeed(skip: Int, userId: Int): [Chapter!]!
   chaptersFeedByAuthor(authorId: Int, skip: Int): [Chapter!]!
+  chaptersFeedByAuthorCount(authorId: Int): Int!
+  chaptersFeedCount(userId: Int): Int!
   comment(where: CommentWhereUniqueInput!): Comment
   comments(skip: Int): [Comment!]!
   donation(where: DonationWhereUniqueInput!): Donation
