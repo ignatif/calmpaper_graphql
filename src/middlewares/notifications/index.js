@@ -50,13 +50,10 @@ const notifications = async (resolve, root, args, context, info) => {
   if (info.fieldName === 'followUser') {
     const userId = getUserId(context)
     const followingUserId = args.followingId
-    console.log('followingUserId')
-    console.log(followingUserId)
     const userFeed = getStreamClient.feed('notifications', followingUserId)
 
     userFeed.addActivity({
       actor: getStreamClient.user(userId),
-      // to: [`user:${followingUserId}`],
       verb: 'follow',
       object: `follow:${followingUserId}`,
       userId,

@@ -218,27 +218,37 @@ server.express.get(
           following: { connect: { id: inviterId } },
         },
       })
+      await prisma.user.update({
+        where: {
+          id: inviterId,
+        },
+        data: {
+          following: {
+            connect: {
+              id: user.id,
+            },
+          },
+        },
+      })
 
       const userFeed = getStreamClient.feed('notifications', user.id)
-      userFeed.follow('user', inviterId)
+      userFeed.follow('notifications', inviterId)
       userFeed.addActivity({
         actor: getStreamClient.user(inviterId),
         verb: 'follow',
-        to: [`notifications:${user.id}`],
         object: `follow:${user.id}`,
-        userId: user.id,
-        inviterId,
+        followerId: inviterId,
+        is_seen: true,
+        isSeen: true,
       })
 
       const inviterFeed = getStreamClient.feed('notifications', inviterId)
-      inviterFeed.follow('user', user.id)
+      inviterFeed.follow('notifications', user.id)
       inviterFeed.addActivity({
         actor: getStreamClient.user(user.id),
         verb: 'follow',
-        to: [`notifications:${inviterId}`],
         object: `follow:${inviterId}`,
-        userId: user.id,
-        inviterId,
+        followerId: user.id,
       })
 
       var token = sign({ userId: user.id }, APP_SECRET)
