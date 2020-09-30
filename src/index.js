@@ -232,7 +232,7 @@ server.express.get(
       })
 
       const userFeed = getStreamClient.feed('notifications', user.id)
-      userFeed.follow('notifications', inviterId)
+      userFeed.follow('user', inviterId)
       userFeed.addActivity({
         actor: getStreamClient.user(inviterId),
         verb: 'follow',
@@ -243,7 +243,7 @@ server.express.get(
       })
 
       const inviterFeed = getStreamClient.feed('notifications', inviterId)
-      inviterFeed.follow('notifications', user.id)
+      inviterFeed.follow('user', user.id)
       inviterFeed.addActivity({
         actor: getStreamClient.user(user.id),
         verb: 'follow',
