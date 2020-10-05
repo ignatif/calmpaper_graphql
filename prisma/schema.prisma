@@ -15,6 +15,7 @@ model User {
   firstname      String?
   givenname      String?
   fullname       String?
+  bio            String?
   email          String?    @unique
   bio            String?
   avatar         String?
