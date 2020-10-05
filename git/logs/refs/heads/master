@@ -1,0 +1,7 @@
+0000000000000000000000000000000000000000 27d3d7aaf6c0f7390b11ed7571533615a2561d81 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1592587229 +0000	clone: from https://github.com/ignatif/stories-server.git
+27d3d7aaf6c0f7390b11ed7571533615a2561d81 6f01ad6e244b5c750eaf69f3310c66157ef1dd03 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1592589373 +0000	pull origin master: Fast-forward
+6f01ad6e244b5c750eaf69f3310c66157ef1dd03 a0c6acc2d6636f2c02f533600b27fae8e2b0c835 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1592638021 +0000	pull origin master: Fast-forward
+a0c6acc2d6636f2c02f533600b27fae8e2b0c835 a87008a5b8d9d4bf46ada2b1807b2ad2a96eb61d Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1594779697 +0000	commit: m
+a87008a5b8d9d4bf46ada2b1807b2ad2a96eb61d d6055151324f485ce950ee3ecbe29f0e115c0005 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1601939801 +0000	commit: env
+d6055151324f485ce950ee3ecbe29f0e115c0005 2c015d12e55c90e118ed74b3efdb31cb5f05e72c Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1601940338 +0000	commit (merge): .
+2c015d12e55c90e118ed74b3efdb31cb5f05e72c 27459dde236382406a5d75f2856cac5ff54a01b6 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1601940618 +0000	commit: .

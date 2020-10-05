@@ -1,0 +1,3 @@
+0000000000000000000000000000000000000000 c3047a15663d6b1440e44fad5fd6b3b6bb5a14b8 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1594779663 +0000	fetch --append origin: storing head
+c3047a15663d6b1440e44fad5fd6b3b6bb5a14b8 f2f280191ca096103b9bfedd205d9832e299f751 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1595389437 +0000	pull origin book: fast-forward
+f2f280191ca096103b9bfedd205d9832e299f751 3f9c96db251f4744547d8cc3aa43bfa48e88f7e1 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1595961766 +0000	pull origin book: fast-forward

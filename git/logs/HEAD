@@ -1,0 +1,60 @@
+0000000000000000000000000000000000000000 27d3d7aaf6c0f7390b11ed7571533615a2561d81 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1592587229 +0000	clone: from https://github.com/ignatif/stories-server.git
+27d3d7aaf6c0f7390b11ed7571533615a2561d81 27d3d7aaf6c0f7390b11ed7571533615a2561d81 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1592589368 +0000	reset: moving to HEAD
+27d3d7aaf6c0f7390b11ed7571533615a2561d81 6f01ad6e244b5c750eaf69f3310c66157ef1dd03 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1592589373 +0000	pull origin master: Fast-forward
+6f01ad6e244b5c750eaf69f3310c66157ef1dd03 6f01ad6e244b5c750eaf69f3310c66157ef1dd03 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1592638010 +0000	reset: moving to HEAD
+6f01ad6e244b5c750eaf69f3310c66157ef1dd03 a0c6acc2d6636f2c02f533600b27fae8e2b0c835 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1592638021 +0000	pull origin master: Fast-forward
+a0c6acc2d6636f2c02f533600b27fae8e2b0c835 a0c6acc2d6636f2c02f533600b27fae8e2b0c835 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1594779657 +0000	reset: moving to HEAD
+a0c6acc2d6636f2c02f533600b27fae8e2b0c835 a87008a5b8d9d4bf46ada2b1807b2ad2a96eb61d Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1594779697 +0000	commit: m
+a87008a5b8d9d4bf46ada2b1807b2ad2a96eb61d c3047a15663d6b1440e44fad5fd6b3b6bb5a14b8 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1594779701 +0000	checkout: moving from master to book
+c3047a15663d6b1440e44fad5fd6b3b6bb5a14b8 c3047a15663d6b1440e44fad5fd6b3b6bb5a14b8 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1595389425 +0000	reset: moving to HEAD
+c3047a15663d6b1440e44fad5fd6b3b6bb5a14b8 f2f280191ca096103b9bfedd205d9832e299f751 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1595389451 +0000	pull origin book: Fast-forward
+f2f280191ca096103b9bfedd205d9832e299f751 e28d0f150c06900ecd37f494e5cbb117f8d9c2b7 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1595961792 +0000	commit: index
+e28d0f150c06900ecd37f494e5cbb117f8d9c2b7 1c2d0549b8b9de79edfc0f8c14aa10c647ff17e8 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1595961794 +0000	pull origin book: Merge made by the 'recursive' strategy.
+1c2d0549b8b9de79edfc0f8c14aa10c647ff17e8 721747533ad42fa5ec70727159fd62feb692324f Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1597420502 +0000	commit: ll
+721747533ad42fa5ec70727159fd62feb692324f 7db658665855ee64c08606adb32151e940b49101 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1597420588 +0000	commit (merge): merge
+7db658665855ee64c08606adb32151e940b49101 ea923ac7c000890b3cb77de2ef5430a6f2dddea7 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1597931499 +0000	commit: m
+ea923ac7c000890b3cb77de2ef5430a6f2dddea7 0211aec107f9fb00cbc51055b633d21ffcbdee42 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1597931506 +0000	commit: m
+0211aec107f9fb00cbc51055b633d21ffcbdee42 3ac412707482748c4cd0408c708766357e6db5d1 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1597931534 +0000	commit (merge): m
+3ac412707482748c4cd0408c708766357e6db5d1 7c66b619cf121ca0deede9b91c5973de9fbfc305 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1598553929 +0000	pull origin master: Merge made by the 'recursive' strategy.
+7c66b619cf121ca0deede9b91c5973de9fbfc305 46cb5bf99deaa0466e1c2121564eeb389dd6695d Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1598565274 +0000	pull origin master: Merge made by the 'recursive' strategy.
+46cb5bf99deaa0466e1c2121564eeb389dd6695d 6b5efe374ae857955effd300f62dbe133754dae6 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1598649233 +0000	commit: many
+6b5efe374ae857955effd300f62dbe133754dae6 42bd822a9cc8aefb06e46f1fa4521f8d64aa1e38 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1598649240 +0000	pull origin master: Merge made by the 'recursive' strategy.
+42bd822a9cc8aefb06e46f1fa4521f8d64aa1e38 345896fee31483443a59b79c5362085c698f837b Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1600809576 +0000	commit: .
+345896fee31483443a59b79c5362085c698f837b 99c98955fb363d6d13c6cd33ff694d82b906be92 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1600809598 +0000	commit: .
+99c98955fb363d6d13c6cd33ff694d82b906be92 81d061f55b059eff52488004d85aad5c941d9c9c Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1601304300 +0000	commit (merge): upd
+81d061f55b059eff52488004d85aad5c941d9c9c b113de5f489cc900c4a24518f86b0e3c01e004d8 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1601304303 +0000	pull origin master: Merge made by the 'recursive' strategy.
+b113de5f489cc900c4a24518f86b0e3c01e004d8 89f9a0cb164133e98d0d1495b93dbedb54f30515 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1601390220 +0000	commit: .
+89f9a0cb164133e98d0d1495b93dbedb54f30515 335965b2de3c5298fbd5230ce0fdf333fbec0f2f Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1601504853 +0000	commit (merge): .
+335965b2de3c5298fbd5230ce0fdf333fbec0f2f 18c10b2db00a35e8d9871cfebd409bc730cdcd42 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1601507766 +0000	commit (merge): .
+18c10b2db00a35e8d9871cfebd409bc730cdcd42 20acd216e736b3e6a323ea6ed0bf539fde921f69 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1601507895 +0000	commit (merge): .
+20acd216e736b3e6a323ea6ed0bf539fde921f69 189f72505ffc70196b7e02207cd02b80dce74d31 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1601507899 +0000	pull origin master: Merge made by the 'recursive' strategy.
+189f72505ffc70196b7e02207cd02b80dce74d31 7dd20b4fcbe01afe5205faac9047823e8dc0eef8 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1601920477 +0000	commit: .
+7dd20b4fcbe01afe5205faac9047823e8dc0eef8 43408d1ed0b7b55dcd676c084f7791cb1b475708 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1601938620 +0000	commit (merge): .
+43408d1ed0b7b55dcd676c084f7791cb1b475708 a26427fc2e72405e9659f3d3ee29dc494560f254 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1601938622 +0000	pull origin master: Merge made by the 'recursive' strategy.
+a26427fc2e72405e9659f3d3ee29dc494560f254 b7eb0ac187049c1e1bc34d4ada2a3838d244e86a Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1601938946 +0000	commit: :w
+b7eb0ac187049c1e1bc34d4ada2a3838d244e86a 04b2057ef0d09ba6790a8f766ec37e92a042c7f2 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1601938968 +0000	checkout: moving from book to 04b2057
+04b2057ef0d09ba6790a8f766ec37e92a042c7f2 d22c195ecfc778aa3c2313becc3c9f24bf456c60 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1601939181 +0000	commit: .
+d22c195ecfc778aa3c2313becc3c9f24bf456c60 a87008a5b8d9d4bf46ada2b1807b2ad2a96eb61d Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1601939185 +0000	checkout: moving from d22c195ecfc778aa3c2313becc3c9f24bf456c60 to master
+a87008a5b8d9d4bf46ada2b1807b2ad2a96eb61d a87008a5b8d9d4bf46ada2b1807b2ad2a96eb61d Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1601939556 +0000	checkout: moving from master to master
+a87008a5b8d9d4bf46ada2b1807b2ad2a96eb61d a87008a5b8d9d4bf46ada2b1807b2ad2a96eb61d Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1601939584 +0000	checkout: moving from master to server
+a87008a5b8d9d4bf46ada2b1807b2ad2a96eb61d c9641858f8ec29cddcc1a47f605d6c34ea74cd6e Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1601939590 +0000	commit: .
+c9641858f8ec29cddcc1a47f605d6c34ea74cd6e a87008a5b8d9d4bf46ada2b1807b2ad2a96eb61d Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1601939723 +0000	checkout: moving from server to master
+a87008a5b8d9d4bf46ada2b1807b2ad2a96eb61d d6055151324f485ce950ee3ecbe29f0e115c0005 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1601939801 +0000	commit: env
+d6055151324f485ce950ee3ecbe29f0e115c0005 d6055151324f485ce950ee3ecbe29f0e115c0005 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1601939838 +0000	checkout: moving from master to server1
+d6055151324f485ce950ee3ecbe29f0e115c0005 8d8eadec4d8700859b28401fde4b5866ffcb1dd6 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1601939891 +0000	commit: .
+8d8eadec4d8700859b28401fde4b5866ffcb1dd6 7a9b4ab1a1086c7ff8a63061984db8feaff0851c Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1601940035 +0000	commit: stash pop
+7a9b4ab1a1086c7ff8a63061984db8feaff0851c 08a06a4bf3b10cbe5dbbe43bb970d78379957d64 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1601940191 +0000	commit: ffff
+08a06a4bf3b10cbe5dbbe43bb970d78379957d64 d6055151324f485ce950ee3ecbe29f0e115c0005 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1601940219 +0000	checkout: moving from server1 to master
+d6055151324f485ce950ee3ecbe29f0e115c0005 2c015d12e55c90e118ed74b3efdb31cb5f05e72c Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1601940338 +0000	commit (merge): .
+2c015d12e55c90e118ed74b3efdb31cb5f05e72c 2c015d12e55c90e118ed74b3efdb31cb5f05e72c Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1601940447 +0000	reset: moving to HEAD
+2c015d12e55c90e118ed74b3efdb31cb5f05e72c 2c015d12e55c90e118ed74b3efdb31cb5f05e72c Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1601940602 +0000	reset: moving to HEAD
+2c015d12e55c90e118ed74b3efdb31cb5f05e72c 27459dde236382406a5d75f2856cac5ff54a01b6 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1601940618 +0000	commit: .
+27459dde236382406a5d75f2856cac5ff54a01b6 27459dde236382406a5d75f2856cac5ff54a01b6 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1601940659 +0000	checkout: moving from master to master
+27459dde236382406a5d75f2856cac5ff54a01b6 27459dde236382406a5d75f2856cac5ff54a01b6 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1601941088 +0000	reset: moving to HEAD
+27459dde236382406a5d75f2856cac5ff54a01b6 27459dde236382406a5d75f2856cac5ff54a01b6 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1601941110 +0000	checkout: moving from master to server2
+27459dde236382406a5d75f2856cac5ff54a01b6 ba79112f0584cc8a71f9069fca541fd4814528e2 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1601941159 +0000	commit (cherry-pick): .1
+ba79112f0584cc8a71f9069fca541fd4814528e2 33ee095afe3e39a37527d7290fc95615d5dbc4a8 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1601941173 +0000	commit (cherry-pick): .
+33ee095afe3e39a37527d7290fc95615d5dbc4a8 79eff79e3aedc84645287596f943c21519a39730 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1601941193 +0000	commit (cherry-pick): prism/gengres_seed.js
+79eff79e3aedc84645287596f943c21519a39730 d0d2b51f04165333f93b8ac77a452ddb380dc195 Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1601941229 +0000	commit (cherry-pick): prism/gengres_seed.js
+d0d2b51f04165333f93b8ac77a452ddb380dc195 63b093962fe5dd10966c067425d2fbf8ae3a28be Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1601941234 +0000	cherry-pick: m
+63b093962fe5dd10966c067425d2fbf8ae3a28be 63b093962fe5dd10966c067425d2fbf8ae3a28be Ubuntu <ubuntu@ip-172-31-56-143.ec2.internal> 1601941532 +0000	checkout: moving from server2 to githistory
