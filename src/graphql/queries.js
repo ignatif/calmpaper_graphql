@@ -19,7 +19,7 @@ const Query = objectType({
     t.crud.tags()
     t.crud.genres()
     t.crud.comment()
-    t.crud.comments()
+    t.crud.comments({ ordering: true, filtering: true })
     t.crud.review()
     t.crud.reviews()
     t.crud.likes()
