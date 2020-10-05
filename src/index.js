@@ -1,163 +1,106 @@
+require('dotenv').config()
 const { GraphQLServer } = require('graphql-yoga')
 const { makeSchema, objectType, intArg, stringArg } = require('@nexus/schema')
 const { PrismaClient } = require('@prisma/client')
 const { nexusPrismaPlugin } = require('nexus-prisma')
-const { User, Book, Chapter, Voice, Rating } = require('./types')
+const {
+  Query,
+  Mutation,
+  User,
+  Book,
+  Chapter,
+  Comment,
+  Like,
+  Review,
+  Tag,
+  Genre,
+  Donation,
+  AuthPayload,
+} = require('./graphql')
+const { permissions } = require('./middlewares/permissions')
+const { notifications } = require('./middlewares/notifications')
 const express = require('express')
 const multer = require('multer')
+const multerS3 = require('multer-s3')
 const cors = require('cors')
-const cookieParser = require('cookie-parser')
-const session = require('express-session')
-const passport = require('passport')
-const MagicStrategy = require('passport-magic').Strategy
-const { Magic } = require('@magic-sdk/admin')
-require('dotenv').config()
+const CryptoJS = require('crypto-js')
+
+var passport = require('passport')
+const { sign } = require('jsonwebtoken')
+require('./middlewares/authentication/google')
+
+const APP_SECRET = 'appsecret321'
+
+const stream = require('getstream')
+const getStreamClient = stream.connect(
+  process.env.GETSTREAM_KEY,
+  process.env.GETSTREAM_SECRET,
+)
+
+const { applyMiddleware } = require('graphql-middleware')
+
+var session = require('express-session'),
+  bodyParser = require('body-parser')
 
 const prisma = new PrismaClient()
 
-const Query = objectType({
-  name: 'Query',
-  definition(t) {
-    t.crud.user()
-    t.crud.users()
-    t.crud.book()
-    t.crud.books()
-    t.crud.chapter()
-    t.crud.chapters()
-    t.crud.voice()
-    t.crud.voices()
-    t.crud.rating()
-    t.crud.ratings()
-
-    t.list.field('chapterByBook', {
-      type: 'Chapter',
-      args: {
-        bookId: intArg(),
-        skip: intArg({ nullable: true }),
-      },
-      resolve: (_, { bookId, skip }, ctx) => {
-        return ctx.prisma.chapter.findMany({
-          take: 1,
-          skip,
-          where: {
-            book: {
-              id: bookId,
-            },
-          },
-          include: {
-            ratings: true,
-            voices: true,
-          },
-        })
-      },
-    })
+let schema = makeSchema({
+  types: [
+    Query,
+    Mutation,
+    User,
+    Book,
+    Chapter,
+    Comment,
+    Like,
+    Review,
+    Tag,
+    Genre,
+    Donation,
+    AuthPayload,
+  ],
+  plugins: [nexusPrismaPlugin()],
+  experimentalCRUD: true,
+  outputs: {
+    schema: __dirname + '/../schema.graphql',
   },
 })
 
-const Mutation = objectType({
-  name: 'Mutation',
-  definition(t) {
-    t.crud.createOneUser()
-    t.crud.updateOneUser()
-    t.crud.deleteOneUser()
+schema = applyMiddleware(schema, notifications, permissions)
+// schema = applyMiddleware(schema, notifications)
 
-    t.crud.createOneBook()
-    t.crud.updateOneBook()
-    t.crud.deleteOneBook()
-
-    t.crud.createOneChapter()
-    t.crud.updateOneChapter()
-    t.crud.deleteOneChapter()
-
-    t.crud.createOneVoice()
-    t.crud.updateOneVoice()
-    t.crud.deleteOneVoice()
-
-    t.crud.createOneRating()
-    t.crud.updateOneRating()
-    t.crud.upsertOneRating()
-    t.crud.deleteOneRating()
-
-    t.field('setRating', {
-      type: 'Rating',
-      args: {
-        id: intArg({ nullable: true }),
-        stars: intArg(),
-        authorUsername: stringArg(),
-        userId: intArg({ nullable: true }), // when setting rating to other user
-        bookId: intArg({ nullable: true }),
-        chapterId: intArg({ nullable: true }),
-        voiceId: intArg({ nullable: true }),
-      },
-      resolve: (
-        parent,
-        { id, stars, authorUsername, userId, bookId, chapterId, voiceId },
-        ctx,
-      ) => {
-        if (id) {
-          return ctx.prisma.rating.update({
-            data: { stars },
-            where: { id },
-          })
-        } else {
-          let connect
-
-          if (userId) {
-            connect = { user: { connect: { id: userId } } }
-          }
-
-          if (bookId) {
-            connect = { book: { connect: { id: bookId } } }
-          }
-
-          if (chapterId) {
-            connect = { chapter: { connect: { id: chapterId } } }
-          }
-
-          if (voiceId) {
-            connect = { voice: { connect: { id: voiceId } } }
-          }
-
-          return ctx.prisma.rating.create({
-            data: {
-              stars,
-              author: {
-                connect: {
-                  username: authorUsername,
-                },
-              },
-              ...connect,
-            },
-          })
-        }
-      },
-    })
-  },
-})
+const stipeNode = require('stripe')
+const stripe = stipeNode(process.env.STRIPE_SECRET_KEY)
 
 const server = new GraphQLServer({
-  schema: makeSchema({
-    types: [Query, Mutation, User, Book, Chapter, Voice, Rating],
-    plugins: [nexusPrismaPlugin()],
-    // experimentalCRUD: true,
-    outputs: {
-      schema: __dirname + '/../schema.graphql',
-      typegen: __dirname + '/generated/nexus.ts',
-    },
-  }),
-  context: { prisma },
+  schema,
+  context: (request) => {
+    return {
+      ...request,
+      prisma,
+      stripe,
+    }
+  },
 })
 
-// server.express.use(bodyParser.json());
 server.express.use(cors())
 
+// health check
 server.express.use('/hi', (req, res) => {
   res.status(200).json({ ok: true })
 })
 
-server.express.use('/hi', (req, res) => {
-  res.status(200).json({ ok: true })
-})
+// file upload
+server.express.use(express.static('public'))
+server.express.use(
+  bodyParser.urlencoded({
+    parameterLimit: 100000,
+    limit: '50mb',
+    extended: false,
+  }),
+)
+server.express.use(bodyParser.json({ limit: '50mb', type: 'application/json' }))
+server.express.use(bodyParser.json())
 
 const storage = multer.diskStorage({
   destination: './files',
@@ -177,127 +120,69 @@ server.express.post('/files', upload.single('file'), (req, res) => {
 })
 
 server.express.use(express.json())
-server.express.use(express.urlencoded({ extended: false }))
-server.express.use(cookieParser())
 server.express.use(
-  session({
-    secret: "not my cat's name",
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-      maxAge: 60 * 60 * 1000, // 1 hour
-      // secure: true, // Uncomment this line to enforce HTTPS protocol.
-      sameSite: true,
-    },
+  express.urlencoded({
+    parameterLimit: 100000,
+    limit: '100mb',
+    extended: false,
   }),
 )
+
+// auth
+passport.serializeUser((user, done) => done(null, user))
+passport.deserializeUser((obj, done) => done(null, obj))
+server.express.use(session({ secret: 'cats' }))
 server.express.use(passport.initialize())
 server.express.use(passport.session())
 
-// ____________________________________________________________________________
+server.express.get(
+  '/auth/google',
+  function (req, res, next) {
+    req.session.from = req.query.from
+    next()
+  },
+  passport.authenticate('google', {
+    scope: [
+      'https://www.googleapis.com/auth/plus.login',
+      'https://www.googleapis.com/auth/userinfo.email',
+    ],
+  }),
+)
 
-const magic = new Magic(process.env.MAGIC_SECRET_KEY)
+server.express.get(
+  '/auth/google/callback',
+  passport.authenticate('google', { failureRedirect: '/login' }),
+  async function (req, res) {
+    const { user: profile } = req
 
-/* 2️⃣ Implement Auth Strategy */
-
-const strategy = new MagicStrategy(async function (user, done) {
-  console.log('user')
-  console.log(user)
-  const userMetadata = await magic.users.getMetadataByIssuer(user.issuer)
-  const existingUser = await prisma.user.findOne({ issuer: user.issuer })
-  if (!existingUser) {
-    /* Create new user if doesn't exist */
-    // return signup(user, userMetadata, done)
-  } else {
-    /* Login user if otherwise */
-    // return login(user, done)
-  }
-})
-
-passport.use(strategy)
-
-const signup = async (user, userMetadata, done) => {
-  let newUser = {
-    issuer: user.issuer,
-    email: userMetadata.email,
-    lastLoginAt: user.claim.iat,
-  }
-  await users.insert(newUser)
-  return done(null, newUser)
-}
-
-/* Implement User Login */
-const login = async (user, done) => {
-  /* Replay attack protection (https://go.magic.link/replay-attack) */
-  if (user.claim.iat <= user.lastLoginAt) {
-    return done(null, false, {
-      message: `Replay attack detected for user ${user.issuer}}.`,
+    const getStreamToken = getStreamClient.createUserToken(profile.id)
+    const user = await prisma.user.upsert({
+      where: {
+        googleId: profile.id,
+      },
+      create: {
+        googleId: profile.id,
+        fullname: profile.displayName,
+        firstname: profile.name.familyName,
+        givenname: profile.name.givenName,
+        avatar: profile.photos[0].value,
+        email: profile.emails[0].value,
+        getStreamToken,
+      },
+      update: {
+        fullname: profile.displayName,
+        firstname: profile.name.familyName,
+        givenname: profile.name.givenName,
+        avatar: profile.photos[0].value,
+        email: profile.emails[0].value,
+        getStreamToken,
+      },
     })
-  }
-  await users.update(
-    { issuer: user.issuer },
-    { $set: { lastLoginAt: user.claim.iat } },
-  )
-  return done(null, user)
-}
+    var token = sign({ userId: user.id }, APP_SECRET)
 
-/* Attach middleware to login endpoint */
-server.express.post('/login', passport.authenticate('magic'), (req, res) => {
-  if (req.user) {
-    res.status(200).end('User is logged in.')
-  } else {
-    return res.status(401).end('Could not log user in.')
-  }
-})
-
-/* 4️⃣ Implement Session Behavior */
-
-/* Defines what data are stored in the user session */
-passport.serializeUser((user, done) => {
-  done(null, user.issuer)
-})
-
-/* Populates user data in the req.user object */
-passport.deserializeUser(async (id, done) => {
-  try {
-    const user = await users.findOne({ issuer: id })
-    done(null, user)
-  } catch (err) {
-    done(err, null)
-  }
-})
-
-/* 5️⃣ Implement User Endpoints */
-
-/* Implement Get Data Endpoint */
-server.express.get('/security-check', async (req, res) => {
-  if (req.isAuthenticated()) {
-    return res.status(200).json(req.user).end()
-  } else {
-    return res.status(401).end(`User is not logged in.`)
-  }
-})
-
-/* Implement Buy Apple Endpoint */
-server.express.post('/buy-apple', async (req, res) => {
-  if (req.isAuthenticated()) {
-    await users.update({ issuer: req.user.issuer }, { $inc: { appleCount: 1 } })
-    return res.status(200).end()
-  } else {
-    return res.status(401).end(`User is not logged in.`)
-  }
-})
-
-/* Implement Logout Endpoint */
-server.express.post('/logout', async (req, res) => {
-  if (req.isAuthenticated()) {
-    await magic.users.logoutByIssuer(req.user.issuer)
-    req.logout()
-    return res.status(200).end()
-  } else {
-    return res.status(401).end(`User is not logged in.`)
-  }
-})
+    res.redirect(`${process.env.FRONTEND_URL}/?token=${token}`)
+  },
+)
 
 server.start(() =>
   console.log(
@@ -309,6 +194,8 @@ module.exports = {
   User,
   Book,
   Chapter,
-  Voice,
-  Rating,
+  Comment,
+  Like,
+  Review,
+  Tag,
 }
