@@ -66,7 +66,7 @@ let schema = makeSchema({
   },
 })
 
-schema = applyMiddleware(schema, notifications, permissions)
+schema = applyMiddleware(schema, permissions, notifications)
 
 const stipeNode = require('stripe')
 const stripe = stipeNode(process.env.STRIPE_SECRET_KEY)

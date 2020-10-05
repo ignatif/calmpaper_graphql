@@ -17,7 +17,6 @@ model User {
   fullname       String?
   bio            String?
   email          String?    @unique
-  bio            String?
   avatar         String?
   password       String?
   books          Book[]     @relation("UserBookAuthor")
