@@ -23,7 +23,12 @@ const express = require('express')
 const multer = require('multer')
 const multerS3 = require('multer-s3')
 const cors = require('cors')
+<<<<<<< Updated upstream
 const CryptoJS = require('crypto-js')
+=======
+const fs = require('fs')
+require('dotenv').config()
+>>>>>>> Stashed changes
 
 var passport = require('passport')
 const { sign } = require('jsonwebtoken')
@@ -148,6 +153,12 @@ server.express.get(
     ],
   }),
 )
+const stream = require('getstream').default
+const getStreamClient = stream.connect(
+  'c2u3fw52wm4t',
+  'grdr5z6ras7ugc33ezbqswq6k6pggrad4armpg3xjskpgp7gwttmqjgyfg86pn8z',
+)
+
 
 server.express.get(
   '/auth/google/callback',
@@ -166,7 +177,10 @@ server.express.get(
         firstname: profile.name.familyName,
         givenname: profile.name.givenName,
         avatar: profile.photos[0].value,
+<<<<<<< Updated upstream
         email: profile.emails[0].value,
+=======
+>>>>>>> Stashed changes
         getStreamToken,
       },
       update: {
@@ -174,21 +188,26 @@ server.express.get(
         firstname: profile.name.familyName,
         givenname: profile.name.givenName,
         avatar: profile.photos[0].value,
+<<<<<<< Updated upstream
         email: profile.emails[0].value,
+=======
+>>>>>>> Stashed changes
         getStreamToken,
       },
     })
     var token = sign({ userId: user.id }, APP_SECRET)
 
+<<<<<<< Updated upstream
     res.redirect(`${process.env.FRONTEND_URL}/?token=${token}`)
+=======
+    res.redirect(`http://ec2-52-87-215-106.compute-1.amazonaws.com:5000/?token=${token}`)
+>>>>>>> Stashed changes
   },
 )
 
-server.start(() =>
-  console.log(
-    `🚀 Server ready at: http://localhost:4000\n⭐️ See sample queries: http://pris.ly/e/js/graphql#using-the-graphql-api`,
-  ),
-)
+server.start({
+	port: 3000
+})
 
 module.exports = {
   User,

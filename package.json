@@ -44,7 +44,7 @@
     "postinstall": "prisma generate"
   },
   "devDependencies": {
-    "@prisma/cli": "^2.8.0",
+    "@prisma/cli": "^2.2.0",
     "nodemon": "^2.0.4"
   },
   "prettier": {

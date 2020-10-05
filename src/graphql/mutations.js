@@ -185,10 +185,10 @@ const Mutation = objectType({
             verb: 'follow',
             to: [`notifications:${book.author.id}`],
             object: `book:${book.id}`,
-            userId,
+            user,
             bookId: book.id,
             actor: getStreamClient.user(userId),
-            foreignId: `user:${userId}-follow-book:${bookId}`,
+            foreignId: `user:${userId}-book:${bookId}`,
           })
         }
 
@@ -252,8 +252,20 @@ const Mutation = objectType({
             where: { id: authorId },
           })
 
-          const userId = getUserId(ctx)
-          const userFeed = getStreamClient.feed('all', userId)
+          const userFeed = getStreamClient.feed('all', authorId)
+
+          if (authorId !== like.comment.author.id) {
+            userFeed.addActivity({
+              verb: 'like',
+              to: [`notifications:${like.comment.author.id}`],
+              object: `comment:${like.comment.id}`,
+              user,
+              bookId: like.comment.bookId || like.comment.chapter.bookId,
+              chapterId: like.comment.chapterId,
+              actor: getStreamClient.user(authorId),
+              // foreignId: `user:${userId}-comment:${bookId}`,
+            })
+          }
 
           if (authorId !== like.comment.authorId) {
             userFeed.addActivity({
@@ -301,7 +313,7 @@ const Mutation = objectType({
               verb: 'like',
               to: [`notifications:${like.chapter.authorId}`],
               object: `chapter:${like.chapter.id}`,
-              userId: authorId,
+              user,
               bookId: like.chapter.bookId,
               chapterId: like.chapter.id,
               actor: getStreamClient.user(authorId),
@@ -347,7 +359,7 @@ const Mutation = objectType({
             verb: 'reply',
             to: [`notifications:${comment.authorId}`],
             object: `comment:${comment.id}`,
-            userId,
+            user,
             bookId: comment.bookId || comment.chapter.bookId, // chapter comments only receive chapter object
             chapterId: comment.chapterId,
           })
@@ -386,9 +398,8 @@ const Mutation = objectType({
               verb: 'comment',
               to: [`notifications:${comment.book.authorId}`],
               object: `book:${comment.id}`,
-              userId,
+              user,
               bookId,
-              commentId: comment.id,
             })
           }
 
@@ -425,10 +436,9 @@ const Mutation = objectType({
               verb: 'comment',
               to: [`notifications:${comment.chapter.authorId}`],
               object: `chapter:${comment.id}`,
-              userId,
+              user,
               bookId: comment.chapter.bookId,
               chapterId,
-              commentId: comment.id,
             })
           }
 
@@ -763,3 +773,4 @@ let makeStripeConnectRequest = async (code) => {
 module.exports = {
   Mutation,
 }
+
