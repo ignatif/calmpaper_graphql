@@ -31,7 +31,7 @@ require('./middlewares/authentication/google')
 
 const APP_SECRET = 'appsecret321'
 
-const stream = require('getstream').default
+const stream = require('getstream')
 const getStreamClient = stream.connect(
   process.env.GETSTREAM_KEY,
   process.env.GETSTREAM_SECRET,
@@ -149,115 +149,35 @@ server.express.get(
   }),
 )
 
-// Uncomment to create first user
-// server.express.get(
-//   '/auth/google/callback',
-//   passport.authenticate('google', { failureRedirect: '/login' }),
-//   async function (req, res) {
-//     const { user: profile } = req
-
-//     const getStreamToken = getStreamClient.createUserToken(profile.id)
-//     const user = await prisma.user.create({
-//       data: {
-//         googleId: profile.id,
-//         fullname: profile.displayName,
-//         firstname: profile.name.familyName,
-//         givenname: profile.name.givenName,
-//         avatar: profile.photos[0].value,
-//         email: profile.emails[0].value,
-//         getStreamToken,
-//       },
-//     })
-//     var token = sign({ userId: user.id }, APP_SECRET)
-
-//     res.redirect(`${process.env.FRONTEND_URL}/?token=${token}`)
-//   },
-// )
-//
-
 server.express.get(
   '/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/login' }),
   async function (req, res) {
-    let user
     const { user: profile } = req
 
-    // 1) User is already registered
-    user = await prisma.user.findOne({
+    const getStreamToken = getStreamClient.createUserToken(profile.id)
+    const user = await prisma.user.upsert({
       where: {
         googleId: profile.id,
       },
+      create: {
+        googleId: profile.id,
+        fullname: profile.displayName,
+        firstname: profile.name.familyName,
+        givenname: profile.name.givenName,
+        avatar: profile.photos[0].value,
+        email: profile.emails[0].value,
+        getStreamToken,
+      },
+      update: {
+        fullname: profile.displayName,
+        firstname: profile.name.familyName,
+        givenname: profile.name.givenName,
+        avatar: profile.photos[0].value,
+        email: profile.emails[0].value,
+        getStreamToken,
+      },
     })
-
-    // 2) No invite and not registered
-    if (!user && !req.session.from) {
-      res.redirect(`${process.env.FRONTEND_URL}/auth-fail`)
-    }
-
-    // 3) User is registering through invite
-    if (!user && req.session.from) {
-      // decrypt inviter
-      var bytes = CryptoJS.AES.decrypt(req.session.from, 'Look, a smart ass!')
-      var originalText = bytes.toString(CryptoJS.enc.Utf8)
-      const inviterId = parseInt(originalText.substring(4))
-
-      const getStreamToken = getStreamClient.createUserToken(profile.id)
-      user = await prisma.user.create({
-        data: {
-          googleId: profile.id,
-          fullname: profile.displayName,
-          firstname: profile.name.familyName,
-          givenname: profile.name.givenName,
-          avatar: profile.photos[0].value,
-          email: profile.emails[0].value,
-          getStreamToken,
-          inviter: {
-            connect: {
-              id: inviterId,
-            },
-          },
-          following: { connect: { id: inviterId } },
-        },
-      })
-      await prisma.user.update({
-        where: {
-          id: inviterId,
-        },
-        data: {
-          following: {
-            connect: {
-              id: user.id,
-            },
-          },
-        },
-      })
-
-      const userFeed = getStreamClient.feed('notifications', user.id)
-      userFeed.follow('user', inviterId)
-      userFeed.addActivity({
-        actor: getStreamClient.user(inviterId),
-        verb: 'follow',
-        object: `follow:${user.id}`,
-        followerId: inviterId,
-        is_seen: true,
-        isSeen: true,
-      })
-
-      const inviterFeed = getStreamClient.feed('notifications', inviterId)
-      inviterFeed.follow('user', user.id)
-      inviterFeed.addActivity({
-        actor: getStreamClient.user(user.id),
-        verb: 'follow',
-        object: `follow:${inviterId}`,
-        followerId: user.id,
-      })
-
-      var token = sign({ userId: user.id }, APP_SECRET)
-      res.redirect(
-        `${process.env.FRONTEND_URL}/?token=${token}&follow=${inviterId}`,
-      )
-    }
-
     var token = sign({ userId: user.id }, APP_SECRET)
 
     res.redirect(`${process.env.FRONTEND_URL}/?token=${token}`)

@@ -16,6 +16,7 @@ const User = objectType({
     t.model.firstname()
     t.model.givenname()
     t.model.fullname()
+    t.model.bio()
     t.model.password()
     t.model.email()
     t.model.avatar()
