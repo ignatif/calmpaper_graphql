@@ -83,6 +83,8 @@ const server = new GraphQLServer({
   },
 })
 
+server.express.use(cors())
+
 // health check
 server.express.use('/hi', (req, res) => {
   res.status(200).json({ ok: true })
@@ -132,8 +134,6 @@ passport.deserializeUser((obj, done) => done(null, obj))
 server.express.use(session({ secret: 'cats' }))
 server.express.use(passport.initialize())
 server.express.use(passport.session())
-
-server.express.use(cors())
 
 server.express.get(
   '/auth/google',
