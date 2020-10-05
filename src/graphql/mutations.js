@@ -267,6 +267,7 @@ const Mutation = objectType({
             })
           }
 
+<<<<<<< Updated upstream
           if (authorId !== like.comment.authorId) {
             userFeed.addActivity({
               verb: 'like',
@@ -283,6 +284,9 @@ const Mutation = objectType({
           }
 
           return like
+=======
+          return user
+>>>>>>> Stashed changes
         },
       }),
       t.field('setChapterLike', {

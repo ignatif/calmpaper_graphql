@@ -24,8 +24,11 @@ const multer = require('multer')
 const multerS3 = require('multer-s3')
 const cors = require('cors')
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 const CryptoJS = require('crypto-js')
 =======
+=======
+>>>>>>> Stashed changes
 const fs = require('fs')
 require('dotenv').config()
 >>>>>>> Stashed changes
@@ -178,7 +181,10 @@ server.express.get(
         givenname: profile.name.givenName,
         avatar: profile.photos[0].value,
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         email: profile.emails[0].value,
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
         getStreamToken,
@@ -189,7 +195,10 @@ server.express.get(
         givenname: profile.name.givenName,
         avatar: profile.photos[0].value,
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         email: profile.emails[0].value,
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
         getStreamToken,
@@ -198,7 +207,11 @@ server.express.get(
     var token = sign({ userId: user.id }, APP_SECRET)
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     res.redirect(`${process.env.FRONTEND_URL}/?token=${token}`)
+=======
+    res.redirect(`http://ec2-52-87-215-106.compute-1.amazonaws.com:5000/?token=${token}`)
+>>>>>>> Stashed changes
 =======
     res.redirect(`http://ec2-52-87-215-106.compute-1.amazonaws.com:5000/?token=${token}`)
 >>>>>>> Stashed changes

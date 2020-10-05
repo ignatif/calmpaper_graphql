@@ -1,6 +1,10 @@
 generator client {
   provider = "prisma-client-js"
+<<<<<<< Updated upstream
   binaryTargets = ["native", "debian-openssl-1.1.x"]
+=======
+  binaryTargets = ["debian-openssl-1.1.x"]
+>>>>>>> Stashed changes
 }
 
 datasource sqlite {
