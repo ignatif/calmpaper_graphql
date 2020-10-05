@@ -1,7 +1,7 @@
 const { objectType, intArg, stringArg } = require('@nexus/schema')
 const { getUserId } = require('../utils')
 
-const stream = require('getstream').default
+const stream = require('getstream')
 const getStreamClient = stream.connect(
   process.env.GETSTREAM_KEY,
   process.env.GETSTREAM_SECRET,

@@ -6,7 +6,7 @@ const stripe = require('../stripe')
 const { compare, hash } = require('bcryptjs')
 const { sign } = require('jsonwebtoken')
 
-const stream = require('getstream').default
+const stream = require('getstream')
 const getStreamClient = stream.connect(
   process.env.GETSTREAM_KEY,
   process.env.GETSTREAM_SECRET,
