@@ -59,15 +59,18 @@ let schema = makeSchema({
     Donation,
     AuthPayload,
   ],
-  plugins: [nexusPrismaPlugin()],
+  plugins: [
+    nexusPrismaPlugin({
+      experimentalCRUD: true,
+    }),
+  ],
   experimentalCRUD: true,
   outputs: {
     schema: __dirname + '/../schema.graphql',
   },
 })
 
-schema = applyMiddleware(schema, notifications, permissions)
-// schema = applyMiddleware(schema, notifications)
+schema = applyMiddleware(schema, notifications)
 
 const stipeNode = require('stripe')
 const stripe = stipeNode(process.env.STRIPE_SECRET_KEY)
@@ -170,10 +173,6 @@ server.express.get(
         getStreamToken,
       },
       update: {
-        fullname: profile.displayName,
-        firstname: profile.name.familyName,
-        givenname: profile.name.givenName,
-        avatar: profile.photos[0].value,
         email: profile.emails[0].value,
         getStreamToken,
       },

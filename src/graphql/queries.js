@@ -1,4 +1,4 @@
-const { objectType, intArg, stringArg } = require('@nexus/schema')
+const { queryType, intArg, stringArg } = require('@nexus/schema')
 const { getUserId } = require('../utils')
 
 const stream = require('getstream')
@@ -7,8 +7,7 @@ const getStreamClient = stream.connect(
   process.env.GETSTREAM_SECRET,
 )
 
-const Query = objectType({
-  name: 'Query',
+const Query = queryType({
   definition(t) {
     t.crud.user()
     t.crud.users()
@@ -19,7 +18,7 @@ const Query = objectType({
     t.crud.tags()
     t.crud.genres()
     t.crud.comment()
-    t.crud.comments({ ordering: true, filtering: true })
+    t.crud.comments({ ordering: true, filtering: true, pagination: true })
     t.crud.review()
     t.crud.reviews()
     t.crud.likes()
@@ -53,17 +52,27 @@ const Query = objectType({
     t.list.field('chapterByBook', {
       type: 'Chapter',
       args: {
-        bookId: intArg(),
+        bookId: intArg({ nullable: true }),
+        bookSlug: stringArg({ nullable: true }),
         skip: intArg({ nullable: true }),
       },
-      resolve: (_, { bookId, skip }, ctx) => {
+      resolve: (_, { bookId, bookSlug, skip }, ctx) => {
         return ctx.prisma.chapter.findMany({
           take: 1,
           skip,
           where: {
-            book: {
-              id: bookId,
-            },
+            OR: [
+              {
+                book: {
+                  id: bookId,
+                },
+              },
+              {
+                book: {
+                  slug: bookSlug,
+                },
+              },
+            ],
           },
           include: {
             reviews: true,
@@ -79,11 +88,18 @@ const Query = objectType({
         skip: intArg({ nullable: true }),
         userId: intArg(),
       },
-      resolve: (_, { skip = 0, userId }, ctx) => {
+      resolve: (_, { skip = 0, take = 5, userId }, ctx) => {
         return ctx.prisma.chapter.findMany({
-          take: 3,
+          take,
           skip,
           orderBy: { createdAt: 'desc' },
+          // select: {
+          //   comments: {
+          //     orderBy: { createdAt: 'asc' },
+          //     skip: 0,
+          //     take: 2,
+          //   },
+          // },
           where: {
             AND: [
               { book: { not: undefined } },

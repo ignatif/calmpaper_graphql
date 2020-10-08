@@ -76,6 +76,7 @@ const permissions = shield(
       // updateOneUser: rules.isAuthenticatedUser,
       deleteOneUser: rules.isAuthenticatedUser,
 
+      createBook: rules.isAuthenticatedUser,
       createOneBook: rules.isAuthenticatedUser,
       updateOneBook: rules.isBookAuthor,
       deleteOneBook: rules.isBookAuthor,

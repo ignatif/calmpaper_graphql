@@ -40,6 +40,7 @@ const Book = objectType({
   name: 'Book',
   definition(t) {
     t.model.id()
+    t.model.slug()
     t.model.name()
     t.model.description()
     t.model.image()
@@ -66,6 +67,7 @@ const Chapter = objectType({
   name: 'Chapter',
   definition(t) {
     t.model.id()
+    t.model.slug()
     t.model.title()
     t.model.content()
     t.model.image()

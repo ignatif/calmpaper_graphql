@@ -1,6 +1,7 @@
-const { objectType, intArg, stringArg } = require('@nexus/schema')
+const { mutationType, intArg, stringArg } = require('@nexus/schema')
 const { getUserId } = require('../utils')
 const fetch = require('isomorphic-unfetch')
+const slugify = require('slugify')
 const stripe = require('../stripe')
 
 const { compare, hash } = require('bcryptjs')
@@ -14,8 +15,7 @@ const getStreamClient = stream.connect(
 
 const APP_SECRET = 'appsecret321'
 
-const Mutation = objectType({
-  name: 'Mutation',
+const Mutation = mutationType({
   definition(t) {
     t.crud.createOneUser()
     t.crud.updateOneUser()
@@ -54,48 +54,124 @@ const Mutation = objectType({
     t.crud.updateOneLike()
     t.crud.deleteOneLike()
 
-    t.field('createReview', {
-      type: 'Review',
+    t.field('createBook', {
+      type: 'Book',
       args: {
-        stars: intArg(),
-        message: stringArg(),
-        bookId: intArg(),
-        authorId: intArg(),
+        name: stringArg(),
+        description: stringArg(),
+        image: stringArg({ nullable: true }),
+        tags: intArg({ list: true, nullable: true }),
+        genres: intArg({ list: true, nullable: true }),
       },
-      resolve: async (parent, { stars, message, authorId, bookId }, ctx) => {
-        const result = await ctx.prisma.review.create({
-          data: {
-            stars,
-            message,
-            author: {
-              connect: {
-                id: authorId,
-              },
-            },
-            book: {
-              connect: {
-                id: bookId,
-              },
-            },
-          },
-          include: { book: true },
-        })
-
+      resolve: async (
+        parent,
+        { name, description, image, tags, genres },
+        ctx,
+      ) => {
         const userId = getUserId(ctx)
-        const userFeed = getStreamClient.feed('all', userId)
 
-        userFeed.addActivity({
-          actor: getStreamClient.user(userId),
-          to: [`notifications:${result.book.authorId}`],
-          verb: 'review',
-          object: `book:${bookId}`,
-          bookId: bookId,
-          userId,
-          reviewId: result.id,
-        })
-        return result
+        // 1) Create slug based on name
+        const slug = slugify(name, { lower: true })
+
+        // 2) Check if current slug exists
+        const existing = await ctx.prisma.book.findOne({ where: { slug } })
+
+        if (!existing) {
+          // 3) If doesn't exist - create a book with current slug -> done
+          return ctx.prisma.book.create({
+            data: {
+              name,
+              slug,
+              description,
+              image,
+              author: {
+                connect: {
+                  id: userId,
+                },
+              },
+              tags: {
+                connect: tags,
+              },
+              genres: {
+                connect: genres,
+              },
+            },
+          })
+        } else {
+          // 4) If exists - create a book without slug.
+          const book = await ctx.prisma.book.create({
+            data: {
+              name,
+              description,
+              image,
+              author: {
+                connect: {
+                  id: userId,
+                },
+              },
+              tags: {
+                connect: tags,
+              },
+              genres: {
+                connect: genres,
+              },
+            },
+          })
+
+          // 5) Update with a slug ending with id
+          return ctx.prisma.book.update({
+            where: {
+              id: book.id,
+            },
+            data: {
+              slug: `${slug}-${book.id}`,
+            },
+          })
+        }
       },
     }),
+      t.field('createReview', {
+        type: 'Review',
+        args: {
+          stars: intArg(),
+          message: stringArg(),
+          bookId: intArg(),
+          authorId: intArg(),
+        },
+        resolve: async (parent, { stars, message, authorId, bookId }, ctx) => {
+          const result = await ctx.prisma.review.create({
+            data: {
+              stars,
+              message,
+              author: {
+                connect: {
+                  id: authorId,
+                },
+              },
+              book: {
+                connect: {
+                  id: bookId,
+                },
+              },
+            },
+            include: { book: true },
+          })
+
+          const userId = getUserId(ctx)
+          const userFeed = getStreamClient.feed('all', userId)
+
+          userFeed.addActivity({
+            actor: getStreamClient.user(userId),
+            to: [`notifications:${result.book.authorId}`],
+            verb: 'review',
+            object: `book:${bookId}`,
+            bookId: bookId,
+            userId,
+            reviewId: result.id,
+          })
+          return result
+        },
+      }),
       t.field('setReview', {
         type: 'Review',
         args: {
