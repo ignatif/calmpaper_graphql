@@ -24,6 +24,7 @@ const multer = require('multer')
 const multerS3 = require('multer-s3')
 const cors = require('cors')
 const CryptoJS = require('crypto-js')
+const sgMail = require('@sendgrid/mail')
 
 var passport = require('passport')
 const { sign } = require('jsonwebtoken')
@@ -90,6 +91,31 @@ server.express.use(cors())
 
 // health check
 server.express.use('/hi', (req, res) => {
+  res.status(200).json({ ok: true })
+})
+
+server.express.use('/ping-me', (req, res) => {
+  // using Twilio SendGrid's v3 Node.js Library
+  // https://github.com/sendgrid/sendgrid-nodejs
+  sgMail.setApiKey(process.env.SENDGRID_TOKEN)
+  const msg = {
+    to: 'ignatif@gmail.com',
+    from: {
+      email: 'hi@calmpaper.com',
+      name: 'Calmpaper',
+    },
+    subject: 'You got new comment on your book',
+    text: `👋 Hey @onlyroomforhope, you've received a new comment to your book "The Cycle of Sorrow". Check it out on new Calmpaper`,
+    // html: 'You received a new comment to your book. Check it out on new Calmpaper',
+  }
+  sgMail
+    .send(msg)
+    .then(() => {
+      console.log('Email sent')
+    })
+    .catch((error) => {
+      console.error(error)
+    })
   res.status(200).json({ ok: true })
 })
 

@@ -206,16 +206,27 @@ const Mutation = mutationType({
       t.field('incrementBookViews', {
         type: 'Book',
         args: {
-          bookId: intArg(),
+          bookId: intArg({ nullable: true }),
+          bookSlug: stringArg({ nullable: true }),
         },
-        resolve: async (parent, { bookId }, ctx) => {
+        resolve: async (
+          parent,
+          { bookId = undefined, bookSlug = undefined },
+          ctx,
+        ) => {
           const book = await ctx.prisma.book.findOne({
-            where: { id: bookId },
+            where: {
+              id: bookId,
+              slug: bookSlug,
+            },
           })
 
           return ctx.prisma.book.update({
             data: { views: book.views + 1 },
-            where: { id: bookId },
+            where: {
+              id: bookId,
+              slug: bookSlug,
+            },
           })
         },
       }),

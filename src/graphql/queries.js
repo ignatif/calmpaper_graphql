@@ -205,6 +205,42 @@ const Query = queryType({
           .then((r) => r.length)
       },
     })
+
+    t.list.field('commentsByChapter', {
+      type: 'Comment',
+      args: {
+        skip: intArg({ nullable: true }),
+        take: intArg({ nullable: true }),
+        chapterId: intArg(),
+      },
+      resolve: (_, { skip = 0, take = 5, chapterId }, ctx) => {
+        return ctx.prisma.comment.findMany({
+          take,
+          skip,
+
+          where: { chapter: { id: { equals: chapterId } } },
+          orderBy: { createdAt: 'desc' },
+        })
+      },
+    })
+
+    t.list.field('likesByChapter', {
+      type: 'Like',
+      args: {
+        skip: intArg({ nullable: true }),
+        take: intArg({ nullable: true }),
+        chapterId: intArg(),
+      },
+      resolve: (_, { skip = 0, take = 5, chapterId }, ctx) => {
+        return ctx.prisma.like.findMany({
+          take,
+          skip,
+
+          where: { chapter: { id: { equals: chapterId } } },
+          orderBy: { createdAt: 'desc' },
+        })
+      },
+    })
   },
 })
 

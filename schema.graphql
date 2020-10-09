@@ -3,8 +3,8 @@
 
 
 type AuthPayload {
-  token: String!
-  user: User!
+  token: String
+  user: User
 }
 
 type BatchPayload {
@@ -14,8 +14,8 @@ type BatchPayload {
 type Book {
   archived: Boolean
   author: User
-  chapters(orderBy: [ChapterOrderByInput!]): [Chapter!]!
-  comments(orderBy: [CommentOrderByInput!], skip: Int): [Comment!]!
+  chapters(orderBy: ChapterOrderByInput): [Chapter!]!
+  comments(orderBy: CommentOrderByInput, skip: Int): [Comment!]!
   createdAt: DateTime!
   description: String!
   donations: [Donation!]!
@@ -26,6 +26,7 @@ type Book {
   name: String!
   readers: [User!]!
   reviews: [Review!]!
+  slug: String
   tags: [Tag!]!
   views: Int!
 }
@@ -44,28 +45,29 @@ input BookCreateInput {
   name: String!
   readers: UserCreateManyWithoutFavoriteBooksInput
   reviews: ReviewCreateManyWithoutBookInput
+  slug: String
   tags: TagCreateManyWithoutBooksInput
   views: Int
 }
 
 input BookCreateManyWithoutAuthorInput {
-  connect: [BookWhereUniqueInput!]
-  create: [BookCreateWithoutAuthorInput!]
+  connect: [BookWhereUniqueInput]
+  create: [BookCreateWithoutAuthorInput]
 }
 
 input BookCreateManyWithoutGenresInput {
-  connect: [BookWhereUniqueInput!]
-  create: [BookCreateWithoutGenresInput!]
+  connect: [BookWhereUniqueInput]
+  create: [BookCreateWithoutGenresInput]
 }
 
 input BookCreateManyWithoutReadersInput {
-  connect: [BookWhereUniqueInput!]
-  create: [BookCreateWithoutReadersInput!]
+  connect: [BookWhereUniqueInput]
+  create: [BookCreateWithoutReadersInput]
 }
 
 input BookCreateManyWithoutTagsInput {
-  connect: [BookWhereUniqueInput!]
-  create: [BookCreateWithoutTagsInput!]
+  connect: [BookWhereUniqueInput]
+  create: [BookCreateWithoutTagsInput]
 }
 
 input BookCreateOneWithoutChaptersInput {
@@ -106,6 +108,7 @@ input BookCreateWithoutAuthorInput {
   name: String!
   readers: UserCreateManyWithoutFavoriteBooksInput
   reviews: ReviewCreateManyWithoutBookInput
+  slug: String
   tags: TagCreateManyWithoutBooksInput
   views: Int
 }
@@ -123,6 +126,7 @@ input BookCreateWithoutChaptersInput {
   name: String!
   readers: UserCreateManyWithoutFavoriteBooksInput
   reviews: ReviewCreateManyWithoutBookInput
+  slug: String
   tags: TagCreateManyWithoutBooksInput
   views: Int
 }
@@ -140,6 +144,7 @@ input BookCreateWithoutCommentsInput {
   name: String!
   readers: UserCreateManyWithoutFavoriteBooksInput
   reviews: ReviewCreateManyWithoutBookInput
+  slug: String
   tags: TagCreateManyWithoutBooksInput
   views: Int
 }
@@ -157,6 +162,7 @@ input BookCreateWithoutDonationsInput {
   name: String!
   readers: UserCreateManyWithoutFavoriteBooksInput
   reviews: ReviewCreateManyWithoutBookInput
+  slug: String
   tags: TagCreateManyWithoutBooksInput
   views: Int
 }
@@ -174,6 +180,7 @@ input BookCreateWithoutGenresInput {
   name: String!
   readers: UserCreateManyWithoutFavoriteBooksInput
   reviews: ReviewCreateManyWithoutBookInput
+  slug: String
   tags: TagCreateManyWithoutBooksInput
   views: Int
 }
@@ -191,6 +198,7 @@ input BookCreateWithoutLikesInput {
   name: String!
   readers: UserCreateManyWithoutFavoriteBooksInput
   reviews: ReviewCreateManyWithoutBookInput
+  slug: String
   tags: TagCreateManyWithoutBooksInput
   views: Int
 }
@@ -208,6 +216,7 @@ input BookCreateWithoutReadersInput {
   likes: LikeCreateManyWithoutBookInput
   name: String!
   reviews: ReviewCreateManyWithoutBookInput
+  slug: String
   tags: TagCreateManyWithoutBooksInput
   views: Int
 }
@@ -225,6 +234,7 @@ input BookCreateWithoutReviewsInput {
   likes: LikeCreateManyWithoutBookInput
   name: String!
   readers: UserCreateManyWithoutFavoriteBooksInput
+  slug: String
   tags: TagCreateManyWithoutBooksInput
   views: Int
 }
@@ -243,37 +253,48 @@ input BookCreateWithoutTagsInput {
   name: String!
   readers: UserCreateManyWithoutFavoriteBooksInput
   reviews: ReviewCreateManyWithoutBookInput
+  slug: String
   views: Int
 }
 
-input BookListRelationFilter {
+input BookFilter {
   every: BookWhereInput
   none: BookWhereInput
   some: BookWhereInput
 }
 
 input BookOrderByInput {
-  archived: SortOrder
-  authorId: SortOrder
-  createdAt: SortOrder
-  description: SortOrder
-  id: SortOrder
-  image: SortOrder
-  name: SortOrder
-  views: SortOrder
+  archived: OrderByArg
+  authorId: OrderByArg
+  createdAt: OrderByArg
+  description: OrderByArg
+  id: OrderByArg
+  image: OrderByArg
+  name: OrderByArg
+  slug: OrderByArg
+  views: OrderByArg
 }
 
 input BookScalarWhereInput {
-  AND: [BookScalarWhereInput!]
-  archived: BoolNullableFilter
-  authorId: IntNullableFilter
+  AND: [BookScalarWhereInput]
+  archived: NullableBooleanFilter
+  authorId: NullableIntFilter
+  chapters: ChapterFilter
+  comments: CommentFilter
   createdAt: DateTimeFilter
   description: StringFilter
+  donations: DonationFilter
+  genres: GenreFilter
   id: IntFilter
-  image: StringNullableFilter
+  image: NullableStringFilter
+  likes: LikeFilter
   name: StringFilter
-  NOT: [BookScalarWhereInput!]
-  OR: [BookScalarWhereInput!]
+  NOT: [BookScalarWhereInput]
+  OR: [BookScalarWhereInput]
+  readers: UserFilter
+  reviews: ReviewFilter
+  slug: NullableStringFilter
+  tags: TagFilter
   views: IntFilter
 }
 
@@ -286,11 +307,13 @@ input BookUpdateInput {
   description: String
   donations: DonationUpdateManyWithoutBookInput
   genres: GenreUpdateManyWithoutBooksInput
+  id: Int
   image: String
   likes: LikeUpdateManyWithoutBookInput
   name: String
   readers: UserUpdateManyWithoutFavoriteBooksInput
   reviews: ReviewUpdateManyWithoutBookInput
+  slug: String
   tags: TagUpdateManyWithoutBooksInput
   views: Int
 }
@@ -299,8 +322,10 @@ input BookUpdateManyDataInput {
   archived: Boolean
   createdAt: DateTime
   description: String
+  id: Int
   image: String
   name: String
+  slug: String
   views: Int
 }
 
@@ -308,57 +333,59 @@ input BookUpdateManyMutationInput {
   archived: Boolean
   createdAt: DateTime
   description: String
+  id: Int
   image: String
   name: String
+  slug: String
   views: Int
 }
 
 input BookUpdateManyWithoutAuthorInput {
-  connect: [BookWhereUniqueInput!]
-  create: [BookCreateWithoutAuthorInput!]
-  delete: [BookWhereUniqueInput!]
-  deleteMany: [BookScalarWhereInput!]
-  disconnect: [BookWhereUniqueInput!]
-  set: [BookWhereUniqueInput!]
-  update: [BookUpdateWithWhereUniqueWithoutAuthorInput!]
-  updateMany: [BookUpdateManyWithWhereNestedInput!]
-  upsert: [BookUpsertWithWhereUniqueWithoutAuthorInput!]
+  connect: [BookWhereUniqueInput]
+  create: [BookCreateWithoutAuthorInput]
+  delete: [BookWhereUniqueInput]
+  deleteMany: [BookScalarWhereInput]
+  disconnect: [BookWhereUniqueInput]
+  set: [BookWhereUniqueInput]
+  update: [BookUpdateWithWhereUniqueWithoutAuthorInput]
+  updateMany: [BookUpdateManyWithWhereNestedInput]
+  upsert: [BookUpsertWithWhereUniqueWithoutAuthorInput]
 }
 
 input BookUpdateManyWithoutGenresInput {
-  connect: [BookWhereUniqueInput!]
-  create: [BookCreateWithoutGenresInput!]
-  delete: [BookWhereUniqueInput!]
-  deleteMany: [BookScalarWhereInput!]
-  disconnect: [BookWhereUniqueInput!]
-  set: [BookWhereUniqueInput!]
-  update: [BookUpdateWithWhereUniqueWithoutGenresInput!]
-  updateMany: [BookUpdateManyWithWhereNestedInput!]
-  upsert: [BookUpsertWithWhereUniqueWithoutGenresInput!]
+  connect: [BookWhereUniqueInput]
+  create: [BookCreateWithoutGenresInput]
+  delete: [BookWhereUniqueInput]
+  deleteMany: [BookScalarWhereInput]
+  disconnect: [BookWhereUniqueInput]
+  set: [BookWhereUniqueInput]
+  update: [BookUpdateWithWhereUniqueWithoutGenresInput]
+  updateMany: [BookUpdateManyWithWhereNestedInput]
+  upsert: [BookUpsertWithWhereUniqueWithoutGenresInput]
 }
 
 input BookUpdateManyWithoutReadersInput {
-  connect: [BookWhereUniqueInput!]
-  create: [BookCreateWithoutReadersInput!]
-  delete: [BookWhereUniqueInput!]
-  deleteMany: [BookScalarWhereInput!]
-  disconnect: [BookWhereUniqueInput!]
-  set: [BookWhereUniqueInput!]
-  update: [BookUpdateWithWhereUniqueWithoutReadersInput!]
-  updateMany: [BookUpdateManyWithWhereNestedInput!]
-  upsert: [BookUpsertWithWhereUniqueWithoutReadersInput!]
+  connect: [BookWhereUniqueInput]
+  create: [BookCreateWithoutReadersInput]
+  delete: [BookWhereUniqueInput]
+  deleteMany: [BookScalarWhereInput]
+  disconnect: [BookWhereUniqueInput]
+  set: [BookWhereUniqueInput]
+  update: [BookUpdateWithWhereUniqueWithoutReadersInput]
+  updateMany: [BookUpdateManyWithWhereNestedInput]
+  upsert: [BookUpsertWithWhereUniqueWithoutReadersInput]
 }
 
 input BookUpdateManyWithoutTagsInput {
-  connect: [BookWhereUniqueInput!]
-  create: [BookCreateWithoutTagsInput!]
-  delete: [BookWhereUniqueInput!]
-  deleteMany: [BookScalarWhereInput!]
-  disconnect: [BookWhereUniqueInput!]
-  set: [BookWhereUniqueInput!]
-  update: [BookUpdateWithWhereUniqueWithoutTagsInput!]
-  updateMany: [BookUpdateManyWithWhereNestedInput!]
-  upsert: [BookUpsertWithWhereUniqueWithoutTagsInput!]
+  connect: [BookWhereUniqueInput]
+  create: [BookCreateWithoutTagsInput]
+  delete: [BookWhereUniqueInput]
+  deleteMany: [BookScalarWhereInput]
+  disconnect: [BookWhereUniqueInput]
+  set: [BookWhereUniqueInput]
+  update: [BookUpdateWithWhereUniqueWithoutTagsInput]
+  updateMany: [BookUpdateManyWithWhereNestedInput]
+  upsert: [BookUpsertWithWhereUniqueWithoutTagsInput]
 }
 
 input BookUpdateManyWithWhereNestedInput {
@@ -419,11 +446,13 @@ input BookUpdateWithoutAuthorDataInput {
   description: String
   donations: DonationUpdateManyWithoutBookInput
   genres: GenreUpdateManyWithoutBooksInput
+  id: Int
   image: String
   likes: LikeUpdateManyWithoutBookInput
   name: String
   readers: UserUpdateManyWithoutFavoriteBooksInput
   reviews: ReviewUpdateManyWithoutBookInput
+  slug: String
   tags: TagUpdateManyWithoutBooksInput
   views: Int
 }
@@ -436,11 +465,13 @@ input BookUpdateWithoutChaptersDataInput {
   description: String
   donations: DonationUpdateManyWithoutBookInput
   genres: GenreUpdateManyWithoutBooksInput
+  id: Int
   image: String
   likes: LikeUpdateManyWithoutBookInput
   name: String
   readers: UserUpdateManyWithoutFavoriteBooksInput
   reviews: ReviewUpdateManyWithoutBookInput
+  slug: String
   tags: TagUpdateManyWithoutBooksInput
   views: Int
 }
@@ -453,11 +484,13 @@ input BookUpdateWithoutCommentsDataInput {
   description: String
   donations: DonationUpdateManyWithoutBookInput
   genres: GenreUpdateManyWithoutBooksInput
+  id: Int
   image: String
   likes: LikeUpdateManyWithoutBookInput
   name: String
   readers: UserUpdateManyWithoutFavoriteBooksInput
   reviews: ReviewUpdateManyWithoutBookInput
+  slug: String
   tags: TagUpdateManyWithoutBooksInput
   views: Int
 }
@@ -470,11 +503,13 @@ input BookUpdateWithoutDonationsDataInput {
   createdAt: DateTime
   description: String
   genres: GenreUpdateManyWithoutBooksInput
+  id: Int
   image: String
   likes: LikeUpdateManyWithoutBookInput
   name: String
   readers: UserUpdateManyWithoutFavoriteBooksInput
   reviews: ReviewUpdateManyWithoutBookInput
+  slug: String
   tags: TagUpdateManyWithoutBooksInput
   views: Int
 }
@@ -487,11 +522,13 @@ input BookUpdateWithoutGenresDataInput {
   createdAt: DateTime
   description: String
   donations: DonationUpdateManyWithoutBookInput
+  id: Int
   image: String
   likes: LikeUpdateManyWithoutBookInput
   name: String
   readers: UserUpdateManyWithoutFavoriteBooksInput
   reviews: ReviewUpdateManyWithoutBookInput
+  slug: String
   tags: TagUpdateManyWithoutBooksInput
   views: Int
 }
@@ -505,10 +542,12 @@ input BookUpdateWithoutLikesDataInput {
   description: String
   donations: DonationUpdateManyWithoutBookInput
   genres: GenreUpdateManyWithoutBooksInput
+  id: Int
   image: String
   name: String
   readers: UserUpdateManyWithoutFavoriteBooksInput
   reviews: ReviewUpdateManyWithoutBookInput
+  slug: String
   tags: TagUpdateManyWithoutBooksInput
   views: Int
 }
@@ -522,10 +561,12 @@ input BookUpdateWithoutReadersDataInput {
   description: String
   donations: DonationUpdateManyWithoutBookInput
   genres: GenreUpdateManyWithoutBooksInput
+  id: Int
   image: String
   likes: LikeUpdateManyWithoutBookInput
   name: String
   reviews: ReviewUpdateManyWithoutBookInput
+  slug: String
   tags: TagUpdateManyWithoutBooksInput
   views: Int
 }
@@ -539,10 +580,12 @@ input BookUpdateWithoutReviewsDataInput {
   description: String
   donations: DonationUpdateManyWithoutBookInput
   genres: GenreUpdateManyWithoutBooksInput
+  id: Int
   image: String
   likes: LikeUpdateManyWithoutBookInput
   name: String
   readers: UserUpdateManyWithoutFavoriteBooksInput
+  slug: String
   tags: TagUpdateManyWithoutBooksInput
   views: Int
 }
@@ -556,11 +599,13 @@ input BookUpdateWithoutTagsDataInput {
   description: String
   donations: DonationUpdateManyWithoutBookInput
   genres: GenreUpdateManyWithoutBooksInput
+  id: Int
   image: String
   likes: LikeUpdateManyWithoutBookInput
   name: String
   readers: UserUpdateManyWithoutFavoriteBooksInput
   reviews: ReviewUpdateManyWithoutBookInput
+  slug: String
   views: Int
 }
 
@@ -634,46 +679,43 @@ input BookUpsertWithWhereUniqueWithoutTagsInput {
 }
 
 input BookWhereInput {
-  AND: [BookWhereInput!]
-  archived: BoolNullableFilter
+  AND: [BookWhereInput]
+  archived: NullableBooleanFilter
   author: UserWhereInput
-  authorId: IntNullableFilter
-  chapters: ChapterListRelationFilter
-  comments: CommentListRelationFilter
+  authorId: NullableIntFilter
+  chapters: ChapterFilter
+  comments: CommentFilter
   createdAt: DateTimeFilter
   description: StringFilter
-  donations: DonationListRelationFilter
-  genres: GenreListRelationFilter
+  donations: DonationFilter
+  genres: GenreFilter
   id: IntFilter
-  image: StringNullableFilter
-  likes: LikeListRelationFilter
+  image: NullableStringFilter
+  likes: LikeFilter
   name: StringFilter
-  NOT: [BookWhereInput!]
-  OR: [BookWhereInput!]
-  readers: UserListRelationFilter
-  reviews: ReviewListRelationFilter
-  tags: TagListRelationFilter
+  NOT: [BookWhereInput]
+  OR: [BookWhereInput]
+  readers: UserFilter
+  reviews: ReviewFilter
+  slug: NullableStringFilter
+  tags: TagFilter
   views: IntFilter
 }
 
 input BookWhereUniqueInput {
   id: Int
+  slug: String
 }
 
-input BoolFilter {
+input BooleanFilter {
   equals: Boolean
-  not: NestedBoolFilter
-}
-
-input BoolNullableFilter {
-  equals: Boolean
-  not: NestedBoolNullableFilter
+  not: Boolean
 }
 
 type Chapter {
   author: User
   book: Book
-  comments(orderBy: [CommentOrderByInput!], skip: Int): [Comment!]!
+  comments(orderBy: CommentOrderByInput, skip: Int): [Comment!]!
   content: String!
   createdAt: DateTime!
   donations: [Donation!]!
@@ -681,6 +723,7 @@ type Chapter {
   image: String
   likes: [Like!]!
   reviews: [Review!]!
+  slug: String
   title: String
   views: Int!
 }
@@ -695,18 +738,19 @@ input ChapterCreateInput {
   image: String
   likes: LikeCreateManyWithoutChapterInput
   reviews: ReviewCreateManyWithoutChapterInput
+  slug: String
   title: String
   views: Int
 }
 
 input ChapterCreateManyWithoutAuthorInput {
-  connect: [ChapterWhereUniqueInput!]
-  create: [ChapterCreateWithoutAuthorInput!]
+  connect: [ChapterWhereUniqueInput]
+  create: [ChapterCreateWithoutAuthorInput]
 }
 
 input ChapterCreateManyWithoutBookInput {
-  connect: [ChapterWhereUniqueInput!]
-  create: [ChapterCreateWithoutBookInput!]
+  connect: [ChapterWhereUniqueInput]
+  create: [ChapterCreateWithoutBookInput]
 }
 
 input ChapterCreateOneWithoutCommentsInput {
@@ -738,6 +782,7 @@ input ChapterCreateWithoutAuthorInput {
   image: String
   likes: LikeCreateManyWithoutChapterInput
   reviews: ReviewCreateManyWithoutChapterInput
+  slug: String
   title: String
   views: Int
 }
@@ -751,6 +796,7 @@ input ChapterCreateWithoutBookInput {
   image: String
   likes: LikeCreateManyWithoutChapterInput
   reviews: ReviewCreateManyWithoutChapterInput
+  slug: String
   title: String
   views: Int
 }
@@ -764,6 +810,7 @@ input ChapterCreateWithoutCommentsInput {
   image: String
   likes: LikeCreateManyWithoutChapterInput
   reviews: ReviewCreateManyWithoutChapterInput
+  slug: String
   title: String
   views: Int
 }
@@ -777,6 +824,7 @@ input ChapterCreateWithoutDonationsInput {
   image: String
   likes: LikeCreateManyWithoutChapterInput
   reviews: ReviewCreateManyWithoutChapterInput
+  slug: String
   title: String
   views: Int
 }
@@ -790,6 +838,7 @@ input ChapterCreateWithoutLikesInput {
   donations: DonationCreateManyWithoutChapterInput
   image: String
   reviews: ReviewCreateManyWithoutChapterInput
+  slug: String
   title: String
   views: Int
 }
@@ -803,38 +852,45 @@ input ChapterCreateWithoutReviewsInput {
   donations: DonationCreateManyWithoutChapterInput
   image: String
   likes: LikeCreateManyWithoutChapterInput
+  slug: String
   title: String
   views: Int
 }
 
-input ChapterListRelationFilter {
+input ChapterFilter {
   every: ChapterWhereInput
   none: ChapterWhereInput
   some: ChapterWhereInput
 }
 
 input ChapterOrderByInput {
-  authorId: SortOrder
-  bookId: SortOrder
-  content: SortOrder
-  createdAt: SortOrder
-  id: SortOrder
-  image: SortOrder
-  title: SortOrder
-  views: SortOrder
+  authorId: OrderByArg
+  bookId: OrderByArg
+  content: OrderByArg
+  createdAt: OrderByArg
+  id: OrderByArg
+  image: OrderByArg
+  slug: OrderByArg
+  title: OrderByArg
+  views: OrderByArg
 }
 
 input ChapterScalarWhereInput {
-  AND: [ChapterScalarWhereInput!]
-  authorId: IntNullableFilter
-  bookId: IntNullableFilter
+  AND: [ChapterScalarWhereInput]
+  authorId: NullableIntFilter
+  bookId: NullableIntFilter
+  comments: CommentFilter
   content: StringFilter
   createdAt: DateTimeFilter
+  donations: DonationFilter
   id: IntFilter
-  image: StringNullableFilter
-  NOT: [ChapterScalarWhereInput!]
-  OR: [ChapterScalarWhereInput!]
-  title: StringNullableFilter
+  image: NullableStringFilter
+  likes: LikeFilter
+  NOT: [ChapterScalarWhereInput]
+  OR: [ChapterScalarWhereInput]
+  reviews: ReviewFilter
+  slug: NullableStringFilter
+  title: NullableStringFilter
   views: IntFilter
 }
 
@@ -845,9 +901,11 @@ input ChapterUpdateInput {
   content: String
   createdAt: DateTime
   donations: DonationUpdateManyWithoutChapterInput
+  id: Int
   image: String
   likes: LikeUpdateManyWithoutChapterInput
   reviews: ReviewUpdateManyWithoutChapterInput
+  slug: String
   title: String
   views: Int
 }
@@ -855,7 +913,9 @@ input ChapterUpdateInput {
 input ChapterUpdateManyDataInput {
   content: String
   createdAt: DateTime
+  id: Int
   image: String
+  slug: String
   title: String
   views: Int
 }
@@ -863,33 +923,35 @@ input ChapterUpdateManyDataInput {
 input ChapterUpdateManyMutationInput {
   content: String
   createdAt: DateTime
+  id: Int
   image: String
+  slug: String
   title: String
   views: Int
 }
 
 input ChapterUpdateManyWithoutAuthorInput {
-  connect: [ChapterWhereUniqueInput!]
-  create: [ChapterCreateWithoutAuthorInput!]
-  delete: [ChapterWhereUniqueInput!]
-  deleteMany: [ChapterScalarWhereInput!]
-  disconnect: [ChapterWhereUniqueInput!]
-  set: [ChapterWhereUniqueInput!]
-  update: [ChapterUpdateWithWhereUniqueWithoutAuthorInput!]
-  updateMany: [ChapterUpdateManyWithWhereNestedInput!]
-  upsert: [ChapterUpsertWithWhereUniqueWithoutAuthorInput!]
+  connect: [ChapterWhereUniqueInput]
+  create: [ChapterCreateWithoutAuthorInput]
+  delete: [ChapterWhereUniqueInput]
+  deleteMany: [ChapterScalarWhereInput]
+  disconnect: [ChapterWhereUniqueInput]
+  set: [ChapterWhereUniqueInput]
+  update: [ChapterUpdateWithWhereUniqueWithoutAuthorInput]
+  updateMany: [ChapterUpdateManyWithWhereNestedInput]
+  upsert: [ChapterUpsertWithWhereUniqueWithoutAuthorInput]
 }
 
 input ChapterUpdateManyWithoutBookInput {
-  connect: [ChapterWhereUniqueInput!]
-  create: [ChapterCreateWithoutBookInput!]
-  delete: [ChapterWhereUniqueInput!]
-  deleteMany: [ChapterScalarWhereInput!]
-  disconnect: [ChapterWhereUniqueInput!]
-  set: [ChapterWhereUniqueInput!]
-  update: [ChapterUpdateWithWhereUniqueWithoutBookInput!]
-  updateMany: [ChapterUpdateManyWithWhereNestedInput!]
-  upsert: [ChapterUpsertWithWhereUniqueWithoutBookInput!]
+  connect: [ChapterWhereUniqueInput]
+  create: [ChapterCreateWithoutBookInput]
+  delete: [ChapterWhereUniqueInput]
+  deleteMany: [ChapterScalarWhereInput]
+  disconnect: [ChapterWhereUniqueInput]
+  set: [ChapterWhereUniqueInput]
+  update: [ChapterUpdateWithWhereUniqueWithoutBookInput]
+  updateMany: [ChapterUpdateManyWithWhereNestedInput]
+  upsert: [ChapterUpsertWithWhereUniqueWithoutBookInput]
 }
 
 input ChapterUpdateManyWithWhereNestedInput {
@@ -939,9 +1001,11 @@ input ChapterUpdateWithoutAuthorDataInput {
   content: String
   createdAt: DateTime
   donations: DonationUpdateManyWithoutChapterInput
+  id: Int
   image: String
   likes: LikeUpdateManyWithoutChapterInput
   reviews: ReviewUpdateManyWithoutChapterInput
+  slug: String
   title: String
   views: Int
 }
@@ -952,9 +1016,11 @@ input ChapterUpdateWithoutBookDataInput {
   content: String
   createdAt: DateTime
   donations: DonationUpdateManyWithoutChapterInput
+  id: Int
   image: String
   likes: LikeUpdateManyWithoutChapterInput
   reviews: ReviewUpdateManyWithoutChapterInput
+  slug: String
   title: String
   views: Int
 }
@@ -965,9 +1031,11 @@ input ChapterUpdateWithoutCommentsDataInput {
   content: String
   createdAt: DateTime
   donations: DonationUpdateManyWithoutChapterInput
+  id: Int
   image: String
   likes: LikeUpdateManyWithoutChapterInput
   reviews: ReviewUpdateManyWithoutChapterInput
+  slug: String
   title: String
   views: Int
 }
@@ -978,9 +1046,11 @@ input ChapterUpdateWithoutDonationsDataInput {
   comments: CommentUpdateManyWithoutChapterInput
   content: String
   createdAt: DateTime
+  id: Int
   image: String
   likes: LikeUpdateManyWithoutChapterInput
   reviews: ReviewUpdateManyWithoutChapterInput
+  slug: String
   title: String
   views: Int
 }
@@ -992,8 +1062,10 @@ input ChapterUpdateWithoutLikesDataInput {
   content: String
   createdAt: DateTime
   donations: DonationUpdateManyWithoutChapterInput
+  id: Int
   image: String
   reviews: ReviewUpdateManyWithoutChapterInput
+  slug: String
   title: String
   views: Int
 }
@@ -1005,8 +1077,10 @@ input ChapterUpdateWithoutReviewsDataInput {
   content: String
   createdAt: DateTime
   donations: DonationUpdateManyWithoutChapterInput
+  id: Int
   image: String
   likes: LikeUpdateManyWithoutChapterInput
+  slug: String
   title: String
   views: Int
 }
@@ -1054,27 +1128,29 @@ input ChapterUpsertWithWhereUniqueWithoutBookInput {
 }
 
 input ChapterWhereInput {
-  AND: [ChapterWhereInput!]
+  AND: [ChapterWhereInput]
   author: UserWhereInput
-  authorId: IntNullableFilter
+  authorId: NullableIntFilter
   book: BookWhereInput
-  bookId: IntNullableFilter
-  comments: CommentListRelationFilter
+  bookId: NullableIntFilter
+  comments: CommentFilter
   content: StringFilter
   createdAt: DateTimeFilter
-  donations: DonationListRelationFilter
+  donations: DonationFilter
   id: IntFilter
-  image: StringNullableFilter
-  likes: LikeListRelationFilter
-  NOT: [ChapterWhereInput!]
-  OR: [ChapterWhereInput!]
-  reviews: ReviewListRelationFilter
-  title: StringNullableFilter
+  image: NullableStringFilter
+  likes: LikeFilter
+  NOT: [ChapterWhereInput]
+  OR: [ChapterWhereInput]
+  reviews: ReviewFilter
+  slug: NullableStringFilter
+  title: NullableStringFilter
   views: IntFilter
 }
 
 input ChapterWhereUniqueInput {
   id: Int
+  slug: String
 }
 
 type Comment {
@@ -1087,7 +1163,7 @@ type Comment {
   isChild: Boolean!
   likes: [Like!]!
   parent: Comment
-  replies(orderBy: [CommentOrderByInput!]): [Comment!]!
+  replies(orderBy: CommentOrderByInput): [Comment!]!
 }
 
 input CommentCreateInput {
@@ -1103,23 +1179,23 @@ input CommentCreateInput {
 }
 
 input CommentCreateManyWithoutAuthorInput {
-  connect: [CommentWhereUniqueInput!]
-  create: [CommentCreateWithoutAuthorInput!]
+  connect: [CommentWhereUniqueInput]
+  create: [CommentCreateWithoutAuthorInput]
 }
 
 input CommentCreateManyWithoutBookInput {
-  connect: [CommentWhereUniqueInput!]
-  create: [CommentCreateWithoutBookInput!]
+  connect: [CommentWhereUniqueInput]
+  create: [CommentCreateWithoutBookInput]
 }
 
 input CommentCreateManyWithoutChapterInput {
-  connect: [CommentWhereUniqueInput!]
-  create: [CommentCreateWithoutChapterInput!]
+  connect: [CommentWhereUniqueInput]
+  create: [CommentCreateWithoutChapterInput]
 }
 
 input CommentCreateManyWithoutParentInput {
-  connect: [CommentWhereUniqueInput!]
-  create: [CommentCreateWithoutParentInput!]
+  connect: [CommentWhereUniqueInput]
+  create: [CommentCreateWithoutParentInput]
 }
 
 input CommentCreateOneWithoutLikesInput {
@@ -1198,35 +1274,37 @@ input CommentCreateWithoutRepliesInput {
   parent: CommentCreateOneWithoutRepliesInput
 }
 
-input CommentListRelationFilter {
+input CommentFilter {
   every: CommentWhereInput
   none: CommentWhereInput
   some: CommentWhereInput
 }
 
 input CommentOrderByInput {
-  authorId: SortOrder
-  body: SortOrder
-  bookId: SortOrder
-  chapterId: SortOrder
-  createdAt: SortOrder
-  id: SortOrder
-  isChild: SortOrder
-  parentId: SortOrder
+  authorId: OrderByArg
+  body: OrderByArg
+  bookId: OrderByArg
+  chapterId: OrderByArg
+  createdAt: OrderByArg
+  id: OrderByArg
+  isChild: OrderByArg
+  parentId: OrderByArg
 }
 
 input CommentScalarWhereInput {
-  AND: [CommentScalarWhereInput!]
-  authorId: IntNullableFilter
+  AND: [CommentScalarWhereInput]
+  authorId: NullableIntFilter
   body: StringFilter
-  bookId: IntNullableFilter
-  chapterId: IntNullableFilter
+  bookId: NullableIntFilter
+  chapterId: NullableIntFilter
   createdAt: DateTimeFilter
   id: IntFilter
-  isChild: BoolFilter
-  NOT: [CommentScalarWhereInput!]
-  OR: [CommentScalarWhereInput!]
-  parentId: IntNullableFilter
+  isChild: BooleanFilter
+  likes: LikeFilter
+  NOT: [CommentScalarWhereInput]
+  OR: [CommentScalarWhereInput]
+  parentId: NullableIntFilter
+  replies: CommentFilter
 }
 
 input CommentUpdateInput {
@@ -1235,6 +1313,7 @@ input CommentUpdateInput {
   book: BookUpdateOneWithoutCommentsInput
   chapter: ChapterUpdateOneWithoutCommentsInput
   createdAt: DateTime
+  id: Int
   isChild: Boolean
   likes: LikeUpdateManyWithoutCommentInput
   parent: CommentUpdateOneWithoutRepliesInput
@@ -1244,55 +1323,56 @@ input CommentUpdateInput {
 input CommentUpdateManyDataInput {
   body: String
   createdAt: DateTime
+  id: Int
   isChild: Boolean
 }
 
 input CommentUpdateManyWithoutAuthorInput {
-  connect: [CommentWhereUniqueInput!]
-  create: [CommentCreateWithoutAuthorInput!]
-  delete: [CommentWhereUniqueInput!]
-  deleteMany: [CommentScalarWhereInput!]
-  disconnect: [CommentWhereUniqueInput!]
-  set: [CommentWhereUniqueInput!]
-  update: [CommentUpdateWithWhereUniqueWithoutAuthorInput!]
-  updateMany: [CommentUpdateManyWithWhereNestedInput!]
-  upsert: [CommentUpsertWithWhereUniqueWithoutAuthorInput!]
+  connect: [CommentWhereUniqueInput]
+  create: [CommentCreateWithoutAuthorInput]
+  delete: [CommentWhereUniqueInput]
+  deleteMany: [CommentScalarWhereInput]
+  disconnect: [CommentWhereUniqueInput]
+  set: [CommentWhereUniqueInput]
+  update: [CommentUpdateWithWhereUniqueWithoutAuthorInput]
+  updateMany: [CommentUpdateManyWithWhereNestedInput]
+  upsert: [CommentUpsertWithWhereUniqueWithoutAuthorInput]
 }
 
 input CommentUpdateManyWithoutBookInput {
-  connect: [CommentWhereUniqueInput!]
-  create: [CommentCreateWithoutBookInput!]
-  delete: [CommentWhereUniqueInput!]
-  deleteMany: [CommentScalarWhereInput!]
-  disconnect: [CommentWhereUniqueInput!]
-  set: [CommentWhereUniqueInput!]
-  update: [CommentUpdateWithWhereUniqueWithoutBookInput!]
-  updateMany: [CommentUpdateManyWithWhereNestedInput!]
-  upsert: [CommentUpsertWithWhereUniqueWithoutBookInput!]
+  connect: [CommentWhereUniqueInput]
+  create: [CommentCreateWithoutBookInput]
+  delete: [CommentWhereUniqueInput]
+  deleteMany: [CommentScalarWhereInput]
+  disconnect: [CommentWhereUniqueInput]
+  set: [CommentWhereUniqueInput]
+  update: [CommentUpdateWithWhereUniqueWithoutBookInput]
+  updateMany: [CommentUpdateManyWithWhereNestedInput]
+  upsert: [CommentUpsertWithWhereUniqueWithoutBookInput]
 }
 
 input CommentUpdateManyWithoutChapterInput {
-  connect: [CommentWhereUniqueInput!]
-  create: [CommentCreateWithoutChapterInput!]
-  delete: [CommentWhereUniqueInput!]
-  deleteMany: [CommentScalarWhereInput!]
-  disconnect: [CommentWhereUniqueInput!]
-  set: [CommentWhereUniqueInput!]
-  update: [CommentUpdateWithWhereUniqueWithoutChapterInput!]
-  updateMany: [CommentUpdateManyWithWhereNestedInput!]
-  upsert: [CommentUpsertWithWhereUniqueWithoutChapterInput!]
+  connect: [CommentWhereUniqueInput]
+  create: [CommentCreateWithoutChapterInput]
+  delete: [CommentWhereUniqueInput]
+  deleteMany: [CommentScalarWhereInput]
+  disconnect: [CommentWhereUniqueInput]
+  set: [CommentWhereUniqueInput]
+  update: [CommentUpdateWithWhereUniqueWithoutChapterInput]
+  updateMany: [CommentUpdateManyWithWhereNestedInput]
+  upsert: [CommentUpsertWithWhereUniqueWithoutChapterInput]
 }
 
 input CommentUpdateManyWithoutParentInput {
-  connect: [CommentWhereUniqueInput!]
-  create: [CommentCreateWithoutParentInput!]
-  delete: [CommentWhereUniqueInput!]
-  deleteMany: [CommentScalarWhereInput!]
-  disconnect: [CommentWhereUniqueInput!]
-  set: [CommentWhereUniqueInput!]
-  update: [CommentUpdateWithWhereUniqueWithoutParentInput!]
-  updateMany: [CommentUpdateManyWithWhereNestedInput!]
-  upsert: [CommentUpsertWithWhereUniqueWithoutParentInput!]
+  connect: [CommentWhereUniqueInput]
+  create: [CommentCreateWithoutParentInput]
+  delete: [CommentWhereUniqueInput]
+  deleteMany: [CommentScalarWhereInput]
+  disconnect: [CommentWhereUniqueInput]
+  set: [CommentWhereUniqueInput]
+  update: [CommentUpdateWithWhereUniqueWithoutParentInput]
+  updateMany: [CommentUpdateManyWithWhereNestedInput]
+  upsert: [CommentUpsertWithWhereUniqueWithoutParentInput]
 }
 
 input CommentUpdateManyWithWhereNestedInput {
@@ -1323,6 +1403,7 @@ input CommentUpdateWithoutAuthorDataInput {
   book: BookUpdateOneWithoutCommentsInput
   chapter: ChapterUpdateOneWithoutCommentsInput
   createdAt: DateTime
+  id: Int
   isChild: Boolean
   likes: LikeUpdateManyWithoutCommentInput
   parent: CommentUpdateOneWithoutRepliesInput
@@ -1334,6 +1415,7 @@ input CommentUpdateWithoutBookDataInput {
   body: String
   chapter: ChapterUpdateOneWithoutCommentsInput
   createdAt: DateTime
+  id: Int
   isChild: Boolean
   likes: LikeUpdateManyWithoutCommentInput
   parent: CommentUpdateOneWithoutRepliesInput
@@ -1345,6 +1427,7 @@ input CommentUpdateWithoutChapterDataInput {
   body: String
   book: BookUpdateOneWithoutCommentsInput
   createdAt: DateTime
+  id: Int
   isChild: Boolean
   likes: LikeUpdateManyWithoutCommentInput
   parent: CommentUpdateOneWithoutRepliesInput
@@ -1357,6 +1440,7 @@ input CommentUpdateWithoutLikesDataInput {
   book: BookUpdateOneWithoutCommentsInput
   chapter: ChapterUpdateOneWithoutCommentsInput
   createdAt: DateTime
+  id: Int
   isChild: Boolean
   parent: CommentUpdateOneWithoutRepliesInput
   replies: CommentUpdateManyWithoutParentInput
@@ -1368,6 +1452,7 @@ input CommentUpdateWithoutParentDataInput {
   book: BookUpdateOneWithoutCommentsInput
   chapter: ChapterUpdateOneWithoutCommentsInput
   createdAt: DateTime
+  id: Int
   isChild: Boolean
   likes: LikeUpdateManyWithoutCommentInput
   replies: CommentUpdateManyWithoutParentInput
@@ -1379,6 +1464,7 @@ input CommentUpdateWithoutRepliesDataInput {
   book: BookUpdateOneWithoutCommentsInput
   chapter: ChapterUpdateOneWithoutCommentsInput
   createdAt: DateTime
+  id: Int
   isChild: Boolean
   likes: LikeUpdateManyWithoutCommentInput
   parent: CommentUpdateOneWithoutRepliesInput
@@ -1439,23 +1525,23 @@ input CommentUpsertWithWhereUniqueWithoutParentInput {
 }
 
 input CommentWhereInput {
-  AND: [CommentWhereInput!]
+  AND: [CommentWhereInput]
   author: UserWhereInput
-  authorId: IntNullableFilter
+  authorId: NullableIntFilter
   body: StringFilter
   book: BookWhereInput
-  bookId: IntNullableFilter
+  bookId: NullableIntFilter
   chapter: ChapterWhereInput
-  chapterId: IntNullableFilter
+  chapterId: NullableIntFilter
   createdAt: DateTimeFilter
   id: IntFilter
-  isChild: BoolFilter
-  likes: LikeListRelationFilter
-  NOT: [CommentWhereInput!]
-  OR: [CommentWhereInput!]
+  isChild: BooleanFilter
+  likes: LikeFilter
+  NOT: [CommentWhereInput]
+  OR: [CommentWhereInput]
   parent: CommentWhereInput
-  parentId: IntNullableFilter
-  replies: CommentListRelationFilter
+  parentId: NullableIntFilter
+  replies: CommentFilter
 }
 
 input CommentWhereUniqueInput {
@@ -1468,11 +1554,11 @@ input DateTimeFilter {
   equals: DateTime
   gt: DateTime
   gte: DateTime
-  in: [DateTime!]
+  in: [DateTime]
   lt: DateTime
   lte: DateTime
-  not: NestedDateTimeFilter
-  notIn: [DateTime!]
+  not: DateTime
+  notIn: [DateTime]
 }
 
 type Donation {
@@ -1490,23 +1576,23 @@ type Donation {
 }
 
 input DonationCreateManyWithoutBookInput {
-  connect: [DonationWhereUniqueInput!]
-  create: [DonationCreateWithoutBookInput!]
+  connect: [DonationWhereUniqueInput]
+  create: [DonationCreateWithoutBookInput]
 }
 
 input DonationCreateManyWithoutChapterInput {
-  connect: [DonationWhereUniqueInput!]
-  create: [DonationCreateWithoutChapterInput!]
+  connect: [DonationWhereUniqueInput]
+  create: [DonationCreateWithoutChapterInput]
 }
 
 input DonationCreateManyWithoutPayerInput {
-  connect: [DonationWhereUniqueInput!]
-  create: [DonationCreateWithoutPayerInput!]
+  connect: [DonationWhereUniqueInput]
+  create: [DonationCreateWithoutPayerInput]
 }
 
 input DonationCreateManyWithoutRecipientInput {
-  connect: [DonationWhereUniqueInput!]
-  create: [DonationCreateWithoutRecipientInput!]
+  connect: [DonationWhereUniqueInput]
+  create: [DonationCreateWithoutRecipientInput]
 }
 
 input DonationCreateWithoutBookInput {
@@ -1557,7 +1643,7 @@ input DonationCreateWithoutRecipientInput {
   paymentRequestSecret: String
 }
 
-input DonationListRelationFilter {
+input DonationFilter {
   every: DonationWhereInput
   none: DonationWhereInput
   some: DonationWhereInput
@@ -1565,76 +1651,77 @@ input DonationListRelationFilter {
 
 input DonationScalarWhereInput {
   amount: IntFilter
-  AND: [DonationScalarWhereInput!]
-  bookId: IntNullableFilter
-  chapterId: IntNullableFilter
+  AND: [DonationScalarWhereInput]
+  bookId: NullableIntFilter
+  chapterId: NullableIntFilter
   createdAt: DateTimeFilter
   currency: StringFilter
   id: IntFilter
-  message: StringNullableFilter
-  NOT: [DonationScalarWhereInput!]
-  OR: [DonationScalarWhereInput!]
-  payerId: IntNullableFilter
+  message: NullableStringFilter
+  NOT: [DonationScalarWhereInput]
+  OR: [DonationScalarWhereInput]
+  payerId: NullableIntFilter
   paymentId: StringFilter
-  paymentRequestSecret: StringNullableFilter
-  recipientId: IntNullableFilter
+  paymentRequestSecret: NullableStringFilter
+  recipientId: NullableIntFilter
 }
 
 input DonationUpdateManyDataInput {
   amount: Int
   createdAt: DateTime
   currency: String
+  id: Int
   message: String
   paymentId: String
   paymentRequestSecret: String
 }
 
 input DonationUpdateManyWithoutBookInput {
-  connect: [DonationWhereUniqueInput!]
-  create: [DonationCreateWithoutBookInput!]
-  delete: [DonationWhereUniqueInput!]
-  deleteMany: [DonationScalarWhereInput!]
-  disconnect: [DonationWhereUniqueInput!]
-  set: [DonationWhereUniqueInput!]
-  update: [DonationUpdateWithWhereUniqueWithoutBookInput!]
-  updateMany: [DonationUpdateManyWithWhereNestedInput!]
-  upsert: [DonationUpsertWithWhereUniqueWithoutBookInput!]
+  connect: [DonationWhereUniqueInput]
+  create: [DonationCreateWithoutBookInput]
+  delete: [DonationWhereUniqueInput]
+  deleteMany: [DonationScalarWhereInput]
+  disconnect: [DonationWhereUniqueInput]
+  set: [DonationWhereUniqueInput]
+  update: [DonationUpdateWithWhereUniqueWithoutBookInput]
+  updateMany: [DonationUpdateManyWithWhereNestedInput]
+  upsert: [DonationUpsertWithWhereUniqueWithoutBookInput]
 }
 
 input DonationUpdateManyWithoutChapterInput {
-  connect: [DonationWhereUniqueInput!]
-  create: [DonationCreateWithoutChapterInput!]
-  delete: [DonationWhereUniqueInput!]
-  deleteMany: [DonationScalarWhereInput!]
-  disconnect: [DonationWhereUniqueInput!]
-  set: [DonationWhereUniqueInput!]
-  update: [DonationUpdateWithWhereUniqueWithoutChapterInput!]
-  updateMany: [DonationUpdateManyWithWhereNestedInput!]
-  upsert: [DonationUpsertWithWhereUniqueWithoutChapterInput!]
+  connect: [DonationWhereUniqueInput]
+  create: [DonationCreateWithoutChapterInput]
+  delete: [DonationWhereUniqueInput]
+  deleteMany: [DonationScalarWhereInput]
+  disconnect: [DonationWhereUniqueInput]
+  set: [DonationWhereUniqueInput]
+  update: [DonationUpdateWithWhereUniqueWithoutChapterInput]
+  updateMany: [DonationUpdateManyWithWhereNestedInput]
+  upsert: [DonationUpsertWithWhereUniqueWithoutChapterInput]
 }
 
 input DonationUpdateManyWithoutPayerInput {
-  connect: [DonationWhereUniqueInput!]
-  create: [DonationCreateWithoutPayerInput!]
-  delete: [DonationWhereUniqueInput!]
-  deleteMany: [DonationScalarWhereInput!]
-  disconnect: [DonationWhereUniqueInput!]
-  set: [DonationWhereUniqueInput!]
-  update: [DonationUpdateWithWhereUniqueWithoutPayerInput!]
-  updateMany: [DonationUpdateManyWithWhereNestedInput!]
-  upsert: [DonationUpsertWithWhereUniqueWithoutPayerInput!]
+  connect: [DonationWhereUniqueInput]
+  create: [DonationCreateWithoutPayerInput]
+  delete: [DonationWhereUniqueInput]
+  deleteMany: [DonationScalarWhereInput]
+  disconnect: [DonationWhereUniqueInput]
+  set: [DonationWhereUniqueInput]
+  update: [DonationUpdateWithWhereUniqueWithoutPayerInput]
+  updateMany: [DonationUpdateManyWithWhereNestedInput]
+  upsert: [DonationUpsertWithWhereUniqueWithoutPayerInput]
 }
 
 input DonationUpdateManyWithoutRecipientInput {
-  connect: [DonationWhereUniqueInput!]
-  create: [DonationCreateWithoutRecipientInput!]
-  delete: [DonationWhereUniqueInput!]
-  deleteMany: [DonationScalarWhereInput!]
-  disconnect: [DonationWhereUniqueInput!]
-  set: [DonationWhereUniqueInput!]
-  update: [DonationUpdateWithWhereUniqueWithoutRecipientInput!]
-  updateMany: [DonationUpdateManyWithWhereNestedInput!]
-  upsert: [DonationUpsertWithWhereUniqueWithoutRecipientInput!]
+  connect: [DonationWhereUniqueInput]
+  create: [DonationCreateWithoutRecipientInput]
+  delete: [DonationWhereUniqueInput]
+  deleteMany: [DonationScalarWhereInput]
+  disconnect: [DonationWhereUniqueInput]
+  set: [DonationWhereUniqueInput]
+  update: [DonationUpdateWithWhereUniqueWithoutRecipientInput]
+  updateMany: [DonationUpdateManyWithWhereNestedInput]
+  upsert: [DonationUpsertWithWhereUniqueWithoutRecipientInput]
 }
 
 input DonationUpdateManyWithWhereNestedInput {
@@ -1647,6 +1734,7 @@ input DonationUpdateWithoutBookDataInput {
   chapter: ChapterUpdateOneWithoutDonationsInput
   createdAt: DateTime
   currency: String
+  id: Int
   message: String
   payer: UserUpdateOneWithoutSentDonationsInput
   paymentId: String
@@ -1659,6 +1747,7 @@ input DonationUpdateWithoutChapterDataInput {
   book: BookUpdateOneWithoutDonationsInput
   createdAt: DateTime
   currency: String
+  id: Int
   message: String
   payer: UserUpdateOneWithoutSentDonationsInput
   paymentId: String
@@ -1672,6 +1761,7 @@ input DonationUpdateWithoutPayerDataInput {
   chapter: ChapterUpdateOneWithoutDonationsInput
   createdAt: DateTime
   currency: String
+  id: Int
   message: String
   paymentId: String
   paymentRequestSecret: String
@@ -1684,6 +1774,7 @@ input DonationUpdateWithoutRecipientDataInput {
   chapter: ChapterUpdateOneWithoutDonationsInput
   createdAt: DateTime
   currency: String
+  id: Int
   message: String
   payer: UserUpdateOneWithoutSentDonationsInput
   paymentId: String
@@ -1736,23 +1827,23 @@ input DonationUpsertWithWhereUniqueWithoutRecipientInput {
 
 input DonationWhereInput {
   amount: IntFilter
-  AND: [DonationWhereInput!]
+  AND: [DonationWhereInput]
   book: BookWhereInput
-  bookId: IntNullableFilter
+  bookId: NullableIntFilter
   chapter: ChapterWhereInput
-  chapterId: IntNullableFilter
+  chapterId: NullableIntFilter
   createdAt: DateTimeFilter
   currency: StringFilter
   id: IntFilter
-  message: StringNullableFilter
-  NOT: [DonationWhereInput!]
-  OR: [DonationWhereInput!]
+  message: NullableStringFilter
+  NOT: [DonationWhereInput]
+  OR: [DonationWhereInput]
   payer: UserWhereInput
-  payerId: IntNullableFilter
+  payerId: NullableIntFilter
   paymentId: StringFilter
-  paymentRequestSecret: StringNullableFilter
+  paymentRequestSecret: NullableStringFilter
   recipient: UserWhereInput
-  recipientId: IntNullableFilter
+  recipientId: NullableIntFilter
 }
 
 input DonationWhereUniqueInput {
@@ -1771,47 +1862,50 @@ input GenreCreateInput {
 }
 
 input GenreCreateManyWithoutBooksInput {
-  connect: [GenreWhereUniqueInput!]
-  create: [GenreCreateWithoutBooksInput!]
+  connect: [GenreWhereUniqueInput]
+  create: [GenreCreateWithoutBooksInput]
 }
 
 input GenreCreateWithoutBooksInput {
   label: String!
 }
 
-input GenreListRelationFilter {
+input GenreFilter {
   every: GenreWhereInput
   none: GenreWhereInput
   some: GenreWhereInput
 }
 
 input GenreScalarWhereInput {
-  AND: [GenreScalarWhereInput!]
+  AND: [GenreScalarWhereInput]
+  books: BookFilter
   id: IntFilter
   label: StringFilter
-  NOT: [GenreScalarWhereInput!]
-  OR: [GenreScalarWhereInput!]
+  NOT: [GenreScalarWhereInput]
+  OR: [GenreScalarWhereInput]
 }
 
 input GenreUpdateInput {
   books: BookUpdateManyWithoutGenresInput
+  id: Int
   label: String
 }
 
 input GenreUpdateManyDataInput {
+  id: Int
   label: String
 }
 
 input GenreUpdateManyWithoutBooksInput {
-  connect: [GenreWhereUniqueInput!]
-  create: [GenreCreateWithoutBooksInput!]
-  delete: [GenreWhereUniqueInput!]
-  deleteMany: [GenreScalarWhereInput!]
-  disconnect: [GenreWhereUniqueInput!]
-  set: [GenreWhereUniqueInput!]
-  update: [GenreUpdateWithWhereUniqueWithoutBooksInput!]
-  updateMany: [GenreUpdateManyWithWhereNestedInput!]
-  upsert: [GenreUpsertWithWhereUniqueWithoutBooksInput!]
+  connect: [GenreWhereUniqueInput]
+  create: [GenreCreateWithoutBooksInput]
+  delete: [GenreWhereUniqueInput]
+  deleteMany: [GenreScalarWhereInput]
+  disconnect: [GenreWhereUniqueInput]
+  set: [GenreWhereUniqueInput]
+  update: [GenreUpdateWithWhereUniqueWithoutBooksInput]
+  updateMany: [GenreUpdateManyWithWhereNestedInput]
+  upsert: [GenreUpsertWithWhereUniqueWithoutBooksInput]
 }
 
 input GenreUpdateManyWithWhereNestedInput {
@@ -1820,6 +1914,7 @@ input GenreUpdateManyWithWhereNestedInput {
 }
 
 input GenreUpdateWithoutBooksDataInput {
+  id: Int
   label: String
 }
 
@@ -1835,12 +1930,12 @@ input GenreUpsertWithWhereUniqueWithoutBooksInput {
 }
 
 input GenreWhereInput {
-  AND: [GenreWhereInput!]
-  books: BookListRelationFilter
+  AND: [GenreWhereInput]
+  books: BookFilter
   id: IntFilter
   label: StringFilter
-  NOT: [GenreWhereInput!]
-  OR: [GenreWhereInput!]
+  NOT: [GenreWhereInput]
+  OR: [GenreWhereInput]
 }
 
 input GenreWhereUniqueInput {
@@ -1851,22 +1946,11 @@ input IntFilter {
   equals: Int
   gt: Int
   gte: Int
-  in: [Int!]
+  in: [Int]
   lt: Int
   lte: Int
-  not: NestedIntFilter
-  notIn: [Int!]
-}
-
-input IntNullableFilter {
-  equals: Int
-  gt: Int
-  gte: Int
-  in: [Int!]
-  lt: Int
-  lte: Int
-  not: NestedIntNullableFilter
-  notIn: [Int!]
+  not: Int
+  notIn: [Int]
 }
 
 type Like {
@@ -1889,28 +1973,28 @@ input LikeCreateInput {
 }
 
 input LikeCreateManyWithoutAuthorInput {
-  connect: [LikeWhereUniqueInput!]
-  create: [LikeCreateWithoutAuthorInput!]
+  connect: [LikeWhereUniqueInput]
+  create: [LikeCreateWithoutAuthorInput]
 }
 
 input LikeCreateManyWithoutBookInput {
-  connect: [LikeWhereUniqueInput!]
-  create: [LikeCreateWithoutBookInput!]
+  connect: [LikeWhereUniqueInput]
+  create: [LikeCreateWithoutBookInput]
 }
 
 input LikeCreateManyWithoutChapterInput {
-  connect: [LikeWhereUniqueInput!]
-  create: [LikeCreateWithoutChapterInput!]
+  connect: [LikeWhereUniqueInput]
+  create: [LikeCreateWithoutChapterInput]
 }
 
 input LikeCreateManyWithoutCommentInput {
-  connect: [LikeWhereUniqueInput!]
-  create: [LikeCreateWithoutCommentInput!]
+  connect: [LikeWhereUniqueInput]
+  create: [LikeCreateWithoutCommentInput]
 }
 
 input LikeCreateManyWithoutReviewInput {
-  connect: [LikeWhereUniqueInput!]
-  create: [LikeCreateWithoutReviewInput!]
+  connect: [LikeWhereUniqueInput]
+  create: [LikeCreateWithoutReviewInput]
 }
 
 input LikeCreateWithoutAuthorInput {
@@ -1953,23 +2037,23 @@ input LikeCreateWithoutReviewInput {
   createdAt: DateTime
 }
 
-input LikeListRelationFilter {
+input LikeFilter {
   every: LikeWhereInput
   none: LikeWhereInput
   some: LikeWhereInput
 }
 
 input LikeScalarWhereInput {
-  AND: [LikeScalarWhereInput!]
-  authorId: IntNullableFilter
-  bookId: IntNullableFilter
-  chapterId: IntNullableFilter
-  commentId: IntNullableFilter
+  AND: [LikeScalarWhereInput]
+  authorId: NullableIntFilter
+  bookId: NullableIntFilter
+  chapterId: NullableIntFilter
+  commentId: NullableIntFilter
   createdAt: DateTimeFilter
   id: IntFilter
-  NOT: [LikeScalarWhereInput!]
-  OR: [LikeScalarWhereInput!]
-  reviewId: IntNullableFilter
+  NOT: [LikeScalarWhereInput]
+  OR: [LikeScalarWhereInput]
+  reviewId: NullableIntFilter
 }
 
 input LikeUpdateInput {
@@ -1978,71 +2062,73 @@ input LikeUpdateInput {
   chapter: ChapterUpdateOneWithoutLikesInput
   comment: CommentUpdateOneWithoutLikesInput
   createdAt: DateTime
+  id: Int
   review: ReviewUpdateOneWithoutLikesInput
 }
 
 input LikeUpdateManyDataInput {
   createdAt: DateTime
+  id: Int
 }
 
 input LikeUpdateManyWithoutAuthorInput {
-  connect: [LikeWhereUniqueInput!]
-  create: [LikeCreateWithoutAuthorInput!]
-  delete: [LikeWhereUniqueInput!]
-  deleteMany: [LikeScalarWhereInput!]
-  disconnect: [LikeWhereUniqueInput!]
-  set: [LikeWhereUniqueInput!]
-  update: [LikeUpdateWithWhereUniqueWithoutAuthorInput!]
-  updateMany: [LikeUpdateManyWithWhereNestedInput!]
-  upsert: [LikeUpsertWithWhereUniqueWithoutAuthorInput!]
+  connect: [LikeWhereUniqueInput]
+  create: [LikeCreateWithoutAuthorInput]
+  delete: [LikeWhereUniqueInput]
+  deleteMany: [LikeScalarWhereInput]
+  disconnect: [LikeWhereUniqueInput]
+  set: [LikeWhereUniqueInput]
+  update: [LikeUpdateWithWhereUniqueWithoutAuthorInput]
+  updateMany: [LikeUpdateManyWithWhereNestedInput]
+  upsert: [LikeUpsertWithWhereUniqueWithoutAuthorInput]
 }
 
 input LikeUpdateManyWithoutBookInput {
-  connect: [LikeWhereUniqueInput!]
-  create: [LikeCreateWithoutBookInput!]
-  delete: [LikeWhereUniqueInput!]
-  deleteMany: [LikeScalarWhereInput!]
-  disconnect: [LikeWhereUniqueInput!]
-  set: [LikeWhereUniqueInput!]
-  update: [LikeUpdateWithWhereUniqueWithoutBookInput!]
-  updateMany: [LikeUpdateManyWithWhereNestedInput!]
-  upsert: [LikeUpsertWithWhereUniqueWithoutBookInput!]
+  connect: [LikeWhereUniqueInput]
+  create: [LikeCreateWithoutBookInput]
+  delete: [LikeWhereUniqueInput]
+  deleteMany: [LikeScalarWhereInput]
+  disconnect: [LikeWhereUniqueInput]
+  set: [LikeWhereUniqueInput]
+  update: [LikeUpdateWithWhereUniqueWithoutBookInput]
+  updateMany: [LikeUpdateManyWithWhereNestedInput]
+  upsert: [LikeUpsertWithWhereUniqueWithoutBookInput]
 }
 
 input LikeUpdateManyWithoutChapterInput {
-  connect: [LikeWhereUniqueInput!]
-  create: [LikeCreateWithoutChapterInput!]
-  delete: [LikeWhereUniqueInput!]
-  deleteMany: [LikeScalarWhereInput!]
-  disconnect: [LikeWhereUniqueInput!]
-  set: [LikeWhereUniqueInput!]
-  update: [LikeUpdateWithWhereUniqueWithoutChapterInput!]
-  updateMany: [LikeUpdateManyWithWhereNestedInput!]
-  upsert: [LikeUpsertWithWhereUniqueWithoutChapterInput!]
+  connect: [LikeWhereUniqueInput]
+  create: [LikeCreateWithoutChapterInput]
+  delete: [LikeWhereUniqueInput]
+  deleteMany: [LikeScalarWhereInput]
+  disconnect: [LikeWhereUniqueInput]
+  set: [LikeWhereUniqueInput]
+  update: [LikeUpdateWithWhereUniqueWithoutChapterInput]
+  updateMany: [LikeUpdateManyWithWhereNestedInput]
+  upsert: [LikeUpsertWithWhereUniqueWithoutChapterInput]
 }
 
 input LikeUpdateManyWithoutCommentInput {
-  connect: [LikeWhereUniqueInput!]
-  create: [LikeCreateWithoutCommentInput!]
-  delete: [LikeWhereUniqueInput!]
-  deleteMany: [LikeScalarWhereInput!]
-  disconnect: [LikeWhereUniqueInput!]
-  set: [LikeWhereUniqueInput!]
-  update: [LikeUpdateWithWhereUniqueWithoutCommentInput!]
-  updateMany: [LikeUpdateManyWithWhereNestedInput!]
-  upsert: [LikeUpsertWithWhereUniqueWithoutCommentInput!]
+  connect: [LikeWhereUniqueInput]
+  create: [LikeCreateWithoutCommentInput]
+  delete: [LikeWhereUniqueInput]
+  deleteMany: [LikeScalarWhereInput]
+  disconnect: [LikeWhereUniqueInput]
+  set: [LikeWhereUniqueInput]
+  update: [LikeUpdateWithWhereUniqueWithoutCommentInput]
+  updateMany: [LikeUpdateManyWithWhereNestedInput]
+  upsert: [LikeUpsertWithWhereUniqueWithoutCommentInput]
 }
 
 input LikeUpdateManyWithoutReviewInput {
-  connect: [LikeWhereUniqueInput!]
-  create: [LikeCreateWithoutReviewInput!]
-  delete: [LikeWhereUniqueInput!]
-  deleteMany: [LikeScalarWhereInput!]
-  disconnect: [LikeWhereUniqueInput!]
-  set: [LikeWhereUniqueInput!]
-  update: [LikeUpdateWithWhereUniqueWithoutReviewInput!]
-  updateMany: [LikeUpdateManyWithWhereNestedInput!]
-  upsert: [LikeUpsertWithWhereUniqueWithoutReviewInput!]
+  connect: [LikeWhereUniqueInput]
+  create: [LikeCreateWithoutReviewInput]
+  delete: [LikeWhereUniqueInput]
+  deleteMany: [LikeScalarWhereInput]
+  disconnect: [LikeWhereUniqueInput]
+  set: [LikeWhereUniqueInput]
+  update: [LikeUpdateWithWhereUniqueWithoutReviewInput]
+  updateMany: [LikeUpdateManyWithWhereNestedInput]
+  upsert: [LikeUpsertWithWhereUniqueWithoutReviewInput]
 }
 
 input LikeUpdateManyWithWhereNestedInput {
@@ -2055,6 +2141,7 @@ input LikeUpdateWithoutAuthorDataInput {
   chapter: ChapterUpdateOneWithoutLikesInput
   comment: CommentUpdateOneWithoutLikesInput
   createdAt: DateTime
+  id: Int
   review: ReviewUpdateOneWithoutLikesInput
 }
 
@@ -2063,6 +2150,7 @@ input LikeUpdateWithoutBookDataInput {
   chapter: ChapterUpdateOneWithoutLikesInput
   comment: CommentUpdateOneWithoutLikesInput
   createdAt: DateTime
+  id: Int
   review: ReviewUpdateOneWithoutLikesInput
 }
 
@@ -2071,6 +2159,7 @@ input LikeUpdateWithoutChapterDataInput {
   book: BookUpdateOneWithoutLikesInput
   comment: CommentUpdateOneWithoutLikesInput
   createdAt: DateTime
+  id: Int
   review: ReviewUpdateOneWithoutLikesInput
 }
 
@@ -2079,6 +2168,7 @@ input LikeUpdateWithoutCommentDataInput {
   book: BookUpdateOneWithoutLikesInput
   chapter: ChapterUpdateOneWithoutLikesInput
   createdAt: DateTime
+  id: Int
   review: ReviewUpdateOneWithoutLikesInput
 }
 
@@ -2088,6 +2178,7 @@ input LikeUpdateWithoutReviewDataInput {
   chapter: ChapterUpdateOneWithoutLikesInput
   comment: CommentUpdateOneWithoutLikesInput
   createdAt: DateTime
+  id: Int
 }
 
 input LikeUpdateWithWhereUniqueWithoutAuthorInput {
@@ -2146,21 +2237,21 @@ input LikeUpsertWithWhereUniqueWithoutReviewInput {
 }
 
 input LikeWhereInput {
-  AND: [LikeWhereInput!]
+  AND: [LikeWhereInput]
   author: UserWhereInput
-  authorId: IntNullableFilter
+  authorId: NullableIntFilter
   book: BookWhereInput
-  bookId: IntNullableFilter
+  bookId: NullableIntFilter
   chapter: ChapterWhereInput
-  chapterId: IntNullableFilter
+  chapterId: NullableIntFilter
   comment: CommentWhereInput
-  commentId: IntNullableFilter
+  commentId: NullableIntFilter
   createdAt: DateTimeFilter
   id: IntFilter
-  NOT: [LikeWhereInput!]
-  OR: [LikeWhereInput!]
+  NOT: [LikeWhereInput]
+  OR: [LikeWhereInput]
   review: ReviewWhereInput
-  reviewId: IntNullableFilter
+  reviewId: NullableIntFilter
 }
 
 input LikeWhereUniqueInput {
@@ -2168,7 +2259,8 @@ input LikeWhereUniqueInput {
 }
 
 type Mutation {
-  addBookToFavorites(bookId: Int, userId: Int): User!
+  addBookToFavorites(bookId: Int, userId: Int): User
+  createBook(description: String, genres: [Int], image: String, name: String, tags: [Int]): Book
   createOneBook(data: BookCreateInput!): Book!
   createOneChapter(data: ChapterCreateInput!): Chapter!
   createOneComment(data: CommentCreateInput!): Comment!
@@ -2177,7 +2269,7 @@ type Mutation {
   createOneReview(data: ReviewCreateInput!): Review!
   createOneTag(data: TagCreateInput!): Tag!
   createOneUser(data: UserCreateInput!): User!
-  createReview(authorId: Int, bookId: Int, message: String, stars: Int): Review!
+  createReview(authorId: Int, bookId: Int, message: String, stars: Int): Review
   deleteManyBook(where: BookWhereInput): BatchPayload!
   deleteManyChapter(where: ChapterWhereInput): BatchPayload!
   deleteOneBook(where: BookWhereUniqueInput!): Book
@@ -2188,22 +2280,22 @@ type Mutation {
   deleteOneReview(where: ReviewWhereUniqueInput!): Review
   deleteOneTag(where: TagWhereUniqueInput!): Tag
   deleteOneUser(where: UserWhereUniqueInput!): User
-  followUser(followerId: Int, followingId: Int): User!
-  incrementBookViews(bookId: Int): Book!
-  incrementChapterViews(chapterId: Int): Chapter!
-  login(email: String, password: String): AuthPayload!
-  newBookDonation(amount: Int, bookId: Int, message: String): Donation!
-  newChapterDonation(amount: Int, chapterId: Int, message: String): Donation!
-  removeBookFromFavorites(bookId: Int, userId: Int): User!
-  replyToComment(body: String, commentId: Int, userId: Int): Comment!
-  sendBookComment(body: String, bookId: Int, userId: Int): Comment!
-  sendChapterComment(body: String, chapterId: Int, userId: Int): Comment!
-  setChapterLike(authorId: Int, chapterId: Int): Like!
-  setCommentLike(authorId: Int, commentId: Int): Like!
-  setReview(authorUsername: String, bookId: Int, id: Int, stars: Int): Review!
-  setupStripe(stripeCode: String): Donation!
-  signup(email: String, password: String, username: String): AuthPayload!
-  unfollowUser(followerId: Int, followingId: Int): User!
+  followUser(followerId: Int, followingId: Int): User
+  incrementBookViews(bookId: Int, bookSlug: String): Book
+  incrementChapterViews(chapterId: Int): Chapter
+  login(email: String, password: String): AuthPayload
+  newBookDonation(amount: Int, bookId: Int, message: String): Donation
+  newChapterDonation(amount: Int, chapterId: Int, message: String): Donation
+  removeBookFromFavorites(bookId: Int, userId: Int): User
+  replyToComment(body: String, commentId: Int, userId: Int): Comment
+  sendBookComment(body: String, bookId: Int, userId: Int): Comment
+  sendChapterComment(body: String, chapterId: Int, userId: Int): Comment
+  setChapterLike(authorId: Int, chapterId: Int): Like
+  setCommentLike(authorId: Int, commentId: Int): Like
+  setReview(authorUsername: String, bookId: Int, id: Int, stars: Int): Review
+  setupStripe(stripeCode: String): Donation
+  signup(email: String, password: String, username: String): AuthPayload
+  unfollowUser(followerId: Int, followingId: Int): User
   updateManyBook(data: BookUpdateManyMutationInput!, where: BookWhereInput): BatchPayload!
   updateManyChapter(data: ChapterUpdateManyMutationInput!, where: ChapterWhereInput): BatchPayload!
   updateOneBook(data: BookUpdateInput!, where: BookWhereUniqueInput!): Book
@@ -2217,93 +2309,59 @@ type Mutation {
   upsertOneReview(create: ReviewCreateInput!, update: ReviewUpdateInput!, where: ReviewWhereUniqueInput!): Review!
 }
 
-input NestedBoolFilter {
+input NullableBooleanFilter {
   equals: Boolean
-  not: NestedBoolFilter
+  not: Boolean
 }
 
-input NestedBoolNullableFilter {
-  equals: Boolean
-  not: NestedBoolNullableFilter
-}
-
-input NestedDateTimeFilter {
-  equals: DateTime
-  gt: DateTime
-  gte: DateTime
-  in: [DateTime!]
-  lt: DateTime
-  lte: DateTime
-  not: NestedDateTimeFilter
-  notIn: [DateTime!]
-}
-
-input NestedIntFilter {
+input NullableIntFilter {
   equals: Int
   gt: Int
   gte: Int
-  in: [Int!]
+  in: [Int]
   lt: Int
   lte: Int
-  not: NestedIntFilter
-  notIn: [Int!]
+  not: Int
+  notIn: [Int]
 }
 
-input NestedIntNullableFilter {
-  equals: Int
-  gt: Int
-  gte: Int
-  in: [Int!]
-  lt: Int
-  lte: Int
-  not: NestedIntNullableFilter
-  notIn: [Int!]
-}
-
-input NestedStringFilter {
+input NullableStringFilter {
   contains: String
   endsWith: String
   equals: String
   gt: String
   gte: String
-  in: [String!]
+  in: [String]
   lt: String
   lte: String
-  not: NestedStringFilter
-  notIn: [String!]
+  not: String
+  notIn: [String]
   startsWith: String
 }
 
-input NestedStringNullableFilter {
-  contains: String
-  endsWith: String
-  equals: String
-  gt: String
-  gte: String
-  in: [String!]
-  lt: String
-  lte: String
-  not: NestedStringNullableFilter
-  notIn: [String!]
-  startsWith: String
+enum OrderByArg {
+  asc
+  desc
 }
 
 type Query {
   book(where: BookWhereUniqueInput!): Book
-  books(orderBy: [BookOrderByInput!], skip: Int, where: BookWhereInput): [Book!]!
+  books(orderBy: BookOrderByInput, skip: Int, where: BookWhereInput): [Book!]!
   chapter(where: ChapterWhereUniqueInput!): Chapter
-  chapterByBook(bookId: Int, skip: Int): [Chapter!]!
-  chapters(orderBy: [ChapterOrderByInput!], skip: Int, where: ChapterWhereInput): [Chapter!]!
-  chaptersFeed(skip: Int, userId: Int): [Chapter!]!
-  chaptersFeedByAuthor(authorId: Int, skip: Int): [Chapter!]!
-  chaptersFeedByAuthorCount(authorId: Int): Int!
-  chaptersFeedCount(userId: Int): Int!
+  chapterByBook(bookId: Int, bookSlug: String, skip: Int): [Chapter]
+  chapters(orderBy: ChapterOrderByInput, skip: Int, where: ChapterWhereInput): [Chapter!]!
+  chaptersFeed(skip: Int, userId: Int): [Chapter]
+  chaptersFeedByAuthor(authorId: Int, skip: Int): [Chapter]
+  chaptersFeedByAuthorCount(authorId: Int): Int
+  chaptersFeedCount(userId: Int): Int
   comment(where: CommentWhereUniqueInput!): Comment
-  comments(orderBy: [CommentOrderByInput!], skip: Int, where: CommentWhereInput): [Comment!]!
+  comments(orderBy: CommentOrderByInput, skip: Int, where: CommentWhereInput): [Comment!]!
+  commentsByChapter(chapterId: Int, skip: Int, take: Int): [Comment]
   donation(where: DonationWhereUniqueInput!): Donation
   donations(skip: Int): [Donation!]!
   genres(skip: Int): [Genre!]!
   likes(skip: Int): [Like!]!
+  likesByChapter(chapterId: Int, skip: Int, take: Int): [Like]
   me: User
   review(where: ReviewWhereUniqueInput!): Review
   reviews(skip: Int): [Review!]!
@@ -2334,18 +2392,18 @@ input ReviewCreateInput {
 }
 
 input ReviewCreateManyWithoutAuthorInput {
-  connect: [ReviewWhereUniqueInput!]
-  create: [ReviewCreateWithoutAuthorInput!]
+  connect: [ReviewWhereUniqueInput]
+  create: [ReviewCreateWithoutAuthorInput]
 }
 
 input ReviewCreateManyWithoutBookInput {
-  connect: [ReviewWhereUniqueInput!]
-  create: [ReviewCreateWithoutBookInput!]
+  connect: [ReviewWhereUniqueInput]
+  create: [ReviewCreateWithoutBookInput]
 }
 
 input ReviewCreateManyWithoutChapterInput {
-  connect: [ReviewWhereUniqueInput!]
-  create: [ReviewCreateWithoutChapterInput!]
+  connect: [ReviewWhereUniqueInput]
+  create: [ReviewCreateWithoutChapterInput]
 }
 
 input ReviewCreateOneWithoutLikesInput {
@@ -2389,22 +2447,23 @@ input ReviewCreateWithoutLikesInput {
   stars: Int!
 }
 
-input ReviewListRelationFilter {
+input ReviewFilter {
   every: ReviewWhereInput
   none: ReviewWhereInput
   some: ReviewWhereInput
 }
 
 input ReviewScalarWhereInput {
-  AND: [ReviewScalarWhereInput!]
-  authorId: IntNullableFilter
-  bookId: IntNullableFilter
-  chapterId: IntNullableFilter
+  AND: [ReviewScalarWhereInput]
+  authorId: NullableIntFilter
+  bookId: NullableIntFilter
+  chapterId: NullableIntFilter
   createdAt: DateTimeFilter
   id: IntFilter
-  message: StringNullableFilter
-  NOT: [ReviewScalarWhereInput!]
-  OR: [ReviewScalarWhereInput!]
+  likes: LikeFilter
+  message: NullableStringFilter
+  NOT: [ReviewScalarWhereInput]
+  OR: [ReviewScalarWhereInput]
   stars: IntFilter
 }
 
@@ -2413,6 +2472,7 @@ input ReviewUpdateInput {
   book: BookUpdateOneWithoutReviewsInput
   chapter: ChapterUpdateOneWithoutReviewsInput
   createdAt: DateTime
+  id: Int
   likes: LikeUpdateManyWithoutReviewInput
   message: String
   stars: Int
@@ -2420,44 +2480,45 @@ input ReviewUpdateInput {
 
 input ReviewUpdateManyDataInput {
   createdAt: DateTime
+  id: Int
   message: String
   stars: Int
 }
 
 input ReviewUpdateManyWithoutAuthorInput {
-  connect: [ReviewWhereUniqueInput!]
-  create: [ReviewCreateWithoutAuthorInput!]
-  delete: [ReviewWhereUniqueInput!]
-  deleteMany: [ReviewScalarWhereInput!]
-  disconnect: [ReviewWhereUniqueInput!]
-  set: [ReviewWhereUniqueInput!]
-  update: [ReviewUpdateWithWhereUniqueWithoutAuthorInput!]
-  updateMany: [ReviewUpdateManyWithWhereNestedInput!]
-  upsert: [ReviewUpsertWithWhereUniqueWithoutAuthorInput!]
+  connect: [ReviewWhereUniqueInput]
+  create: [ReviewCreateWithoutAuthorInput]
+  delete: [ReviewWhereUniqueInput]
+  deleteMany: [ReviewScalarWhereInput]
+  disconnect: [ReviewWhereUniqueInput]
+  set: [ReviewWhereUniqueInput]
+  update: [ReviewUpdateWithWhereUniqueWithoutAuthorInput]
+  updateMany: [ReviewUpdateManyWithWhereNestedInput]
+  upsert: [ReviewUpsertWithWhereUniqueWithoutAuthorInput]
 }
 
 input ReviewUpdateManyWithoutBookInput {
-  connect: [ReviewWhereUniqueInput!]
-  create: [ReviewCreateWithoutBookInput!]
-  delete: [ReviewWhereUniqueInput!]
-  deleteMany: [ReviewScalarWhereInput!]
-  disconnect: [ReviewWhereUniqueInput!]
-  set: [ReviewWhereUniqueInput!]
-  update: [ReviewUpdateWithWhereUniqueWithoutBookInput!]
-  updateMany: [ReviewUpdateManyWithWhereNestedInput!]
-  upsert: [ReviewUpsertWithWhereUniqueWithoutBookInput!]
+  connect: [ReviewWhereUniqueInput]
+  create: [ReviewCreateWithoutBookInput]
+  delete: [ReviewWhereUniqueInput]
+  deleteMany: [ReviewScalarWhereInput]
+  disconnect: [ReviewWhereUniqueInput]
+  set: [ReviewWhereUniqueInput]
+  update: [ReviewUpdateWithWhereUniqueWithoutBookInput]
+  updateMany: [ReviewUpdateManyWithWhereNestedInput]
+  upsert: [ReviewUpsertWithWhereUniqueWithoutBookInput]
 }
 
 input ReviewUpdateManyWithoutChapterInput {
-  connect: [ReviewWhereUniqueInput!]
-  create: [ReviewCreateWithoutChapterInput!]
-  delete: [ReviewWhereUniqueInput!]
-  deleteMany: [ReviewScalarWhereInput!]
-  disconnect: [ReviewWhereUniqueInput!]
-  set: [ReviewWhereUniqueInput!]
-  update: [ReviewUpdateWithWhereUniqueWithoutChapterInput!]
-  updateMany: [ReviewUpdateManyWithWhereNestedInput!]
-  upsert: [ReviewUpsertWithWhereUniqueWithoutChapterInput!]
+  connect: [ReviewWhereUniqueInput]
+  create: [ReviewCreateWithoutChapterInput]
+  delete: [ReviewWhereUniqueInput]
+  deleteMany: [ReviewScalarWhereInput]
+  disconnect: [ReviewWhereUniqueInput]
+  set: [ReviewWhereUniqueInput]
+  update: [ReviewUpdateWithWhereUniqueWithoutChapterInput]
+  updateMany: [ReviewUpdateManyWithWhereNestedInput]
+  upsert: [ReviewUpsertWithWhereUniqueWithoutChapterInput]
 }
 
 input ReviewUpdateManyWithWhereNestedInput {
@@ -2478,6 +2539,7 @@ input ReviewUpdateWithoutAuthorDataInput {
   book: BookUpdateOneWithoutReviewsInput
   chapter: ChapterUpdateOneWithoutReviewsInput
   createdAt: DateTime
+  id: Int
   likes: LikeUpdateManyWithoutReviewInput
   message: String
   stars: Int
@@ -2487,6 +2549,7 @@ input ReviewUpdateWithoutBookDataInput {
   author: UserUpdateOneWithoutReviewsInput
   chapter: ChapterUpdateOneWithoutReviewsInput
   createdAt: DateTime
+  id: Int
   likes: LikeUpdateManyWithoutReviewInput
   message: String
   stars: Int
@@ -2496,6 +2559,7 @@ input ReviewUpdateWithoutChapterDataInput {
   author: UserUpdateOneWithoutReviewsInput
   book: BookUpdateOneWithoutReviewsInput
   createdAt: DateTime
+  id: Int
   likes: LikeUpdateManyWithoutReviewInput
   message: String
   stars: Int
@@ -2506,6 +2570,7 @@ input ReviewUpdateWithoutLikesDataInput {
   book: BookUpdateOneWithoutReviewsInput
   chapter: ChapterUpdateOneWithoutReviewsInput
   createdAt: DateTime
+  id: Int
   message: String
   stars: Int
 }
@@ -2549,29 +2614,24 @@ input ReviewUpsertWithWhereUniqueWithoutChapterInput {
 }
 
 input ReviewWhereInput {
-  AND: [ReviewWhereInput!]
+  AND: [ReviewWhereInput]
   author: UserWhereInput
-  authorId: IntNullableFilter
+  authorId: NullableIntFilter
   book: BookWhereInput
-  bookId: IntNullableFilter
+  bookId: NullableIntFilter
   chapter: ChapterWhereInput
-  chapterId: IntNullableFilter
+  chapterId: NullableIntFilter
   createdAt: DateTimeFilter
   id: IntFilter
-  likes: LikeListRelationFilter
-  message: StringNullableFilter
-  NOT: [ReviewWhereInput!]
-  OR: [ReviewWhereInput!]
+  likes: LikeFilter
+  message: NullableStringFilter
+  NOT: [ReviewWhereInput]
+  OR: [ReviewWhereInput]
   stars: IntFilter
 }
 
 input ReviewWhereUniqueInput {
   id: Int
-}
-
-enum SortOrder {
-  asc
-  desc
 }
 
 input StringFilter {
@@ -2580,25 +2640,11 @@ input StringFilter {
   equals: String
   gt: String
   gte: String
-  in: [String!]
+  in: [String]
   lt: String
   lte: String
-  not: NestedStringFilter
-  notIn: [String!]
-  startsWith: String
-}
-
-input StringNullableFilter {
-  contains: String
-  endsWith: String
-  equals: String
-  gt: String
-  gte: String
-  in: [String!]
-  lt: String
-  lte: String
-  not: NestedStringNullableFilter
-  notIn: [String!]
+  not: String
+  notIn: [String]
   startsWith: String
 }
 
@@ -2614,47 +2660,50 @@ input TagCreateInput {
 }
 
 input TagCreateManyWithoutBooksInput {
-  connect: [TagWhereUniqueInput!]
-  create: [TagCreateWithoutBooksInput!]
+  connect: [TagWhereUniqueInput]
+  create: [TagCreateWithoutBooksInput]
 }
 
 input TagCreateWithoutBooksInput {
   label: String!
 }
 
-input TagListRelationFilter {
+input TagFilter {
   every: TagWhereInput
   none: TagWhereInput
   some: TagWhereInput
 }
 
 input TagScalarWhereInput {
-  AND: [TagScalarWhereInput!]
+  AND: [TagScalarWhereInput]
+  books: BookFilter
   id: IntFilter
   label: StringFilter
-  NOT: [TagScalarWhereInput!]
-  OR: [TagScalarWhereInput!]
+  NOT: [TagScalarWhereInput]
+  OR: [TagScalarWhereInput]
 }
 
 input TagUpdateInput {
   books: BookUpdateManyWithoutTagsInput
+  id: Int
   label: String
 }
 
 input TagUpdateManyDataInput {
+  id: Int
   label: String
 }
 
 input TagUpdateManyWithoutBooksInput {
-  connect: [TagWhereUniqueInput!]
-  create: [TagCreateWithoutBooksInput!]
-  delete: [TagWhereUniqueInput!]
-  deleteMany: [TagScalarWhereInput!]
-  disconnect: [TagWhereUniqueInput!]
-  set: [TagWhereUniqueInput!]
-  update: [TagUpdateWithWhereUniqueWithoutBooksInput!]
-  updateMany: [TagUpdateManyWithWhereNestedInput!]
-  upsert: [TagUpsertWithWhereUniqueWithoutBooksInput!]
+  connect: [TagWhereUniqueInput]
+  create: [TagCreateWithoutBooksInput]
+  delete: [TagWhereUniqueInput]
+  deleteMany: [TagScalarWhereInput]
+  disconnect: [TagWhereUniqueInput]
+  set: [TagWhereUniqueInput]
+  update: [TagUpdateWithWhereUniqueWithoutBooksInput]
+  updateMany: [TagUpdateManyWithWhereNestedInput]
+  upsert: [TagUpsertWithWhereUniqueWithoutBooksInput]
 }
 
 input TagUpdateManyWithWhereNestedInput {
@@ -2663,6 +2712,7 @@ input TagUpdateManyWithWhereNestedInput {
 }
 
 input TagUpdateWithoutBooksDataInput {
+  id: Int
   label: String
 }
 
@@ -2678,12 +2728,12 @@ input TagUpsertWithWhereUniqueWithoutBooksInput {
 }
 
 input TagWhereInput {
-  AND: [TagWhereInput!]
-  books: BookListRelationFilter
+  AND: [TagWhereInput]
+  books: BookFilter
   id: IntFilter
   label: StringFilter
-  NOT: [TagWhereInput!]
-  OR: [TagWhereInput!]
+  NOT: [TagWhereInput]
+  OR: [TagWhereInput]
 }
 
 input TagWhereUniqueInput {
@@ -2695,7 +2745,7 @@ type User {
   bio: String
   books: [Book!]!
   chapters: [Chapter!]!
-  comments: [Comment!]!
+  comments(skip: Int): [Comment!]!
   email: String
   favoriteBooks: [Book!]!
   firstname: String
@@ -2742,23 +2792,23 @@ input UserCreateInput {
 }
 
 input UserCreateManyWithoutFavoriteBooksInput {
-  connect: [UserWhereUniqueInput!]
-  create: [UserCreateWithoutFavoriteBooksInput!]
+  connect: [UserWhereUniqueInput]
+  create: [UserCreateWithoutFavoriteBooksInput]
 }
 
 input UserCreateManyWithoutFollowersInput {
-  connect: [UserWhereUniqueInput!]
-  create: [UserCreateWithoutFollowersInput!]
+  connect: [UserWhereUniqueInput]
+  create: [UserCreateWithoutFollowersInput]
 }
 
 input UserCreateManyWithoutFollowingInput {
-  connect: [UserWhereUniqueInput!]
-  create: [UserCreateWithoutFollowingInput!]
+  connect: [UserWhereUniqueInput]
+  create: [UserCreateWithoutFollowingInput]
 }
 
 input UserCreateManyWithoutInviterInput {
-  connect: [UserWhereUniqueInput!]
-  create: [UserCreateWithoutInviterInput!]
+  connect: [UserWhereUniqueInput]
+  create: [UserCreateWithoutInviterInput]
 }
 
 input UserCreateOneWithoutBooksInput {
@@ -3101,29 +3151,40 @@ input UserCreateWithoutSentDonationsInput {
   username: String
 }
 
-input UserListRelationFilter {
+input UserFilter {
   every: UserWhereInput
   none: UserWhereInput
   some: UserWhereInput
 }
 
 input UserScalarWhereInput {
-  AND: [UserScalarWhereInput!]
-  avatar: StringNullableFilter
-  bio: StringNullableFilter
-  email: StringNullableFilter
-  firstname: StringNullableFilter
-  fullname: StringNullableFilter
-  getStreamToken: StringNullableFilter
-  givenname: StringNullableFilter
-  googleId: StringNullableFilter
+  AND: [UserScalarWhereInput]
+  avatar: NullableStringFilter
+  bio: NullableStringFilter
+  books: BookFilter
+  chapters: ChapterFilter
+  comments: CommentFilter
+  email: NullableStringFilter
+  favoriteBooks: BookFilter
+  firstname: NullableStringFilter
+  followers: UserFilter
+  following: UserFilter
+  fullname: NullableStringFilter
+  getStreamToken: NullableStringFilter
+  givenname: NullableStringFilter
+  googleId: NullableStringFilter
   id: IntFilter
-  inviterId: IntNullableFilter
-  NOT: [UserScalarWhereInput!]
-  OR: [UserScalarWhereInput!]
-  password: StringNullableFilter
-  stripeId: StringNullableFilter
-  username: StringNullableFilter
+  invited: UserFilter
+  inviterId: NullableIntFilter
+  likes: LikeFilter
+  NOT: [UserScalarWhereInput]
+  OR: [UserScalarWhereInput]
+  password: NullableStringFilter
+  receivedDonations: DonationFilter
+  reviews: ReviewFilter
+  sentDonations: DonationFilter
+  stripeId: NullableStringFilter
+  username: NullableStringFilter
 }
 
 input UserUpdateInput {
@@ -3141,6 +3202,7 @@ input UserUpdateInput {
   getStreamToken: String
   givenname: String
   googleId: String
+  id: Int
   invited: UserUpdateManyWithoutInviterInput
   inviter: UserUpdateOneWithoutInvitedInput
   likes: LikeUpdateManyWithoutAuthorInput
@@ -3161,57 +3223,58 @@ input UserUpdateManyDataInput {
   getStreamToken: String
   givenname: String
   googleId: String
+  id: Int
   password: String
   stripeId: String
   username: String
 }
 
 input UserUpdateManyWithoutFavoriteBooksInput {
-  connect: [UserWhereUniqueInput!]
-  create: [UserCreateWithoutFavoriteBooksInput!]
-  delete: [UserWhereUniqueInput!]
-  deleteMany: [UserScalarWhereInput!]
-  disconnect: [UserWhereUniqueInput!]
-  set: [UserWhereUniqueInput!]
-  update: [UserUpdateWithWhereUniqueWithoutFavoriteBooksInput!]
-  updateMany: [UserUpdateManyWithWhereNestedInput!]
-  upsert: [UserUpsertWithWhereUniqueWithoutFavoriteBooksInput!]
+  connect: [UserWhereUniqueInput]
+  create: [UserCreateWithoutFavoriteBooksInput]
+  delete: [UserWhereUniqueInput]
+  deleteMany: [UserScalarWhereInput]
+  disconnect: [UserWhereUniqueInput]
+  set: [UserWhereUniqueInput]
+  update: [UserUpdateWithWhereUniqueWithoutFavoriteBooksInput]
+  updateMany: [UserUpdateManyWithWhereNestedInput]
+  upsert: [UserUpsertWithWhereUniqueWithoutFavoriteBooksInput]
 }
 
 input UserUpdateManyWithoutFollowersInput {
-  connect: [UserWhereUniqueInput!]
-  create: [UserCreateWithoutFollowersInput!]
-  delete: [UserWhereUniqueInput!]
-  deleteMany: [UserScalarWhereInput!]
-  disconnect: [UserWhereUniqueInput!]
-  set: [UserWhereUniqueInput!]
-  update: [UserUpdateWithWhereUniqueWithoutFollowersInput!]
-  updateMany: [UserUpdateManyWithWhereNestedInput!]
-  upsert: [UserUpsertWithWhereUniqueWithoutFollowersInput!]
+  connect: [UserWhereUniqueInput]
+  create: [UserCreateWithoutFollowersInput]
+  delete: [UserWhereUniqueInput]
+  deleteMany: [UserScalarWhereInput]
+  disconnect: [UserWhereUniqueInput]
+  set: [UserWhereUniqueInput]
+  update: [UserUpdateWithWhereUniqueWithoutFollowersInput]
+  updateMany: [UserUpdateManyWithWhereNestedInput]
+  upsert: [UserUpsertWithWhereUniqueWithoutFollowersInput]
 }
 
 input UserUpdateManyWithoutFollowingInput {
-  connect: [UserWhereUniqueInput!]
-  create: [UserCreateWithoutFollowingInput!]
-  delete: [UserWhereUniqueInput!]
-  deleteMany: [UserScalarWhereInput!]
-  disconnect: [UserWhereUniqueInput!]
-  set: [UserWhereUniqueInput!]
-  update: [UserUpdateWithWhereUniqueWithoutFollowingInput!]
-  updateMany: [UserUpdateManyWithWhereNestedInput!]
-  upsert: [UserUpsertWithWhereUniqueWithoutFollowingInput!]
+  connect: [UserWhereUniqueInput]
+  create: [UserCreateWithoutFollowingInput]
+  delete: [UserWhereUniqueInput]
+  deleteMany: [UserScalarWhereInput]
+  disconnect: [UserWhereUniqueInput]
+  set: [UserWhereUniqueInput]
+  update: [UserUpdateWithWhereUniqueWithoutFollowingInput]
+  updateMany: [UserUpdateManyWithWhereNestedInput]
+  upsert: [UserUpsertWithWhereUniqueWithoutFollowingInput]
 }
 
 input UserUpdateManyWithoutInviterInput {
-  connect: [UserWhereUniqueInput!]
-  create: [UserCreateWithoutInviterInput!]
-  delete: [UserWhereUniqueInput!]
-  deleteMany: [UserScalarWhereInput!]
-  disconnect: [UserWhereUniqueInput!]
-  set: [UserWhereUniqueInput!]
-  update: [UserUpdateWithWhereUniqueWithoutInviterInput!]
-  updateMany: [UserUpdateManyWithWhereNestedInput!]
-  upsert: [UserUpsertWithWhereUniqueWithoutInviterInput!]
+  connect: [UserWhereUniqueInput]
+  create: [UserCreateWithoutInviterInput]
+  delete: [UserWhereUniqueInput]
+  deleteMany: [UserScalarWhereInput]
+  disconnect: [UserWhereUniqueInput]
+  set: [UserWhereUniqueInput]
+  update: [UserUpdateWithWhereUniqueWithoutInviterInput]
+  updateMany: [UserUpdateManyWithWhereNestedInput]
+  upsert: [UserUpsertWithWhereUniqueWithoutInviterInput]
 }
 
 input UserUpdateManyWithWhereNestedInput {
@@ -3305,6 +3368,7 @@ input UserUpdateWithoutBooksDataInput {
   getStreamToken: String
   givenname: String
   googleId: String
+  id: Int
   invited: UserUpdateManyWithoutInviterInput
   inviter: UserUpdateOneWithoutInvitedInput
   likes: LikeUpdateManyWithoutAuthorInput
@@ -3330,6 +3394,7 @@ input UserUpdateWithoutChaptersDataInput {
   getStreamToken: String
   givenname: String
   googleId: String
+  id: Int
   invited: UserUpdateManyWithoutInviterInput
   inviter: UserUpdateOneWithoutInvitedInput
   likes: LikeUpdateManyWithoutAuthorInput
@@ -3355,6 +3420,7 @@ input UserUpdateWithoutCommentsDataInput {
   getStreamToken: String
   givenname: String
   googleId: String
+  id: Int
   invited: UserUpdateManyWithoutInviterInput
   inviter: UserUpdateOneWithoutInvitedInput
   likes: LikeUpdateManyWithoutAuthorInput
@@ -3380,6 +3446,7 @@ input UserUpdateWithoutFavoriteBooksDataInput {
   getStreamToken: String
   givenname: String
   googleId: String
+  id: Int
   invited: UserUpdateManyWithoutInviterInput
   inviter: UserUpdateOneWithoutInvitedInput
   likes: LikeUpdateManyWithoutAuthorInput
@@ -3405,6 +3472,7 @@ input UserUpdateWithoutFollowersDataInput {
   getStreamToken: String
   givenname: String
   googleId: String
+  id: Int
   invited: UserUpdateManyWithoutInviterInput
   inviter: UserUpdateOneWithoutInvitedInput
   likes: LikeUpdateManyWithoutAuthorInput
@@ -3430,6 +3498,7 @@ input UserUpdateWithoutFollowingDataInput {
   getStreamToken: String
   givenname: String
   googleId: String
+  id: Int
   invited: UserUpdateManyWithoutInviterInput
   inviter: UserUpdateOneWithoutInvitedInput
   likes: LikeUpdateManyWithoutAuthorInput
@@ -3456,6 +3525,7 @@ input UserUpdateWithoutInvitedDataInput {
   getStreamToken: String
   givenname: String
   googleId: String
+  id: Int
   inviter: UserUpdateOneWithoutInvitedInput
   likes: LikeUpdateManyWithoutAuthorInput
   password: String
@@ -3481,6 +3551,7 @@ input UserUpdateWithoutInviterDataInput {
   getStreamToken: String
   givenname: String
   googleId: String
+  id: Int
   invited: UserUpdateManyWithoutInviterInput
   likes: LikeUpdateManyWithoutAuthorInput
   password: String
@@ -3506,6 +3577,7 @@ input UserUpdateWithoutLikesDataInput {
   getStreamToken: String
   givenname: String
   googleId: String
+  id: Int
   invited: UserUpdateManyWithoutInviterInput
   inviter: UserUpdateOneWithoutInvitedInput
   password: String
@@ -3531,6 +3603,7 @@ input UserUpdateWithoutReceivedDonationsDataInput {
   getStreamToken: String
   givenname: String
   googleId: String
+  id: Int
   invited: UserUpdateManyWithoutInviterInput
   inviter: UserUpdateOneWithoutInvitedInput
   likes: LikeUpdateManyWithoutAuthorInput
@@ -3556,6 +3629,7 @@ input UserUpdateWithoutReviewsDataInput {
   getStreamToken: String
   givenname: String
   googleId: String
+  id: Int
   invited: UserUpdateManyWithoutInviterInput
   inviter: UserUpdateOneWithoutInvitedInput
   likes: LikeUpdateManyWithoutAuthorInput
@@ -3581,6 +3655,7 @@ input UserUpdateWithoutSentDonationsDataInput {
   getStreamToken: String
   givenname: String
   googleId: String
+  id: Int
   invited: UserUpdateManyWithoutInviterInput
   inviter: UserUpdateOneWithoutInvitedInput
   likes: LikeUpdateManyWithoutAuthorInput
@@ -3676,34 +3751,34 @@ input UserUpsertWithWhereUniqueWithoutInviterInput {
 }
 
 input UserWhereInput {
-  AND: [UserWhereInput!]
-  avatar: StringNullableFilter
-  bio: StringNullableFilter
-  books: BookListRelationFilter
-  chapters: ChapterListRelationFilter
-  comments: CommentListRelationFilter
-  email: StringNullableFilter
-  favoriteBooks: BookListRelationFilter
-  firstname: StringNullableFilter
-  followers: UserListRelationFilter
-  following: UserListRelationFilter
-  fullname: StringNullableFilter
-  getStreamToken: StringNullableFilter
-  givenname: StringNullableFilter
-  googleId: StringNullableFilter
+  AND: [UserWhereInput]
+  avatar: NullableStringFilter
+  bio: NullableStringFilter
+  books: BookFilter
+  chapters: ChapterFilter
+  comments: CommentFilter
+  email: NullableStringFilter
+  favoriteBooks: BookFilter
+  firstname: NullableStringFilter
+  followers: UserFilter
+  following: UserFilter
+  fullname: NullableStringFilter
+  getStreamToken: NullableStringFilter
+  givenname: NullableStringFilter
+  googleId: NullableStringFilter
   id: IntFilter
-  invited: UserListRelationFilter
+  invited: UserFilter
   inviter: UserWhereInput
-  inviterId: IntNullableFilter
-  likes: LikeListRelationFilter
-  NOT: [UserWhereInput!]
-  OR: [UserWhereInput!]
-  password: StringNullableFilter
-  receivedDonations: DonationListRelationFilter
-  reviews: ReviewListRelationFilter
-  sentDonations: DonationListRelationFilter
-  stripeId: StringNullableFilter
-  username: StringNullableFilter
+  inviterId: NullableIntFilter
+  likes: LikeFilter
+  NOT: [UserWhereInput]
+  OR: [UserWhereInput]
+  password: NullableStringFilter
+  receivedDonations: DonationFilter
+  reviews: ReviewFilter
+  sentDonations: DonationFilter
+  stripeId: NullableStringFilter
+  username: NullableStringFilter
 }
 
 input UserWhereUniqueInput {

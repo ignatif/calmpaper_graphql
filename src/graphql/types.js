@@ -25,7 +25,7 @@ const User = objectType({
     t.model.chapters({ pagination: false })
     t.model.reviews({ pagination: false })
     t.model.likes({ pagination: false })
-    t.model.comments({ pagination: false })
+    t.model.comments({ pagination: true })
     t.model.following({ pagination: false })
     t.model.followers({ pagination: false })
     t.model.inviter()

@@ -7,3 +7,4 @@ prisma/migrations
 
 .vercel
 files/
+sendgrid.env
