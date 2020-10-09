@@ -73,7 +73,7 @@ const permissions = shield(
       users: rules.isAuthenticatedUser,
     },
     Mutation: {
-      // updateOneUser: rules.isAuthenticatedUser,
+      updateOneUser: rules.isAuthenticatedUser,
       deleteOneUser: rules.isAuthenticatedUser,
 
       createBook: rules.isAuthenticatedUser,
@@ -121,3 +121,4 @@ const permissions = shield(
 module.exports = {
   permissions,
 }
+
