@@ -118,6 +118,9 @@ const Query = queryType({
                   {
                     author: { followers: { some: { id: { equals: userId } } } },
                   },
+                  {
+                    author: { id: { equals: userId } },
+                  },
                 ],
               },
             ],
@@ -152,6 +155,9 @@ const Query = queryType({
                       author: {
                         followers: { some: { id: { equals: userId } } },
                       },
+                    },
+                    {
+                      author: { id: { equals: userId } },
                     },
                   ],
                 },
