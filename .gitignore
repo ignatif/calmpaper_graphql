@@ -11,6 +11,7 @@ dev.db
 .env.development
 .env.production
 schema.graphql
+yarn.lock
 
 .vercel
 files/

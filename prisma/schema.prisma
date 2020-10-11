@@ -42,7 +42,6 @@ model User {
 
 model Book {
   id             Int        @default(autoincrement()) @id
-  slug           String?    @unique
   name           String
   description    String
   image          String?
@@ -63,7 +62,6 @@ model Book {
 
 model Chapter {
   id             Int        @default(autoincrement()) @id
-  slug           String?    @unique
   title          String?
   content        String
   image          String?
