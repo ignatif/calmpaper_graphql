@@ -71,7 +71,8 @@ let schema = makeSchema({
   },
 })
 
-schema = applyMiddleware(schema, permissions, notifications)
+schema = applyMiddleware(schema, notifications)
+// schema = applyMiddleware(schema, permissions, notifications)
 
 const stipeNode = require('stripe')
 const stripe = stipeNode(process.env.STRIPE_SECRET_KEY)
@@ -212,7 +213,7 @@ server.express.get(
 
 
 server.start({
-	port: 4000
+	port: 3000
 }
 )
 

@@ -57,28 +57,36 @@ const Query = queryType({
         skip: intArg({ nullable: true }),
       },
       resolve: (_, { bookId, bookSlug, skip }, ctx) => {
-        return ctx.prisma.chapter.findMany({
-          take: 1,
-          skip,
-          where: {
-            OR: [
-              {
-                book: {
-                  id: bookId,
-                },
+        if (bookId) {
+          return ctx.prisma.chapter.findMany({
+            take: 1,
+            skip,
+            where: {
+              book: {
+                id: { equals: bookId },
               },
-              {
-                book: {
-                  slug: bookSlug,
-                },
+            },
+            include: {
+              reviews: true,
+              comments: true,
+            },
+          })
+        } else if (bookSlug) {
+          return ctx.prisma.chapter.findMany({
+            take: 1,
+            skip,
+            where: {
+              book: {
+                slug: { equals: bookSlug },
               },
-            ],
-          },
-          include: {
-            reviews: true,
-            comments: true,
-          },
-        })
+            },
+            include: {
+              reviews: true,
+              comments: true,
+            },
+          })
+        }
+
       },
     })
 
