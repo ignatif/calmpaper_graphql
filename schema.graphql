@@ -2269,7 +2269,7 @@ type Mutation {
   createOneReview(data: ReviewCreateInput!): Review!
   createOneTag(data: TagCreateInput!): Tag!
   createOneUser(data: UserCreateInput!): User!
-  createReview(authorId: Int, bookId: Int, message: String, stars: Int): Review
+  createReview(authorId: Int, bookId: Int, bookSlug: Int, message: String, stars: Int): Review
   deleteManyBook(where: BookWhereInput): BatchPayload!
   deleteManyChapter(where: ChapterWhereInput): BatchPayload!
   deleteOneBook(where: BookWhereUniqueInput!): Book
@@ -2350,7 +2350,7 @@ type Query {
   chapter(where: ChapterWhereUniqueInput!): Chapter
   chapterByBook(bookId: Int, bookSlug: String, skip: Int): [Chapter]
   chapters(orderBy: ChapterOrderByInput, skip: Int, where: ChapterWhereInput): [Chapter!]!
-  chaptersFeed(skip: Int, userId: Int): [Chapter]
+  chaptersFeed(skip: Int, take: Int, userId: Int): [Chapter]
   chaptersFeedByAuthor(authorId: Int, skip: Int): [Chapter]
   chaptersFeedByAuthorCount(authorId: Int): Int
   chaptersFeedCount(userId: Int): Int
