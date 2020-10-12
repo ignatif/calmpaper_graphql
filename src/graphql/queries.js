@@ -98,8 +98,6 @@ const Query = queryType({
         userId: intArg(),
       },
       resolve: (_, { skip = 0, take = 5, userId }, ctx) => {
-        console.log('take')
-        console.log(take)
         return ctx.prisma.chapter.findMany({
           take,
           skip,
