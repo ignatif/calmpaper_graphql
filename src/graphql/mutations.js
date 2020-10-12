@@ -90,10 +90,10 @@ const Mutation = mutationType({
                 },
               },
               tags: {
-                connect: tags,
+                connect: tags.map((i) => ({ id: i })),
               },
               genres: {
-                connect: genres,
+                connect: genres.map((i) => ({ id: i })),
               },
             },
           })

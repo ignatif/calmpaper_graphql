@@ -4,6 +4,14 @@ src/generated/
 prisma/dev.db
 prisma/migrations/
 prisma/migrations
+migrations
+migrate.lock
+dev.db
+.env
+.env.development
+.env.production
+schema.graphql
+yarn.lock
 
 .vercel
 files/
