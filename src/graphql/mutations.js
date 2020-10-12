@@ -428,37 +428,37 @@ const Mutation = mutationType({
     t.field('setChapterLikee', {
       type: 'Chapter',
       args: {
-        authorId: intArg(),
+        userId: intArg(),
         chapterId: intArg(),
       },
-      resolve: async (parent, { authorId, chapterId }, ctx) => {
+      resolve: async (parent, { userId, chapterId }, ctx) => {
         const chapter = await ctx.prisma.chapter.update({
           where: {
             id: chapterId,
           },
           data: {
-            likes: { create: { author: { connect: { id: $userId } } } },
+            likes: { create: { author: { connect: { id: userId } } } },
           },
         })
 
-        const user = await ctx.prisma.user.findOne({
-          where: { id: authorId },
-        })
+        // const user = await ctx.prisma.user.findOne({
+        //   where: { id: userId },
+        // })
 
-        const userFeed = getStreamClient.feed('all', authorId)
+        // const userFeed = getStreamClient.feed('all', userId)
 
-        if (authorId !== like.chapter.authorId) {
-          userFeed.addActivity({
-            verb: 'like',
-            to: [`notifications:${like.chapter.authorId}`],
-            object: `chapter:${like.chapter.id}`,
-            userId: authorId,
-            bookId: like.chapter.bookId,
-            chapterId: like.chapter.id,
-            actor: getStreamClient.user(authorId),
-            // foreignId: `user:${userId}-comment:${bookId}`,
-          })
-        }
+        // if (userId !== like.chapter.authorId) {
+        //   userFeed.addActivity({
+        //     verb: 'like',
+        //     to: [`notifications:${like.chapter.authorId}`],
+        //     object: `chapter:${like.chapter.id}`,
+        //     userId: userId,
+        //     bookId: like.chapter.bookId,
+        //     chapterId: like.chapter.id,
+        //     actor: getStreamClient.user(authorId),
+        //     // foreignId: `user:${userId}-comment:${bookId}`,
+        //   })
+        // }
 
         return chapter
       },
@@ -467,7 +467,7 @@ const Mutation = mutationType({
     t.field('removeChapterLikee', {
       type: 'Chapter',
       args: {
-        authorId: intArg(),
+        chapterId: intArg(),
         likeId: intArg(),
       },
       resolve: async (parent, { chapterId, likeId }, ctx) => {
