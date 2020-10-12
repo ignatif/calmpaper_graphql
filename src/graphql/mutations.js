@@ -135,27 +135,53 @@ const Mutation = mutationType({
         args: {
           stars: intArg(),
           message: stringArg(),
-          bookId: intArg(),
+          bookId: intArg({ nullable: true }),
+          bookSlug: intArg({ nullable: true }),
           authorId: intArg(),
         },
-        resolve: async (parent, { stars, message, authorId, bookId }, ctx) => {
-          const result = await ctx.prisma.review.create({
-            data: {
-              stars,
-              message,
-              author: {
-                connect: {
-                  id: authorId,
+        resolve: async (
+          parent,
+          { stars, message, authorId, bookId, bookSlug },
+          ctx,
+        ) => {
+          let result
+          if (bookId) {
+            const result = await ctx.prisma.review.create({
+              data: {
+                stars,
+                message,
+                author: {
+                  connect: {
+                    id: authorId,
+                  },
+                },
+                book: {
+                  connect: {
+                    id: bookId,
+                  },
                 },
               },
-              book: {
-                connect: {
-                  id: bookId,
+              include: { book: true },
+            })
+          } else if (bookSlug) {
+            const result = await ctx.prisma.review.create({
+              data: {
+                stars,
+                message,
+                author: {
+                  connect: {
+                    id: authorId,
+                  },
+                },
+                book: {
+                  connect: {
+                    slug: bookSlug,
+                  },
                 },
               },
-            },
-            include: { book: true },
-          })
+              include: { book: true },
+            })
+          }
 
           const userId = getUserId(ctx)
           const userFeed = getStreamClient.feed('all', userId)
