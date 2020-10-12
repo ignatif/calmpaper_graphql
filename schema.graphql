@@ -2287,10 +2287,12 @@ type Mutation {
   newBookDonation(amount: Int, bookId: Int, message: String): Donation
   newChapterDonation(amount: Int, chapterId: Int, message: String): Donation
   removeBookFromFavorites(bookId: Int, userId: Int): User
+  removeChapterLikee(chapterId: Int, likeId: Int): Chapter
   replyToComment(body: String, commentId: Int, userId: Int): Comment
   sendBookComment(body: String, bookId: Int, userId: Int): Comment
   sendChapterComment(body: String, chapterId: Int, userId: Int): Comment
   setChapterLike(authorId: Int, chapterId: Int): Like
+  setChapterLikee(chapterId: Int, userId: Int): Chapter
   setCommentLike(authorId: Int, commentId: Int): Like
   setReview(authorUsername: String, bookId: Int, id: Int, stars: Int): Review
   setupStripe(stripeCode: String): Donation
