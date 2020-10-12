@@ -19,6 +19,7 @@ const {
 } = require('./graphql')
 const { permissions } = require('./middlewares/permissions')
 const { notifications } = require('./middlewares/notifications')
+const { prerender } = require('./middlewares/prerender')
 const express = require('express')
 const multer = require('multer')
 const multerS3 = require('multer-s3')
@@ -71,8 +72,8 @@ let schema = makeSchema({
   },
 })
 
-schema = applyMiddleware(schema, notifications)
-// schema = applyMiddleware(schema, permissions, notifications)
+// schema = applyMiddleware(schema, notifications)
+schema = applyMiddleware(schema, prerender, notifications)
 
 const stipeNode = require('stripe')
 const stripe = stipeNode(process.env.STRIPE_SECRET_KEY)

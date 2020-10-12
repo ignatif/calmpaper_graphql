@@ -96,6 +96,9 @@ const Mutation = mutationType({
                 connect: genres.map((i) => ({ id: i })),
               },
             },
+            include: {
+              author: true,
+            },
           })
         } else {
           // 4) If exists - create a book without slug.
@@ -116,6 +119,9 @@ const Mutation = mutationType({
                 connect: genres,
               },
             },
+            include: {
+              author: true,
+            },
           })
 
           // 5) Update with a slug ending with id
@@ -125,6 +131,9 @@ const Mutation = mutationType({
             },
             data: {
               slug: `${slug}-${book.id}`,
+            },
+            include: {
+              author: true,
             },
           })
         }
