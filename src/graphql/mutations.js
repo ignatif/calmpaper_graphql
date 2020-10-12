@@ -425,6 +425,61 @@ const Mutation = mutationType({
           return user
         },
       })
+    t.field('setChapterLikee', {
+      type: 'Chapter',
+      args: {
+        authorId: intArg(),
+        chapterId: intArg(),
+      },
+      resolve: async (parent, { authorId, chapterId }, ctx) => {
+        const chapter = await ctx.prisma.chapter.update({
+          where: {
+            id: chapterId,
+          },
+          data: {
+            likes: { create: { author: { connect: { id: $userId } } } },
+          },
+        })
+
+        const user = await ctx.prisma.user.findOne({
+          where: { id: authorId },
+        })
+
+        const userFeed = getStreamClient.feed('all', authorId)
+
+        if (authorId !== like.chapter.authorId) {
+          userFeed.addActivity({
+            verb: 'like',
+            to: [`notifications:${like.chapter.authorId}`],
+            object: `chapter:${like.chapter.id}`,
+            userId: authorId,
+            bookId: like.chapter.bookId,
+            chapterId: like.chapter.id,
+            actor: getStreamClient.user(authorId),
+            // foreignId: `user:${userId}-comment:${bookId}`,
+          })
+        }
+
+        return chapter
+      },
+    })
+
+    t.field('removeChapterLikee', {
+      type: 'Chapter',
+      args: {
+        authorId: intArg(),
+        likeId: intArg(),
+      },
+      resolve: async (parent, { chapterId, likeId }, ctx) => {
+        const chapter = await ctx.prisma.chapter.update({
+          where: {
+            id: chapterId,
+          },
+          data: { likes: { delete: { id: likeId } } },
+        })
+        return chapter
+      },
+    })
     t.field('replyToComment', {
       type: 'Comment',
       args: {
