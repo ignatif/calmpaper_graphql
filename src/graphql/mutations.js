@@ -139,6 +139,41 @@ const Mutation = mutationType({
         }
       },
     }),
+      t.field('createChapter', {
+        type: 'Chapter',
+        args: {
+          title: stringArg(),
+          content: stringArg(),
+          bookSlug: stringArg({ nullable: true }),
+          bookId: intArg({ nullable: true }),
+          userId: intArg(),
+        },
+        resolve: async (
+          parent,
+          { title, content, bookSlug, bookId, userId },
+          ctx,
+        ) => {
+          const result = await ctx.prisma.chapter.create({
+            data: {
+              title,
+              content,
+              author: { connect: { id: userId } },
+              book: { connect: { id: bookId, slug: bookSlug } },
+            },
+            include: {
+              author: true,
+              book: {
+                select: {
+                  slug: true,
+                  chapters: true,
+                },
+              },
+            },
+          })
+
+          return result
+        },
+      }),
       t.field('createReview', {
         type: 'Review',
         args: {
