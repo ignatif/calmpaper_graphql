@@ -8,7 +8,7 @@ const prerender = async (resolve, root, args, context, info) => {
   if (info.fieldName === 'createBook') {
     const body = {
       prerenderToken: PRERENDER_TOKEN,
-      url: `${process.env.BACKEND_URL}/@${
+      url: `${process.env.FRONTEND_URL}/@${
         result.author.username || `user${result.author.id}`
       }/${result.slug}`,
     }
@@ -28,7 +28,7 @@ const prerender = async (resolve, root, args, context, info) => {
     console.log(result)
     const body = {
       prerenderToken: PRERENDER_TOKEN,
-      url: `${process.env.BACKEND_URL}/@${
+      url: `${process.env.FRONTEND_URL}/@${
         result.author.username || `user${result.author.id}`
       }/${result.book.slug}/${result.book.chapters.length + 1}`,
     }
