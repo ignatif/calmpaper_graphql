@@ -189,24 +189,61 @@ server.express.get(
     const { user: profile } = req
 
     const getStreamToken = getStreamClient.createUserToken(profile.id)
-    const user = await prisma.user.upsert({
-      where: {
-        googleId: profile.id,
-      },
-      create: {
-        googleId: profile.id,
-        fullname: profile.displayName,
-        firstname: profile.name.familyName,
-        givenname: profile.name.givenName,
-        avatar: profile.photos[0].value,
-        email: profile.emails[0].value,
-        getStreamToken,
-      },
-      update: {
-        email: profile.emails[0].value,
-        getStreamToken,
-      },
-    })
+
+    let user
+    if (req.session.from) {
+      var parsedWordArray = CryptoJS.enc.Base64.parse(req.session.from)
+      var parsedStr = parsedWordArray.toString(CryptoJS.enc.Utf8)
+
+      const inviteFrom = parsedStr.substring(4)
+      let inviterId = parseInt(inviteFrom)
+      console.log('inviterId')
+      console.log(inviterId)
+
+      user = await prisma.user.upsert({
+        where: {
+          googleId: profile.id,
+        },
+        create: {
+          googleId: profile.id,
+          fullname: profile.displayName,
+          firstname: profile.name.familyName,
+          givenname: profile.name.givenName,
+          avatar: profile.photos[0].value,
+          email: profile.emails[0].value,
+          getStreamToken,
+          inviter: {
+            connect: {
+              id: inviterId,
+            },
+          },
+          following: { connect: { id: inviterId } },
+        },
+        update: {
+          email: profile.emails[0].value,
+          getStreamToken,
+        },
+      })
+    } else {
+      user = await prisma.user.upsert({
+        where: {
+          googleId: profile.id,
+        },
+        create: {
+          googleId: profile.id,
+          fullname: profile.displayName,
+          firstname: profile.name.familyName,
+          givenname: profile.name.givenName,
+          avatar: profile.photos[0].value,
+          email: profile.emails[0].value,
+          getStreamToken,
+        },
+        update: {
+          email: profile.emails[0].value,
+          getStreamToken,
+        },
+      })
+    }
     var token = sign({ userId: user.id }, APP_SECRET)
 
     res.redirect(`${process.env.FRONTEND_URL}/?token=${token}`)
