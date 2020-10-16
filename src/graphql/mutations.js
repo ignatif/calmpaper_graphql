@@ -485,24 +485,20 @@ const Mutation = mutationType({
           },
         })
 
-        // const user = await ctx.prisma.user.findOne({
-        //   where: { id: userId },
-        // })
+        const chapterAuthorFeed = getStreamClient.feed('all', chapter.authorId)
 
-        // const userFeed = getStreamClient.feed('all', userId)
-
-        // if (userId !== like.chapter.authorId) {
-        //   userFeed.addActivity({
-        //     verb: 'like',
-        //     to: [`notifications:${like.chapter.authorId}`],
-        //     object: `chapter:${like.chapter.id}`,
-        //     userId: userId,
-        //     bookId: like.chapter.bookId,
-        //     chapterId: like.chapter.id,
-        //     actor: getStreamClient.user(authorId),
-        //     // foreignId: `user:${userId}-comment:${bookId}`,
-        //   })
-        // }
+        if (userId !== chapter.authorId) {
+          chapterAuthorFeed.addActivity({
+            verb: 'like',
+            to: [`notifications:${chapter.authorId}`],
+            object: `chapter:${chapter.id}`,
+            userId: userId,
+            bookId: chapter.bookId,
+            chapterId: chapter.id,
+            actor: getStreamClient.user(userId),
+            // foreignId: `user:${userId}-comment:${bookId}`,
+          })
+        }
 
         return chapter
       },
