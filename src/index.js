@@ -2,7 +2,8 @@ require('dotenv').config()
 const { GraphQLServer } = require('graphql-yoga')
 const { makeSchema, objectType, intArg, stringArg } = require('@nexus/schema')
 const { PrismaClient } = require('@prisma/client')
-const { nexusPrismaPlugin } = require('nexus-prisma')
+// const { nexusPrismaPlugin } = require('nexus-prisma')
+const { nexusSchemaPrisma } = require('nexus-plugin-prisma/schema')
 const {
   Query,
   Mutation,
@@ -62,11 +63,10 @@ let schema = makeSchema({
     AuthPayload,
   ],
   plugins: [
-    nexusPrismaPlugin({
+    nexusSchemaPrisma({
       experimentalCRUD: true,
     }),
   ],
-  experimentalCRUD: true,
   outputs: {
     schema: __dirname + '/../schema.graphql',
   },
