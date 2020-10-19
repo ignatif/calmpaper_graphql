@@ -1,4 +1,6 @@
-const { objectType } = require('@nexus/schema')
+const { objectType, enumType } = require('@nexus/schema')
+
+const { getUserId } = require('../utils')
 
 const AuthPayload = objectType({
   name: 'AuthPayload',
@@ -178,6 +180,96 @@ const Donation = objectType({
   },
 })
 
+const Poll = objectType({
+  name: 'Poll',
+  definition(t) {
+    t.model.id()
+    t.model.chapter()
+    t.model.chapterId()
+    t.model.opt1()
+    t.model.opt2()
+    t.model.opt3()
+    t.model.opt4()
+    t.model.opt5()
+    t.int('opt1Count', {
+      resolve: ({ id }, _, ctx) =>
+        ctx.prisma.vote.count({
+          where: {
+            AND: [{ pollId: id }, { option: 'opt1' }],
+          },
+        }),
+    })
+    t.int('opt2Count', {
+      resolve: ({ id }, _, ctx) =>
+        ctx.prisma.vote.count({
+          where: {
+            AND: [{ pollId: id }, { option: 'opt2' }],
+          },
+        }),
+    })
+    t.int('opt3Count', {
+      resolve: ({ id }, _, ctx) =>
+        ctx.prisma.vote.count({
+          where: {
+            AND: [{ pollId: id }, { option: 'opt3' }],
+          },
+        }),
+    })
+    t.int('opt4Count', {
+      resolve: ({ id }, _, ctx) =>
+        ctx.prisma.vote.count({
+          where: {
+            AND: [{ pollId: id }, { option: 'opt4' }],
+          },
+        }),
+    })
+    t.int('opt5Count', {
+      resolve: ({ id }, _, ctx) =>
+        ctx.prisma.vote.count({
+          where: {
+            AND: [{ pollId: id }, { option: 'opt5' }],
+          },
+        }),
+    })
+    t.model.votes()
+    t.field('myVote', {
+      type: 'VoteOption',
+      resolve: async ({ id }, _, ctx) => {
+        const userId = getUserId(ctx)
+        const { option: myVote } = await ctx.prisma.vote.findOne({
+          where: {
+            userId_pollId_vote_key: {
+              userId,
+              pollId: id,
+            },
+            select: {
+              option: true,
+            },
+          },
+        })
+        return myVote || 'none'
+      },
+    })
+  },
+})
+
+const VoteOption = enumType({
+  name: 'VoteOption',
+  members: ['opt1', 'opt2', 'opt3', 'opt4', 'opt5', 'none'],
+})
+
+const Vote = objectType({
+  name: 'Vote',
+  definition(t) {
+    t.model.id()
+    t.model.user()
+    t.model.userId()
+    t.model.poll()
+    t.model.pollId()
+    t.model.option()
+  },
+})
+
 module.exports = {
   User,
   Book,
@@ -190,4 +282,7 @@ module.exports = {
   Notification,
   Donation,
   AuthPayload,
+  Poll,
+  Vote,
+  VoteOption,
 }

@@ -1,4 +1,4 @@
-const { mutationType, intArg, stringArg } = require('@nexus/schema')
+const { mutationType, intArg, stringArg, arg } = require('@nexus/schema')
 const { getUserId } = require('../utils')
 const fetch = require('isomorphic-unfetch')
 const slugify = require('slugify')
@@ -17,6 +17,7 @@ const APP_SECRET = 'appsecret321'
 
 const Mutation = mutationType({
   definition(t) {
+
     t.crud.createOneUser()
     t.crud.updateOneUser()
     t.crud.deleteOneUser()
@@ -53,6 +54,9 @@ const Mutation = mutationType({
     t.crud.createOneLike()
     t.crud.updateOneLike()
     t.crud.deleteOneLike()
+
+    t.crud.createOnePoll({ alias: 'createPoll' })
+
 
     t.field('createBook', {
       type: 'Book',
@@ -938,6 +942,26 @@ const Mutation = mutationType({
         return user
       },
     })
+
+    t.field('vote', {
+      type: 'Vote',
+      nullable: true,
+      args: {
+        pollId: intArg(),
+        option: arg({ type: 'VoteOption' })
+      },
+      resolve:  (parent, { pollId, option }, ctx) => { 
+        const userId = getUserId(ctx)
+        return ctx.prisma.vote.create({
+          data: {
+            user: { connect: { id: userId } },
+            poll: { connect: { id: pollId } },
+            option
+          }
+        })
+      }
+    })
+    
   },
 })
 
