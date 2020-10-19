@@ -25,6 +25,42 @@ const Query = queryType({
     t.crud.donation()
     t.crud.donations()
 
+    t.int('booksCount', (_, __, ctx) =>
+      ctx.prisma.book
+        .findMany({
+          where: {
+            // chapters: {
+            //   some: {
+            //     id: {
+            //       not: null,
+            //     },
+            //   },
+            // },
+            archived: { not: { equals: true } },
+            //
+            // AND: [
+            //   { archived: { not: { equals: true } } },
+            //   {
+            //     chapters: {
+            //       some: {
+            //         id: {
+            //           not: null,
+            //         },
+            //       },
+            //     },
+            //   },
+            // ],
+          },
+          include: { chapters: true },
+        })
+        .then((r) => {
+          console.log(r.filter((book) => book.chapters.length > 0).length)
+          return r.filter((book) => book.chapters.length > 0).length
+        }),
+    )
+    t.int('chaptersCount', (_, __, ctx) => ctx.prisma.chapter.count())
+    t.int('commentsCount', (_, __, ctx) => ctx.prisma.comment.count())
+
     t.field('me', {
       type: 'User',
       nullable: true,
