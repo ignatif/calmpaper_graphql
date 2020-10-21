@@ -20,6 +20,7 @@ const {
   Poll,
   Vote,
   VoteOption,
+  MyVote,
 } = require('./graphql')
 const { permissions } = require('./middlewares/permissions')
 const { notifications } = require('./middlewares/notifications')
@@ -67,6 +68,7 @@ let schema = makeSchema({
     Poll,
     Vote,
     VoteOption,
+    MyVote,
   ],
   plugins: [
     nexusSchemaPrisma({
@@ -256,7 +258,7 @@ server.express.get(
 )
 
 server.start({
-  port: 4444,
+  port: 4000,
 })
 
 module.exports = {

@@ -17,7 +17,6 @@ const APP_SECRET = 'appsecret321'
 
 const Mutation = mutationType({
   definition(t) {
-
     t.crud.createOneUser()
     t.crud.updateOneUser()
     t.crud.deleteOneUser()
@@ -56,7 +55,6 @@ const Mutation = mutationType({
     t.crud.deleteOneLike()
 
     t.crud.createOnePoll({ alias: 'createPoll' })
-
 
     t.field('createBook', {
       type: 'Book',
@@ -948,20 +946,40 @@ const Mutation = mutationType({
       nullable: true,
       args: {
         pollId: intArg(),
-        option: arg({ type: 'VoteOption' })
+        option: arg({ type: 'VoteOption' }),
       },
-      resolve:  (parent, { pollId, option }, ctx) => { 
+      resolve: async (parent, { pollId, option }, ctx) => {
+        const { expires } = await ctx.prisma.poll.findOne({
+          where: { id: pollId },
+          select: { expires: true },
+        })
+
         const userId = getUserId(ctx)
-        return ctx.prisma.vote.create({
+
+        const vote = await ctx.prisma.vote.findOne({
+          where: {
+            userId_pollId_vote_key: {
+              userId,
+              pollId
+            },
+          },
+          select: { id: true }
+        })
+
+        if(vote) throw new Error(`You've already voted.`)
+        
+        if (Number(expires) < Date.now())
+          throw new Error(`Poll has been expired.`)
+
+        return await ctx.prisma.vote.create({
           data: {
             user: { connect: { id: userId } },
             poll: { connect: { id: pollId } },
-            option
-          }
+            option,
+          },
         })
-      }
+      },
     })
-    
   },
 })
 

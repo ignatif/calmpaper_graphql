@@ -291,6 +291,23 @@ const Query = queryType({
         })
       },
     })
+
+    t.field('poll', {
+      type: 'Poll',
+      args: {
+        chapterId: intArg()
+      },
+      resolve: async (parent, { chapterId }, ctx) => 
+        (await ctx.prisma.poll.findOne({ where: { chapterId } })) ||
+        (await ctx.prisma.poll.create({
+          data: {
+            chapter: { connect: { id: chapterId } },
+            expires: new Date(Date.now() + (3600000 * 24)),
+          },
+        })),
+    })
+
+  
   },
 })
 

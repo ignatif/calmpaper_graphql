@@ -85,6 +85,17 @@ const Chapter = objectType({
       ordering: true,
       // filtering: true,
     })
+    t.field('poll', {
+      type: 'Poll',
+      resolve: async ({ id }, _, ctx) => 
+        (await ctx.prisma.poll.findOne({ where: { chapterId: id } })) ||
+        (await ctx.prisma.poll.create({
+          data: {
+            chapter: { connect: { id } },
+            expires: new Date(Date.now() + (3600000 * 24)),
+          },
+        })),
+    })
   },
 })
 
@@ -186,12 +197,16 @@ const Poll = objectType({
     t.model.id()
     t.model.chapter()
     t.model.chapterId()
-    t.model.opt1()
-    t.model.opt2()
-    t.model.opt3()
-    t.model.opt4()
-    t.model.opt5()
-    t.int('opt1Count', {
+    t.model.expires()
+    t.int('totalVotes', {
+      resolve: ({ id }, _, ctx) =>
+        ctx.prisma.vote.count({
+          where: {
+            pollId: id,
+          },
+        }),
+    })
+    t.int('opt1', {
       resolve: ({ id }, _, ctx) =>
         ctx.prisma.vote.count({
           where: {
@@ -199,7 +214,7 @@ const Poll = objectType({
           },
         }),
     })
-    t.int('opt2Count', {
+    t.int('opt2', {
       resolve: ({ id }, _, ctx) =>
         ctx.prisma.vote.count({
           where: {
@@ -207,7 +222,7 @@ const Poll = objectType({
           },
         }),
     })
-    t.int('opt3Count', {
+    t.int('opt3', {
       resolve: ({ id }, _, ctx) =>
         ctx.prisma.vote.count({
           where: {
@@ -215,7 +230,7 @@ const Poll = objectType({
           },
         }),
     })
-    t.int('opt4Count', {
+    t.int('opt4', {
       resolve: ({ id }, _, ctx) =>
         ctx.prisma.vote.count({
           where: {
@@ -223,7 +238,7 @@ const Poll = objectType({
           },
         }),
     })
-    t.int('opt5Count', {
+    t.int('opt5', {
       resolve: ({ id }, _, ctx) =>
         ctx.prisma.vote.count({
           where: {
@@ -233,21 +248,21 @@ const Poll = objectType({
     })
     t.model.votes()
     t.field('myVote', {
-      type: 'VoteOption',
+      type: 'MyVote',
       resolve: async ({ id }, _, ctx) => {
-        const userId = getUserId(ctx)
-        const { option: myVote } = await ctx.prisma.vote.findOne({
+        const userId = ctx.request.get('Authorization') && getUserId(ctx)
+        const myVote = userId && await ctx.prisma.vote.findOne({
           where: {
             userId_pollId_vote_key: {
               userId,
               pollId: id,
             },
-            select: {
-              option: true,
-            },
+          },
+          select: {
+            option: true,
           },
         })
-        return myVote || 'none'
+        return myVote?.option || 'none'
       },
     })
   },
@@ -255,6 +270,11 @@ const Poll = objectType({
 
 const VoteOption = enumType({
   name: 'VoteOption',
+  members: ['opt1', 'opt2', 'opt3', 'opt4', 'opt5'],
+})
+
+const MyVote = enumType({
+  name: 'MyVote',
   members: ['opt1', 'opt2', 'opt3', 'opt4', 'opt5', 'none'],
 })
 
@@ -285,4 +305,5 @@ module.exports = {
   Poll,
   Vote,
   VoteOption,
+  MyVote,
 }

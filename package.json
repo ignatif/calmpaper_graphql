@@ -13,7 +13,6 @@
     "cors": "^2.8.5",
     "crypto-js": "^4.0.0",
     "dotenv": "^8.2.0",
-    "esm": "^3.2.25",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
     "getstream": "^6.2.0",
@@ -38,13 +37,18 @@
     "stripe": "^8.114.0"
   },
   "scripts": {
-    "dev": "nodemon -r esm src",
+    "dev": "nodemon --exec babel-node -r dotenv/config src",
     "start": "node src",
     "generate": "prisma generate",
     "postinstall": "prisma generate",
     "migrate": "prisma migrate save --name 'init' --experimental && prisma migrate up --experimental"
   },
   "devDependencies": {
+    "@babel/cli": "^7.12.1",
+    "@babel/core": "^7.12.3",
+    "@babel/node": "^7.12.1",
+    "@babel/plugin-proposal-optional-chaining": "^7.12.1",
+    "@babel/plugin-transform-modules-commonjs": "^7.12.1",
     "@prisma/cli": "^2.9.0",
     "nodemon": "^2.0.5"
   },

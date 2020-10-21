@@ -1,0 +1,30 @@
+version: '3.3'
+
+networks:
+  vpcbr:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.18.0.1/16
+services:
+  db:
+    image: postgres   
+    restart: always
+    environment:
+      POSTGRES_USER: prisma
+      POSTGRES_PASSWORD: FiGreo32reoqowR1321e12
+      POSTGRES_DB: postgres
+    ports:
+      - 5432:5432
+    networks:
+      vpcbr:
+        ipv4_address: 172.18.0.4
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      vpcbr:
+        ipv4_address: 172.18.0.5
+ 
