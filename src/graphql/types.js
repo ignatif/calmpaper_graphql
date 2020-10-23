@@ -84,18 +84,7 @@ const Chapter = objectType({
       pagination: true,
       ordering: true,
       // filtering: true,
-    })
-    t.field('poll', {
-      type: 'Poll',
-      resolve: async ({ id }, _, ctx) => 
-        (await ctx.prisma.poll.findOne({ where: { chapterId: id } })) ||
-        (await ctx.prisma.poll.create({
-          data: {
-            chapter: { connect: { id } },
-            expires: new Date(Date.now() + (3600000 * 24)),
-          },
-        })),
-    })
+    })    
   },
 })
 
