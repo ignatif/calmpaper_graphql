@@ -1,6 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
-  binaryTargets = ["native", "debian-openssl-1.1.x"]
+  provider = "prisma-client-js" 
 }
 
 datasource sqlite {
@@ -154,4 +153,29 @@ model Donation {
   payer          User?      @relation("DonationPayer", fields: [payerId], references: [id])
   recipientId    Int?
   recipient      User?      @relation("DonationReceiver", fields: [recipientId], references: [id])
+}
+
+model Poll {
+  id             Int        @default(autoincrement()) @id
+  chapter        Chapter    @relation(fields: [chapterId], references: [id])
+  chapterId      Int        @unique
+  // opt1           String     @default("I would be Very Disappointed if I don’t get to continue reading the story")
+  // opt2           String     @default("I would be Somewhat Disappointed if I don’t get to continue reading the story")
+  // opt3           String     @default("I would feel fine if I don’t get to read it anymore")
+  // opt4           String     @default("I am glad I don’t have to read it anymore")
+  // opt5           String     @default("I just want to see the results of this poll")
+  votes          Vote[]
+  expires        DateTime
+}
+
+
+model Vote {
+  id             Int        @default(autoincrement()) @id
+  user           User       @relation("VotedBy", fields: [userId], references: [id])
+  userId         Int
+  poll           Poll       @relation("VotedWhere", fields: [pollId], references: [id])
+  pollId         Int
+  option         String
+
+  @@unique([pollId, userId], name: "userId_pollId_vote_key")
 }

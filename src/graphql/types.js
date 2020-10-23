@@ -1,4 +1,6 @@
-const { objectType } = require('@nexus/schema')
+const { objectType, enumType } = require('@nexus/schema')
+
+const { getUserId } = require('../utils')
 
 const AuthPayload = objectType({
   name: 'AuthPayload',
@@ -82,6 +84,17 @@ const Chapter = objectType({
       pagination: true,
       ordering: true,
       // filtering: true,
+    })
+    t.field('poll', {
+      type: 'Poll',
+      resolve: async ({ id }, _, ctx) => 
+        (await ctx.prisma.poll.findOne({ where: { chapterId: id } })) ||
+        (await ctx.prisma.poll.create({
+          data: {
+            chapter: { connect: { id } },
+            expires: new Date(Date.now() + (3600000 * 24)),
+          },
+        })),
     })
   },
 })
@@ -178,6 +191,105 @@ const Donation = objectType({
   },
 })
 
+const Poll = objectType({
+  name: 'Poll',
+  definition(t) {
+    t.model.id()
+    t.model.chapter()
+    t.model.chapterId()
+    t.model.expires()
+    t.int('totalVotes', {
+      resolve: ({ id }, _, ctx) =>
+        ctx.prisma.vote.count({
+          where: {
+            pollId: id,
+          },
+        }),
+    })
+    t.int('opt1', {
+      resolve: ({ id }, _, ctx) =>
+        ctx.prisma.vote.count({
+          where: {
+            AND: [{ pollId: id }, { option: 'opt1' }],
+          },
+        }),
+    })
+    t.int('opt2', {
+      resolve: ({ id }, _, ctx) =>
+        ctx.prisma.vote.count({
+          where: {
+            AND: [{ pollId: id }, { option: 'opt2' }],
+          },
+        }),
+    })
+    t.int('opt3', {
+      resolve: ({ id }, _, ctx) =>
+        ctx.prisma.vote.count({
+          where: {
+            AND: [{ pollId: id }, { option: 'opt3' }],
+          },
+        }),
+    })
+    t.int('opt4', {
+      resolve: ({ id }, _, ctx) =>
+        ctx.prisma.vote.count({
+          where: {
+            AND: [{ pollId: id }, { option: 'opt4' }],
+          },
+        }),
+    })
+    t.int('opt5', {
+      resolve: ({ id }, _, ctx) =>
+        ctx.prisma.vote.count({
+          where: {
+            AND: [{ pollId: id }, { option: 'opt5' }],
+          },
+        }),
+    })
+    t.model.votes()
+    t.field('myVote', {
+      type: 'MyVote',
+      resolve: async ({ id }, _, ctx) => {
+        const userId = ctx.request.get('Authorization') && getUserId(ctx)
+        const myVote = userId && await ctx.prisma.vote.findOne({
+          where: {
+            userId_pollId_vote_key: {
+              userId,
+              pollId: id,
+            },
+          },
+          select: {
+            option: true,
+          },
+        })
+        return myVote?.option || 'none'
+      },
+    })
+  },
+})
+
+const VoteOption = enumType({
+  name: 'VoteOption',
+  members: ['opt1', 'opt2', 'opt3', 'opt4', 'opt5'],
+})
+
+const MyVote = enumType({
+  name: 'MyVote',
+  members: ['opt1', 'opt2', 'opt3', 'opt4', 'opt5', 'none'],
+})
+
+const Vote = objectType({
+  name: 'Vote',
+  definition(t) {
+    t.model.id()
+    t.model.user()
+    t.model.userId()
+    t.model.poll()
+    t.model.pollId()
+    t.model.option()
+  },
+})
+
 module.exports = {
   User,
   Book,
@@ -190,4 +302,8 @@ module.exports = {
   Notification,
   Donation,
   AuthPayload,
+  Poll,
+  Vote,
+  VoteOption,
+  MyVote,
 }

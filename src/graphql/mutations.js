@@ -1,4 +1,4 @@
-const { mutationType, intArg, stringArg } = require('@nexus/schema')
+const { mutationType, intArg, stringArg, arg } = require('@nexus/schema')
 const { getUserId } = require('../utils')
 const fetch = require('isomorphic-unfetch')
 const slugify = require('slugify')
@@ -53,6 +53,8 @@ const Mutation = mutationType({
     t.crud.createOneLike()
     t.crud.updateOneLike()
     t.crud.deleteOneLike()
+
+    t.crud.createOnePoll({ alias: 'createPoll' })
 
     t.field('createBook', {
       type: 'Book',
@@ -936,6 +938,46 @@ const Mutation = mutationType({
         // })
 
         return user
+      },
+    })
+
+    t.field('vote', {
+      type: 'Vote',
+      nullable: true,
+      args: {
+        pollId: intArg(),
+        option: arg({ type: 'VoteOption' }),
+      },
+      resolve: async (parent, { pollId, option }, ctx) => {
+        const { expires } = await ctx.prisma.poll.findOne({
+          where: { id: pollId },
+          select: { expires: true },
+        })
+
+        const userId = getUserId(ctx)
+
+        const vote = await ctx.prisma.vote.findOne({
+          where: {
+            userId_pollId_vote_key: {
+              userId,
+              pollId
+            },
+          },
+          select: { id: true }
+        })
+
+        if(vote) throw new Error(`You've already voted.`)
+        
+        if (Number(expires) < Date.now())
+          throw new Error(`Poll has been expired.`)
+
+        return await ctx.prisma.vote.create({
+          data: {
+            user: { connect: { id: userId } },
+            poll: { connect: { id: pollId } },
+            option,
+          },
+        })
       },
     })
   },
