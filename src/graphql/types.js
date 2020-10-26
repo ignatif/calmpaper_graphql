@@ -62,6 +62,45 @@ const Book = objectType({
       ordering: true,
       // filtering: true,
     })
+    t.int('likesCount', {
+      resolve: ({ id }, _, ctx) =>
+        ctx.prisma.like.count({ where: { bookId: id } }),
+    })
+    t.int('chaptersLikesCount', {
+      resolve: ({ id }, _, ctx) =>
+        ctx.prisma.like.count({ where: { chapter: { bookId: id } } }),
+    })
+    t.int('rating', {
+      resolve: async ({ id }, _, ctx) => {
+        const opt1Count = await ctx.prisma.vote.count({
+          where: {
+            AND: [
+              {
+                poll: {
+                  chapter: {
+                    bookId: id,
+                  },
+                },
+              },
+              { option: { equals: 'opt1' } },
+            ],
+          },
+        })
+        const totalVotes = await ctx.prisma.vote.count({
+          where: {
+            poll: {
+              chapter: {
+                bookId: id,
+              },
+            },
+          },
+        })
+
+        /*  console.log(opt1Count, totalVotes) */
+
+        return (opt1Count / totalVotes).toFixed(2) * 100
+      },
+    })
   },
 })
 
@@ -87,14 +126,41 @@ const Chapter = objectType({
     })
     t.field('poll', {
       type: 'Poll',
-      resolve: async ({ id }, _, ctx) => 
+      resolve: async ({ id }, _, ctx) =>
         (await ctx.prisma.poll.findOne({ where: { chapterId: id } })) ||
         (await ctx.prisma.poll.create({
           data: {
             chapter: { connect: { id } },
-            expires: new Date(Date.now() + (3600000 * 24)),
+            expires: new Date(Date.now() + 3600000 * 24),
           },
         })),
+    })
+    t.int('rating', {
+      resolve: async ({ id }, _, ctx) => {
+        const opt1Count = await ctx.prisma.vote.count({
+          where: {
+            AND: [
+              {
+                poll: {
+                  chapterId: id,
+                },
+              },
+              { option: { equals: 'opt1' } },
+            ],
+          },
+        })
+        const totalVotes = await ctx.prisma.vote.count({
+          where: {
+            poll: {
+              chapter: {
+                bookId: id,
+              },
+            },
+          },
+        })
+
+        return (opt1Count / totalVotes).toFixed(2) * 100
+      },
     })
   },
 })
@@ -238,30 +304,32 @@ const Poll = objectType({
           },
         }),
     })
-    t.int('opt5', {
+    /*  t.int('opt5', {
       resolve: ({ id }, _, ctx) =>
         ctx.prisma.vote.count({
           where: {
             AND: [{ pollId: id }, { option: 'opt5' }],
           },
         }),
-    })
+    }) */
     t.model.votes()
     t.field('myVote', {
       type: 'MyVote',
       resolve: async ({ id }, _, ctx) => {
         const userId = ctx.request.get('Authorization') && getUserId(ctx)
-        const myVote = userId && await ctx.prisma.vote.findOne({
-          where: {
-            userId_pollId_vote_key: {
-              userId,
-              pollId: id,
+        const myVote =
+          userId &&
+          (await ctx.prisma.vote.findOne({
+            where: {
+              userId_pollId_vote_key: {
+                userId,
+                pollId: id,
+              },
             },
-          },
-          select: {
-            option: true,
-          },
-        })
+            select: {
+              option: true,
+            },
+          }))
         return myVote?.option || 'none'
       },
     })
@@ -270,7 +338,7 @@ const Poll = objectType({
 
 const VoteOption = enumType({
   name: 'VoteOption',
-  members: ['opt1', 'opt2', 'opt3', 'opt4', 'opt5'],
+  members: ['opt1', 'opt2', 'opt3', 'opt4' /* , 'opt5' */],
 })
 
 const MyVote = enumType({
