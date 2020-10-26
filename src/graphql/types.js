@@ -266,7 +266,16 @@ const Poll = objectType({
       resolve: ({ id }, _, ctx) =>
         ctx.prisma.vote.count({
           where: {
-            pollId: id,
+            AND: [
+              { pollId: id },
+              {
+                OR: [
+                  { option: 'opt1' },
+                  { option: 'opt2' },
+                  { option: 'opt3' },
+                ],
+              },
+            ],
           },
         }),
     })
