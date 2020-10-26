@@ -295,19 +295,36 @@ const Query = queryType({
     t.field('poll', {
       type: 'Poll',
       args: {
-        chapterId: intArg()
+        chapterId: intArg(),
       },
-      resolve: async (parent, { chapterId }, ctx) => 
+      resolve: async (parent, { chapterId }, ctx) =>
         (await ctx.prisma.poll.findOne({ where: { chapterId } })) ||
         (await ctx.prisma.poll.create({
           data: {
             chapter: { connect: { id: chapterId } },
-            expires: new Date(Date.now() + (3600000 * 24)),
+            expires: new Date(Date.now() + 3600000 * 24),
           },
         })),
     })
 
-  
+    t.list.field('topRatedBooks', {
+      type: 'Book',
+      args: {
+        take: intArg(),
+        skip: intArg(),
+      },
+      resolve: (parent, { take, skip }, ctx) =>
+        ctx.prisma.$queryRaw(`
+        SELECT Book.* 
+        FROM Book                              
+        ORDER BY 
+        (SELECT COUNT(*) FROM Vote WHERE pollId IN(SELECT id FROM Poll WHERE chapterId IN(SELECT id FROM Chapter WHERE bookId = Book.id)) AND option = 'opt1') * 2 +
+        (SELECT COUNT(*) FROM Vote WHERE pollId IN(SELECT id FROM Poll WHERE chapterId IN(SELECT id FROM Chapter WHERE bookId = Book.id)) AND option = 'opt2') +
+        (SELECT COUNT(*) FROM _UserBookReader WHERE A = Book.id) * 0.5 DESC        
+        LIMIT ${take || 100}
+        OFFSET ${skip || 0};                      
+      `),
+    })
   },
 })
 
