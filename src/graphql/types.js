@@ -238,14 +238,14 @@ const Poll = objectType({
           },
         }),
     })
-    t.int('opt5', {
+   /*  t.int('opt5', {
       resolve: ({ id }, _, ctx) =>
         ctx.prisma.vote.count({
           where: {
             AND: [{ pollId: id }, { option: 'opt5' }],
           },
         }),
-    })
+    }) */
     t.model.votes()
     t.field('myVote', {
       type: 'MyVote',
@@ -270,12 +270,12 @@ const Poll = objectType({
 
 const VoteOption = enumType({
   name: 'VoteOption',
-  members: ['opt1', 'opt2', 'opt3', 'opt4', 'opt5'],
+  members: ['opt1', 'opt2', 'opt3', 'opt4'/* , 'opt5' */],
 })
 
 const MyVote = enumType({
   name: 'MyVote',
-  members: ['opt1', 'opt2', 'opt3', 'opt4', 'opt5', 'none'],
+  members: ['opt1', 'opt2', 'opt3', 'opt4', /* 'opt5', */ 'none'],
 })
 
 const Vote = objectType({
