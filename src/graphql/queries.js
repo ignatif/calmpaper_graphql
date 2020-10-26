@@ -27,38 +27,15 @@ const Query = queryType({
 
     t.int('booksCount', (_, __, ctx) =>
       ctx.prisma.book
-        .findMany({
-          where: {
-            // chapters: {
-            //   some: {
-            //     id: {
-            //       not: null,
-            //     },
-            //   },
-            // },
-            archived: { not: { equals: true } },
-            //
-            // AND: [
-            //   { archived: { not: { equals: true } } },
-            //   {
-            //     chapters: {
-            //       some: {
-            //         id: {
-            //           not: null,
-            //         },
-            //       },
-            //     },
-            //   },
-            // ],
-          },
-          include: { chapters: true },
-        })
-        .then((r) => {
-          console.log(r.filter((book) => book.chapters.length > 0).length)
-          return r.filter((book) => book.chapters.length > 0).length
-        }),
+        .findMany({ where: { archived: { not: { equals: true } } } })
+        .then((r) => r.length),
     )
-    t.int('chaptersCount', (_, __, ctx) => ctx.prisma.chapter.count())
+    // t.int('chaptersCount', (_, __, ctx) => ctx.prisma.chapter.count())
+    t.int('chaptersCount', (_, __, ctx) =>
+      ctx.prisma.chapter
+        .findMany({ where: { bookId: { not: { equals: null } } } })
+        .then((r) => r.length),
+    )
     t.int('commentsCount', (_, __, ctx) => ctx.prisma.comment.count())
 
     t.field('me', {
@@ -295,19 +272,17 @@ const Query = queryType({
     t.field('poll', {
       type: 'Poll',
       args: {
-        chapterId: intArg()
+        chapterId: intArg(),
       },
-      resolve: async (parent, { chapterId }, ctx) => 
+      resolve: async (parent, { chapterId }, ctx) =>
         (await ctx.prisma.poll.findOne({ where: { chapterId } })) ||
         (await ctx.prisma.poll.create({
           data: {
             chapter: { connect: { id: chapterId } },
-            expires: new Date(Date.now() + (3600000 * 24)),
+            expires: new Date(Date.now() + 3600000 * 24),
           },
         })),
     })
-
-  
   },
 })
 

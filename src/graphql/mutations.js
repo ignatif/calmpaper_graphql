@@ -55,6 +55,7 @@ const Mutation = mutationType({
     t.crud.deleteOneLike()
 
     t.crud.createOnePoll({ alias: 'createPoll' })
+    t.crud.deleteOnePoll()
 
     t.field('createBook', {
       type: 'Book',
