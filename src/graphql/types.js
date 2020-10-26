@@ -96,7 +96,7 @@ const Book = objectType({
           },
         })
 
-       /*  console.log(opt1Count, totalVotes) */
+        /*  console.log(opt1Count, totalVotes) */
 
         return (opt1Count / totalVotes).toFixed(2) * 100
       },
@@ -134,6 +134,33 @@ const Chapter = objectType({
             expires: new Date(Date.now() + 3600000 * 24),
           },
         })),
+    })
+    t.int('rating', {
+      resolve: async ({ id }, _, ctx) => {
+        const opt1Count = await ctx.prisma.vote.count({
+          where: {
+            AND: [
+              {
+                poll: {
+                  chapterId: id,
+                },
+              },
+              { option: { equals: 'opt1' } },
+            ],
+          },
+        })
+        const totalVotes = await ctx.prisma.vote.count({
+          where: {
+            poll: {
+              chapter: {
+                bookId: id,
+              },
+            },
+          },
+        })
+
+        return (opt1Count / totalVotes).toFixed(2) * 100
+      },
     })
   },
 })
