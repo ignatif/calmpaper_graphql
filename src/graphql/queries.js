@@ -316,7 +316,8 @@ const Query = queryType({
       resolve: (parent, { take, skip }, ctx) =>
         ctx.prisma.$queryRaw(`
         SELECT Book.* 
-        FROM Book                              
+        FROM Book 
+        WHERE archived = FALSE                             
         ORDER BY 
         (SELECT COUNT(*) FROM Vote WHERE pollId IN(SELECT id FROM Poll WHERE chapterId IN(SELECT id FROM Chapter WHERE bookId = Book.id)) AND option = 'opt1') * 2 +
         (SELECT COUNT(*) FROM Vote WHERE pollId IN(SELECT id FROM Poll WHERE chapterId IN(SELECT id FROM Chapter WHERE bookId = Book.id)) AND option = 'opt2') +
