@@ -70,6 +70,37 @@ const Book = objectType({
       resolve: ({ id }, _, ctx) =>
         ctx.prisma.like.count({ where: { chapter: { bookId: id } } }),
     })
+    t.int('rating', {
+      resolve: async ({ id }, _, ctx) => {
+        const opt1Count = await ctx.prisma.vote.count({
+          where: {
+            AND: [
+              {
+                poll: {
+                  chapter: {
+                    bookId: id,
+                  },
+                },
+              },
+              { option: { equals: 'opt1' } },
+            ],
+          },
+        })
+        const totalVotes = await ctx.prisma.vote.count({
+          where: {
+            poll: {
+              chapter: {
+                bookId: id,
+              },
+            },
+          },
+        })
+
+       /*  console.log(opt1Count, totalVotes) */
+
+        return (opt1Count / totalVotes).toFixed(2) * 100
+      },
+    })
   },
 })
 
