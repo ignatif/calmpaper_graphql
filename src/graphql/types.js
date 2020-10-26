@@ -98,7 +98,7 @@ const Book = objectType({
 
         /* console.log(opt1Count, totalVotes) */
 
-        return (opt1Count / totalVotes || 1).toFixed(2) * 100
+        return (opt1Count / totalVotes).toFixed(2) * 100
       },
     })
   },
