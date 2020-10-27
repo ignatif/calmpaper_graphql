@@ -12,7 +12,7 @@ dev.db
 .env.production
 schema.graphql
 yarn.lock
-
+test.json
 .vercel
 files/
 sendgrid.env

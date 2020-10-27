@@ -944,12 +944,12 @@ const Mutation = mutationType({
 
     t.field('vote', {
       type: 'Vote',
-      nullable: true,
       args: {
         pollId: intArg(),
+        chapterId: intArg(),
         option: arg({ type: 'VoteOption' }),
       },
-      resolve: async (parent, { pollId, option }, ctx) => {
+      resolve: async (parent, { chapterId, pollId, option }, ctx) => {
         const userId = getUserId(ctx)
 
         const vote = await ctx.prisma.vote.findOne({
@@ -962,23 +962,47 @@ const Mutation = mutationType({
           select: { id: true },
         })
 
-        if (vote) throw new Error(`You've already voted.`)
-
-        // We dont need expiry date just yet
-        // const { expires } = await ctx.prisma.poll.findOne({
-        //   where: { id: pollId },
-        //   select: { expires: true },
-        // })
-        // if (Number(expires) < Date.now())
-        //   throw new Error(`Poll has been expired.`)
-
-        return await ctx.prisma.vote.create({
+        if (vote) throw new Error(`You've already voted.`)       
+        
+        const myVote = await ctx.prisma.vote.create({
           data: {
             user: { connect: { id: userId } },
             poll: { connect: { id: pollId } },
             option,
           },
         })
+
+        const opt1Count = await ctx.prisma.vote.count({
+          where: {
+            AND: [
+              { pollId },
+              { option: { equals: 'opt1' } },
+            ],
+          },
+        })
+
+        const totalVotes = await ctx.prisma.vote.count({
+          where: {
+            pollId,
+          },
+        })
+
+        // console.log('totalVotes = ', totalVotes)
+
+        const rating = totalVotes > 7 && (opt1Count / totalVotes).toFixed(2) * 100
+
+        // console.log('rating = ', rating)
+
+        typeof rating === 'number' && await ctx.prisma.chapter.update({
+          where: {
+            id: chapterId,
+          },
+          data: {
+            rating: rating >= 40 ? rating : 0
+          }
+        })
+
+        return myVote        
       },
     })
   },
