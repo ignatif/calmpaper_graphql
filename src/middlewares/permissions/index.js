@@ -1,4 +1,4 @@
-const { rule, shield, allow, deny } = require('graphql-shield')
+const { rule, shield, allow, deny, or } = require('graphql-shield')
 const { getUserId } = require('../../utils')
 
 const rules = {
@@ -7,8 +7,17 @@ const rules = {
   }),
   isAuthenticatedUser: rule()((parent, args, context) => {
     const userId = getUserId(context)
-    console.log(userId)
     return Boolean(userId)
+  }),
+  isAdmin: rule()(async (parent, args, context) => {
+    const userId = getUserId(context)
+    const user = await context.prisma.user.findOne({
+      where: { id: userId },
+    })
+    const isAdmin = user.isAdmin
+    console.log('isAdmin')
+    console.log('isAdmin')
+    return Boolean(user.isAdmin)
   }),
   isBookAuthor: rule()(async (parent, { where: { id } }, context) => {
     const userId = getUserId(context)
@@ -75,20 +84,20 @@ const permissions = shield(
     },
     Mutation: {
       updateOneUser: rules.isAuthenticatedUser,
-      deleteOneUser: rules.isAuthenticatedUser,
+      // deleteOneUser: rules.isAuthenticatedUser,
 
       createBook: rules.isAuthenticatedUser,
       createOneBook: rules.isAuthenticatedUser,
       updateOneBook: rules.isBookAuthor,
-      deleteOneBook: rules.isBookAuthor,
+      deleteOneBook: or(rules.isBookAuthor, rules.isAdmin),
 
       createOneChapter: rules.isAuthenticatedUser,
       updateOneChapter: rules.isChapterAuthor,
-      deleteOneChapter: rules.isChapterAuthor,
+      deleteOneChapter: or(rules.isChapterAuthor, rules.isAdmin),
 
       createOneComment: rules.isAuthenticatedUser,
       updateOneComment: rules.isCommentAuthor,
-      deleteOneComment: rules.isCommentAuthor,
+      deleteOneComment: or(rules.isCommentAuthor, rules.isAdmin),
 
       createOneReview: rules.isAuthenticatedUser,
       updateOneReview: rules.isReviewAuthor,

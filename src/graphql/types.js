@@ -35,6 +35,7 @@ const User = objectType({
     t.model.googleId()
     t.model.getStreamToken()
     t.model.stripeId()
+    t.model.isAdmin()
   },
 })
 
@@ -72,13 +73,15 @@ const Book = objectType({
     })
     t.int('rating', {
       resolve: async ({ id }, _, ctx) => {
-        const { avg: { rating } } = await ctx.prisma.chapter.aggregate({
+        const {
+          avg: { rating },
+        } = await ctx.prisma.chapter.aggregate({
           where: {
             bookId: id,
           },
           avg: {
             rating: true,
-          }
+          },
         })
         return rating
       },
