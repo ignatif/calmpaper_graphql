@@ -70,6 +70,28 @@ const Book = objectType({
       resolve: ({ id }, _, ctx) =>
         ctx.prisma.like.count({ where: { chapter: { bookId: id } } }),
     })
+    t.int('rank', {
+      resolve: async ({ id }, _, ctx) => {
+        const { avg: { rating: myRating } } = await ctx.prisma.chapter.aggregate({
+          where: {
+            bookId: id,
+          },
+          avg: {
+            rating: true,
+          }
+        })
+        const bookRatings = await ctx.prisma.$queryRaw(`
+        SELECT AVG(rating) as rating
+        FROM Chapter  
+        GROUP BY bookId;
+        `)
+        //console.log(bookRatings, myRating)
+
+        return myRating ? bookRatings.reduce((sum, { rating }) => (rating > myRating ? sum + 1 : sum), 1) : null
+
+        //console.log(rank)
+      },
+    })
     t.int('rating', {
       resolve: async ({ id }, _, ctx) => {
         const { avg: { rating } } = await ctx.prisma.chapter.aggregate({
