@@ -962,7 +962,7 @@ const Mutation = mutationType({
           select: { id: true },
         })
 
-        if (vote) throw new Error(`You've already voted.`)       
+        if (vote) throw new Error(`You've already voted.`)
         
         const myVote = await ctx.prisma.vote.create({
           data: {
