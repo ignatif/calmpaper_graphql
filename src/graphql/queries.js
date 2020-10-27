@@ -319,8 +319,8 @@ const Query = queryType({
         FROM Book 
         WHERE archived = FALSE                             
         ORDER BY 
-        (SELECT COUNT(*) FROM Vote WHERE pollId IN(SELECT id FROM Poll WHERE chapterId IN(SELECT id FROM Chapter WHERE bookId = Book.id)) AND option = 'opt1') /
-        (SELECT COUNT(*) FROM Vote WHERE pollId IN(SELECT id FROM Poll WHERE chapterId IN(SELECT id FROM Chapter WHERE bookId = Book.id))) DESC,
+        (SELECT AVG(rating) FROM Chapter WHERE bookId = Book.id) *
+        (SELECT COUNT(*) FROM Chapter WHERE bookId = Book.id) DESC,
         (SELECT COUNT(*) FROM _UserBookReader WHERE A = Book.id) DESC        
         LIMIT ${take || 100}
         OFFSET ${skip || 0};                      
