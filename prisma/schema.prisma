@@ -7,7 +7,6 @@ datasource sqlite {
   url      = env("DB_URL")
 }
 
-
 model User {
   id             Int         @default(autoincrement()) @id
   username       String?     @unique
@@ -158,8 +157,8 @@ model Donation {
 
 model Poll {
   id             Int        @default(autoincrement()) @id
-  chapter        Chapter    @relation(fields: [chapterId], references: [id])
-  chapterId      Int        @unique
+  chapter        Chapter?   @relation(fields: [chapterId], references: [id])
+  chapterId      Int?       @unique
   votes          Vote[]
   expires        DateTime
 }
@@ -169,8 +168,8 @@ model Vote {
   id             Int        @default(autoincrement()) @id
   user           User       @relation("VotedBy", fields: [userId], references: [id])
   userId         Int
-  poll           Poll       @relation("VotedWhere", fields: [pollId], references: [id])
-  pollId         Int
+  poll           Poll?      @relation("VotedWhere", fields: [pollId], references: [id])
+  pollId         Int?
   option         String
 
   @@unique([pollId, userId], name: "userId_pollId_vote_key")

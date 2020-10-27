@@ -27,38 +27,15 @@ const Query = queryType({
 
     t.int('booksCount', (_, __, ctx) =>
       ctx.prisma.book
-        .findMany({
-          where: {
-            // chapters: {
-            //   some: {
-            //     id: {
-            //       not: null,
-            //     },
-            //   },
-            // },
-            archived: { not: { equals: true } },
-            //
-            // AND: [
-            //   { archived: { not: { equals: true } } },
-            //   {
-            //     chapters: {
-            //       some: {
-            //         id: {
-            //           not: null,
-            //         },
-            //       },
-            //     },
-            //   },
-            // ],
-          },
-          include: { chapters: true },
-        })
-        .then((r) => {
-          console.log(r.filter((book) => book.chapters.length > 0).length)
-          return r.filter((book) => book.chapters.length > 0).length
-        }),
+        .findMany({ where: { archived: { not: { equals: true } } } })
+        .then((r) => r.length),
     )
-    t.int('chaptersCount', (_, __, ctx) => ctx.prisma.chapter.count())
+    // t.int('chaptersCount', (_, __, ctx) => ctx.prisma.chapter.count())
+    t.int('chaptersCount', (_, __, ctx) =>
+      ctx.prisma.chapter
+        .findMany({ where: { bookId: { not: { equals: null } } } })
+        .then((r) => r.length),
+    )
     t.int('commentsCount', (_, __, ctx) => ctx.prisma.comment.count())
 
     t.field('me', {
