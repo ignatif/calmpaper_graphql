@@ -73,13 +73,15 @@ const Book = objectType({
     })
     t.int('rank', {
       resolve: async ({ id }, _, ctx) => {
-        const { avg: { rating: myRating } } = await ctx.prisma.chapter.aggregate({
+        const {
+          avg: { rating: myRating },
+        } = await ctx.prisma.chapter.aggregate({
           where: {
             bookId: id,
           },
           avg: {
             rating: true,
-          }
+          },
         })
         const bookRatings = await ctx.prisma.$queryRaw(`
         SELECT AVG(rating) as rating
@@ -88,7 +90,12 @@ const Book = objectType({
         `)
         //console.log(bookRatings, myRating)
 
-        return myRating ? bookRatings.reduce((sum, { rating }) => (rating > myRating ? sum + 1 : sum), 1) : null
+        return myRating
+          ? bookRatings.reduce(
+              (sum, { rating }) => (rating > myRating ? sum + 1 : sum),
+              1,
+            )
+          : null
 
         //console.log(rank)
       },
@@ -143,31 +150,50 @@ const Chapter = objectType({
           },
         })),
     })
-    // t.int('rating', {
-    //   resolve: async ({ id }, _, ctx) => {
-    //     const opt1Count = await ctx.prisma.vote.count({
-    //       where: {
-    //         AND: [
-    //           {
-    //             poll: {
-    //               chapterId: id,
-    //             },
-    //           },
-    //           { option: { equals: 'opt1' } },
-    //         ],
-    //       },
-    //     })
-    //     const totalVotes = await ctx.prisma.vote.count({
-    //       where: {
-    //         poll: {
-    //           chapterId: id,
-    //         },
-    //       },
-    //     })
-    //     /* console.log((opt1Count / totalVotes).toFixed(2) * 100) */
-    //     return (opt1Count / totalVotes).toFixed(2) * 100
-    //   },
-    // })
+    t.int('superSecretMakeRating', {
+      resolve: async ({ id }, _, ctx) => {
+        const opt1Count = await ctx.prisma.vote.count({
+          where: {
+            AND: [{ poll: { chapterId: id } }, { option: { equals: 'opt1' } }],
+          },
+        })
+
+        const totalVotes = await ctx.prisma.vote.count({
+          where: {
+            AND: [
+              { poll: { chapterId: id } },
+              {
+                OR: [
+                  { option: 'opt1' },
+                  { option: 'opt2' },
+                  { option: 'opt3' },
+                ],
+              },
+            ],
+          },
+        })
+
+        //console.log('opt1Count = ', opt1Count)
+        //console.log('totalVotes = ', totalVotes)
+
+        const rating =
+          totalVotes > 7 && (opt1Count / totalVotes).toFixed(2) * 100
+
+        //console.log('rating = ', rating)
+
+        /* const chch = */ typeof rating === 'number' &&
+          (await ctx.prisma.chapter.update({
+            where: {
+              id,
+            },
+            data: {
+              rating,
+            },
+          }))
+
+        return rating
+      },
+    })
   },
 })
 

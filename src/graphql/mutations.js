@@ -983,24 +983,36 @@ const Mutation = mutationType({
 
         const totalVotes = await ctx.prisma.vote.count({
           where: {
-            pollId,
+            AND:[
+              { pollId },
+              {
+                OR: [
+                  { option: 'opt1' },
+                  { option: 'opt2' },
+                  { option: 'opt3' },
+                ],
+              },
+            ]
           },
         })
-
-        // console.log('totalVotes = ', totalVotes)
+        
+        //console.log('opt1Count = ', opt1Count)
+        //console.log('totalVotes = ', totalVotes)
 
         const rating = totalVotes > 7 && (opt1Count / totalVotes).toFixed(2) * 100
 
-        // console.log('rating = ', rating)
+        //console.log('rating = ', rating)
 
-        typeof rating === 'number' && await ctx.prisma.chapter.update({
+        /* const chch = */ typeof rating === 'number' && await ctx.prisma.chapter.update({
           where: {
             id: chapterId,
           },
           data: {
-            rating: rating >= 40 ? rating : 0
+            rating
           }
         })
+
+        //console.log(chch)
 
         return myVote        
       },
