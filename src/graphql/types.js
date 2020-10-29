@@ -100,7 +100,7 @@ const Book = objectType({
         //console.log(rank)
       },
     })
-    t.int('rating', {
+    t.float('rating', {
       resolve: async ({ id }, _, ctx) => {
         const {
           avg: { rating },
