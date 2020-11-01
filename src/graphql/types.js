@@ -93,7 +93,7 @@ const Book = objectType({
         const myRating = myAvgRating * chaptersCount
 
         const bookRatings = await ctx.prisma.$queryRaw(`
-        SELECT AVG(rating) as rating, COUNT(8) as count 
+        SELECT AVG(rating) as rating, COUNT(*) as count 
         FROM Chapter  
         GROUP BY bookId;
         `)
