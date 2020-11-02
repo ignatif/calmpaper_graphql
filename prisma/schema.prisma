@@ -106,7 +106,7 @@ model Comment {
   replies        Comment[]  @relation("CommentReplies")
   parentId       Int?
   parent         Comment?   @relation("CommentReplies", fields: [parentId], references: [id])
-  isChild        Boolean    @default(false)
+  isChild        Boolean    @default(false)  
 }
 
 model Review {

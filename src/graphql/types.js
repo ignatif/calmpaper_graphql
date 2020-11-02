@@ -51,6 +51,18 @@ const Book = objectType({
     t.model.author()
     t.model.archived()
     t.model.views()
+    t.int('totalViews', {
+      resolve: async ({ id, views }, _, ctx) => {
+        const { max: { views: totalViews } } = await ctx.prisma.chapter.aggregate({
+          where: { bookId: id },
+          max: { views: true }
+        })
+
+        // console.log(totalViews)
+        
+        return views > totalViews ? views : totalViews
+      }
+    })
     t.model.readers({ pagination: false })
     t.model.chapters({ pagination: false, ordering: true })
     t.model.tags({ pagination: false })
@@ -138,7 +150,7 @@ const Chapter = objectType({
     t.model.createdAt()
     t.model.author()
     t.model.book()
-    t.model.views()
+    t.model.views()   
     t.model.likes({ pagination: false })
     t.model.reviews({ pagination: false })
     t.model.donations({ pagination: false })
