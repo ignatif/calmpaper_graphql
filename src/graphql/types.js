@@ -242,15 +242,40 @@ const Comment = objectType({
     t.model.id()
     t.model.body()
     t.model.author()
+    t.model.authorId()
     t.model.createdAt()
     t.model.book()
     t.model.chapter()
+    t.model.chapterId()
     t.model.parent()
     t.model.isChild()
     t.model.likes({ pagination: false })
     t.model.replies({
       pagination: false,
       ordering: true,
+    })
+    t.field('vote', {
+      type: 'VoteOption',
+      resolve: async ({ authorId: userId, chapterId }, _, ctx) => {
+
+        const { id: pollId } = await ctx.prisma.poll.findOne({
+          where: {
+            chapterId
+          },
+          select: { id: true }
+        })
+
+        const vote = await ctx.prisma.vote.findOne({
+          where: {
+            userId_pollId_vote_key: {
+              userId,
+              pollId
+            }
+          }
+        })
+        // console.log(vote)
+        return vote?.option
+      }
     })
   },
 })
