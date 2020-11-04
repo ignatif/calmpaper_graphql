@@ -247,6 +247,7 @@ const Query = queryType({
 
           where: { chapter: { id: { equals: chapterId } } },
           orderBy: { createdAt: 'desc' },
+          
         })
       },
     })

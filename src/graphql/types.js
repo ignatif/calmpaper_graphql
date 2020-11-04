@@ -1,4 +1,5 @@
 const { objectType, enumType } = require('@nexus/schema')
+const { StreamUser } = require('getstream')
 
 const { getUserId } = require('../utils')
 
@@ -105,20 +106,25 @@ const Book = objectType({
         const myRating = myAvgRating * chaptersCount
 
         const bookRatings = await ctx.prisma.$queryRaw(`
-        SELECT AVG(rating) as rating, COUNT(*) as count 
-        FROM Chapter  
+        SELECT AVG(rating) as rating, COUNT(*) as count, bookId 
+        FROM Chapter
+        WHERE bookId NOT NULL  
         GROUP BY bookId;
         `)
         // console.log(bookRatings, myRating)
 
-        return myRating
+        const rank = myRating
           ? bookRatings.reduce(
-              (sum, { rating, count }) => (rating * count > myRating ? sum + 1 : sum),
+              (sum, { rating, count }) => {
+                // console.log(myRating, rating * count, sum)
+                return rating * count > myRating ? sum + 1 : sum
+              },
               1,
             )
           : null
-
-        //console.log(rank)
+          
+          // console.log(rank)
+          return rank
       },
     })
     t.float('rating', {
