@@ -54,15 +54,17 @@ const Book = objectType({
     t.model.views()
     t.int('totalViews', {
       resolve: async ({ id, views }, _, ctx) => {
-        const { max: { views: totalViews } } = await ctx.prisma.chapter.aggregate({
+        const {
+          max: { views: totalViews },
+        } = await ctx.prisma.chapter.aggregate({
           where: { bookId: id },
-          max: { views: true }
+          max: { views: true },
         })
 
         // console.log(totalViews)
-        
+
         return views > totalViews ? views : totalViews
-      }
+      },
     })
     t.model.readers({ pagination: false })
     t.model.chapters({ pagination: false, ordering: true })
@@ -86,45 +88,26 @@ const Book = objectType({
     })
     t.int('rank', {
       resolve: async ({ id }, _, ctx) => {
-        const {
-          avg: { rating: myAvgRating },
-        } = await ctx.prisma.chapter.aggregate({
-          where: {
-            bookId: id,
-          },
-          avg: {
-            rating: true,
-          },
-        })
-
-        const chaptersCount = await ctx.prisma.chapter.count({
-          where: {
-            bookId: id
-          }
-        })
-
-        const myRating = myAvgRating * chaptersCount
-
         const bookRatings = await ctx.prisma.$queryRaw(`
-        SELECT AVG(rating) as rating, COUNT(*) as count, bookId 
+        SELECT GROUP_CONCAT(DISTINCT rating) as ratings, bookId 
         FROM Chapter
         WHERE bookId NOT NULL  
         GROUP BY bookId;
         `)
-        // console.log(bookRatings, myRating)
 
-        const rank = myRating
-          ? bookRatings.reduce(
-              (sum, { rating, count }) => {
-                // console.log(myRating, rating * count, sum)
-                return rating * count > myRating ? sum + 1 : sum
-              },
-              1,
-            )
+        const myRating = bookRatings
+          .find(({ bookId }) => bookId === id)
+          ?.ratings?.split(',')
+          .reduce((sum, rating) => rating >= 40 && sum + rating, 0)
+
+        return myRating
+          ? bookRatings.reduce((sum, { ratings }) => {
+              const rating = ratings
+                ?.split(',')
+                .reduce((sum, rating) => rating >= 40 && sum + rating, 0)
+              return rating > myRating ? sum + 1 : sum
+            }, 1)
           : null
-          
-          // console.log(rank)
-          return rank
       },
     })
     t.float('rating', {
@@ -156,7 +139,7 @@ const Chapter = objectType({
     t.model.createdAt()
     t.model.author()
     t.model.book()
-    t.model.views()   
+    t.model.views()
     t.model.likes({ pagination: false })
     t.model.reviews({ pagination: false })
     t.model.donations({ pagination: false })
@@ -263,25 +246,24 @@ const Comment = objectType({
     t.field('vote', {
       type: 'VoteOption',
       resolve: async ({ authorId: userId, chapterId }, _, ctx) => {
-
         const { id: pollId } = await ctx.prisma.poll.findOne({
           where: {
-            chapterId
+            chapterId,
           },
-          select: { id: true }
+          select: { id: true },
         })
 
         const vote = await ctx.prisma.vote.findOne({
           where: {
             userId_pollId_vote_key: {
               userId,
-              pollId
-            }
-          }
+              pollId,
+            },
+          },
         })
         // console.log(vote)
         return vote?.option
-      }
+      },
     })
   },
 })
