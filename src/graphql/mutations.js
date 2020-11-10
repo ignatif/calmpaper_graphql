@@ -74,7 +74,7 @@ const Mutation = mutationType({
         const userId = getUserId(ctx)
 
         // 1) Create slug based on name
-        const slug = slugify(name, { lower: true })
+        const slug = slugify(name, { lower: true }).replace(/\./g, '')
 
         // 2) Check if current slug exists
         const existing = await ctx.prisma.book.findOne({ where: { slug } })

@@ -247,6 +247,7 @@ const Query = queryType({
 
           where: { chapter: { id: { equals: chapterId } } },
           orderBy: { createdAt: 'desc' },
+          
         })
       },
     })
@@ -296,8 +297,8 @@ const Query = queryType({
         FROM Book 
         WHERE archived = FALSE                             
         ORDER BY 
-        (SELECT AVG(rating) FROM Chapter WHERE bookId = Book.id) *
-        (SELECT COUNT(*) FROM Chapter WHERE bookId = Book.id) DESC,
+        (SELECT AVG(rating) FROM Chapter WHERE bookId = Book.id AND rating >= 40) *
+        (SELECT COUNT(*) FROM Chapter WHERE bookId = Book.id AND rating >= 40) DESC,
         (SELECT COUNT(*) FROM _UserBookReader WHERE A = Book.id) DESC        
         LIMIT ${take || 100}
         OFFSET ${skip || 0};                      
