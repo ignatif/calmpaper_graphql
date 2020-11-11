@@ -15,8 +15,8 @@ const rules = {
       where: { id: userId },
     })
     const isAdmin = user.isAdmin
-    console.log('isAdmin')
-    console.log('isAdmin')
+    //console.log('isAdmin')
+    //console.log('isAdmin')
     return Boolean(user.isAdmin)
   }),
   isBookAuthor: rule()(async (parent, { where: { id } }, context) => {

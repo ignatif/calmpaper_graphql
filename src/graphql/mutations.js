@@ -686,10 +686,10 @@ const Mutation = mutationType({
               stripe_account: authorStripeId,
             },
           )
-          console.log('paymentIntent')
-          console.log(paymentIntent)
-          console.log('authorStripeId')
-          console.log(authorStripeId)
+          //console.log('paymentIntent')
+          //console.log(paymentIntent)
+          //console.log('authorStripeId')
+          //console.log(authorStripeId)
 
           const donation = await ctx.prisma.donation.create({
             data: {
@@ -806,7 +806,7 @@ const Mutation = mutationType({
           const stripeUserId = stripeConnectRequest.stripe_user_id
 
           if (!stripeUserId) {
-            console.log('Connect request to Stripe failed')
+            //console.log('Connect request to Stripe failed')
           }
 
           const user = await ctx.prisma.user.update({
@@ -876,12 +876,12 @@ const Mutation = mutationType({
         followingId: intArg(),
       },
       resolve: async (parent, { followerId, followingId }, ctx) => {
-        console.log('start')
+        //console.log('start')
         const user = await ctx.prisma.user.update({
           where: { id: followerId },
           data: { following: { connect: { id: followingId } } },
         })
-        console.log('after')
+        //console.log('after')
 
         // const user = await ctx.prisma.user.update({
         //   where: { id: followingId },
@@ -908,7 +908,7 @@ const Mutation = mutationType({
         //   object: `follow:${followingUserId}`,
         //   followerId,
         // })
-        console.log('finish')
+        //console.log('finish')
 
         return user
       },
@@ -996,12 +996,12 @@ const Mutation = mutationType({
           },
         })
         
-        //console.log('opt1Count = ', opt1Count)
-        //console.log('totalVotes = ', totalVotes)
+        ////console.log('opt1Count = ', opt1Count)
+        ////console.log('totalVotes = ', totalVotes)
 
         const rating = totalVotes > 7 && (opt1Count / totalVotes).toFixed(2) * 100
 
-        //console.log('rating = ', rating)
+        ////console.log('rating = ', rating)
 
         /* const chch = */ typeof rating === 'number' && await ctx.prisma.chapter.update({
           where: {
@@ -1012,7 +1012,7 @@ const Mutation = mutationType({
           }
         })
 
-        //console.log(chch)
+        ////console.log(chch)
 
         return myVote        
       },

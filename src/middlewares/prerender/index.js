@@ -18,14 +18,14 @@ const prerender = async (resolve, root, args, context, info) => {
       body: JSON.stringify(body),
       headers: { 'Content-Type': 'application/json' },
     })
-    console.log('prerender response')
-    console.log(response)
+    //console.log('prerender response')
+    //console.log(response)
   }
 
   // Chapter
   if (info.fieldName === 'createChapter') {
-    console.log('result')
-    console.log(result)
+    //console.log('result')
+    //console.log(result)
     const body = {
       prerenderToken: PRERENDER_TOKEN,
       url: `${process.env.FRONTEND_URL}/@${
@@ -38,8 +38,8 @@ const prerender = async (resolve, root, args, context, info) => {
       body: JSON.stringify(body),
       headers: { 'Content-Type': 'application/json' },
     })
-    console.log('prerender response')
-    console.log(response)
+    //console.log('prerender response')
+    //console.log(response)
   }
 
   return result

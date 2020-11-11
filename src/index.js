@@ -121,7 +121,7 @@ server.express.use('/ping-me', (req, res) => {
   sgMail
     .send(msg)
     .then(() => {
-      console.log('Email sent')
+      //console.log('Email sent')
     })
     .catch((error) => {
       console.error(error)
@@ -131,15 +131,15 @@ server.express.use('/ping-me', (req, res) => {
 
 // file upload
 server.express.use(express.static('public'))
-server.express.use(
-  bodyParser.urlencoded({
-    parameterLimit: 100000,
-    limit: '50mb',
-    extended: false,
-  }),
-)
+// server.express.use(
+//   bodyParser.urlencoded({
+//     parameterLimit: 100000,
+//     limit: '50mb',
+//     extended: false,
+//   }),
+// )
 server.express.use(bodyParser.json({ limit: '50mb', type: 'application/json' }))
-server.express.use(bodyParser.json())
+// server.express.use(bodyParser.json())
 
 const storage = multer.diskStorage({
   destination: './files',
@@ -158,7 +158,7 @@ server.express.post('/files', upload.single('file'), (req, res) => {
   res.status(200).json({ path: file.path })
 })
 
-server.express.use(express.json())
+server.express.use(express.json({ limit: '50mb' }))
 server.express.use(
   express.urlencoded({
     parameterLimit: 100000,
@@ -204,8 +204,8 @@ server.express.get(
 
       const inviteFrom = parsedStr.substring(4)
       let inviterId = parseInt(inviteFrom)
-      console.log('inviterId')
-      console.log(inviterId)
+      //console.log('inviterId')
+      //console.log(inviterId)
 
       user = await prisma.user.upsert({
         where: {
