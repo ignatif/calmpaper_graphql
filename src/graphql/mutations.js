@@ -1,4 +1,4 @@
-const { mutationType, intArg, stringArg } = require('@nexus/schema')
+const { mutationType, intArg, stringArg, arg } = require('@nexus/schema')
 const { getUserId } = require('../utils')
 const fetch = require('isomorphic-unfetch')
 const slugify = require('slugify')
@@ -54,6 +54,9 @@ const Mutation = mutationType({
     t.crud.updateOneLike()
     t.crud.deleteOneLike()
 
+    t.crud.createOnePoll({ alias: 'createPoll' })
+    t.crud.deleteOnePoll()
+
     t.field('createBook', {
       type: 'Book',
       args: {
@@ -71,7 +74,7 @@ const Mutation = mutationType({
         const userId = getUserId(ctx)
 
         // 1) Create slug based on name
-        const slug = slugify(name, { lower: true })
+        const slug = slugify(name, { lower: true }).replace(/\./g, '')
 
         // 2) Check if current slug exists
         const existing = await ctx.prisma.book.findOne({ where: { slug } })
@@ -90,11 +93,14 @@ const Mutation = mutationType({
                 },
               },
               tags: {
-                connect: tags,
+                connect: tags.map((i) => ({ id: i })),
               },
               genres: {
-                connect: genres,
+                connect: genres.map((i) => ({ id: i })),
               },
+            },
+            include: {
+              author: true,
             },
           })
         } else {
@@ -116,6 +122,9 @@ const Mutation = mutationType({
                 connect: genres,
               },
             },
+            include: {
+              author: true,
+            },
           })
 
           // 5) Update with a slug ending with id
@@ -126,36 +135,100 @@ const Mutation = mutationType({
             data: {
               slug: `${slug}-${book.id}`,
             },
+            include: {
+              author: true,
+            },
           })
         }
       },
     }),
+      t.field('createChapter', {
+        type: 'Chapter',
+        args: {
+          title: stringArg(),
+          content: stringArg(),
+          bookSlug: stringArg({ nullable: true }),
+          bookId: intArg({ nullable: true }),
+          userId: intArg(),
+        },
+        resolve: async (
+          parent,
+          { title, content, bookSlug, bookId, userId },
+          ctx,
+        ) => {
+          const result = await ctx.prisma.chapter.create({
+            data: {
+              title,
+              content,
+              author: { connect: { id: userId } },
+              book: { connect: { id: bookId, slug: bookSlug } },
+            },
+            include: {
+              author: true,
+              book: {
+                select: {
+                  slug: true,
+                  chapters: true,
+                },
+              },
+            },
+          })
+
+          return result
+        },
+      }),
       t.field('createReview', {
         type: 'Review',
         args: {
           stars: intArg(),
           message: stringArg(),
-          bookId: intArg(),
+          bookId: intArg({ nullable: true }),
+          bookSlug: intArg({ nullable: true }),
           authorId: intArg(),
         },
-        resolve: async (parent, { stars, message, authorId, bookId }, ctx) => {
-          const result = await ctx.prisma.review.create({
-            data: {
-              stars,
-              message,
-              author: {
-                connect: {
-                  id: authorId,
+        resolve: async (
+          parent,
+          { stars, message, authorId, bookId, bookSlug },
+          ctx,
+        ) => {
+          let result
+          if (bookId) {
+            const result = await ctx.prisma.review.create({
+              data: {
+                stars,
+                message,
+                author: {
+                  connect: {
+                    id: authorId,
+                  },
+                },
+                book: {
+                  connect: {
+                    id: bookId,
+                  },
                 },
               },
-              book: {
-                connect: {
-                  id: bookId,
+              include: { book: true },
+            })
+          } else if (bookSlug) {
+            const result = await ctx.prisma.review.create({
+              data: {
+                stars,
+                message,
+                author: {
+                  connect: {
+                    id: authorId,
+                  },
+                },
+                book: {
+                  connect: {
+                    slug: bookSlug,
+                  },
                 },
               },
-            },
-            include: { book: true },
-          })
+              include: { book: true },
+            })
+          }
 
           const userId = getUserId(ctx)
           const userFeed = getStreamClient.feed('all', userId)
@@ -399,6 +472,57 @@ const Mutation = mutationType({
           return user
         },
       })
+    t.field('setChapterLikee', {
+      type: 'Chapter',
+      args: {
+        userId: intArg(),
+        chapterId: intArg(),
+      },
+      resolve: async (parent, { userId, chapterId }, ctx) => {
+        const chapter = await ctx.prisma.chapter.update({
+          where: {
+            id: chapterId,
+          },
+          data: {
+            likes: { create: { author: { connect: { id: userId } } } },
+          },
+        })
+
+        const chapterAuthorFeed = getStreamClient.feed('all', chapter.authorId)
+
+        if (userId !== chapter.authorId) {
+          chapterAuthorFeed.addActivity({
+            verb: 'like',
+            to: [`notifications:${chapter.authorId}`],
+            object: `chapter:${chapter.id}`,
+            userId: userId,
+            bookId: chapter.bookId,
+            chapterId: chapter.id,
+            actor: getStreamClient.user(userId),
+            // foreignId: `user:${userId}-comment:${bookId}`,
+          })
+        }
+
+        return chapter
+      },
+    })
+
+    t.field('removeChapterLikee', {
+      type: 'Chapter',
+      args: {
+        chapterId: intArg(),
+        likeId: intArg(),
+      },
+      resolve: async (parent, { chapterId, likeId }, ctx) => {
+        const chapter = await ctx.prisma.chapter.update({
+          where: {
+            id: chapterId,
+          },
+          data: { likes: { delete: { id: likeId } } },
+        })
+        return chapter
+      },
+    })
     t.field('replyToComment', {
       type: 'Comment',
       args: {
@@ -562,10 +686,10 @@ const Mutation = mutationType({
               stripe_account: authorStripeId,
             },
           )
-          console.log('paymentIntent')
-          console.log(paymentIntent)
-          console.log('authorStripeId')
-          console.log(authorStripeId)
+          //console.log('paymentIntent')
+          //console.log(paymentIntent)
+          //console.log('authorStripeId')
+          //console.log(authorStripeId)
 
           const donation = await ctx.prisma.donation.create({
             data: {
@@ -682,7 +806,7 @@ const Mutation = mutationType({
           const stripeUserId = stripeConnectRequest.stripe_user_id
 
           if (!stripeUserId) {
-            console.log('Connect request to Stripe failed')
+            //console.log('Connect request to Stripe failed')
           }
 
           const user = await ctx.prisma.user.update({
@@ -752,12 +876,12 @@ const Mutation = mutationType({
         followingId: intArg(),
       },
       resolve: async (parent, { followerId, followingId }, ctx) => {
-        console.log('start')
+        //console.log('start')
         const user = await ctx.prisma.user.update({
           where: { id: followerId },
           data: { following: { connect: { id: followingId } } },
         })
-        console.log('after')
+        //console.log('after')
 
         // const user = await ctx.prisma.user.update({
         //   where: { id: followingId },
@@ -784,7 +908,7 @@ const Mutation = mutationType({
         //   object: `follow:${followingUserId}`,
         //   followerId,
         // })
-        console.log('finish')
+        //console.log('finish')
 
         return user
       },
@@ -815,6 +939,82 @@ const Mutation = mutationType({
         // })
 
         return user
+      },
+    })
+
+    t.field('vote', {
+      type: 'Vote',
+      args: {
+        pollId: intArg(),
+        chapterId: intArg(),
+        option: arg({ type: 'VoteOption' }),
+      },
+      resolve: async (parent, { chapterId, pollId, option }, ctx) => {
+        const userId = getUserId(ctx)
+
+        const vote = await ctx.prisma.vote.findOne({
+          where: {
+            userId_pollId_vote_key: {
+              userId,
+              pollId,
+            },
+          },
+          select: { id: true },
+        })
+
+        if (vote) throw new Error(`You've already voted.`)
+        
+        const myVote = await ctx.prisma.vote.create({
+          data: {
+            user: { connect: { id: userId } },
+            poll: { connect: { id: pollId } },
+            option,
+          },
+        })
+
+        const opt1Count = await ctx.prisma.vote.count({
+          where: {
+            AND: [
+              { pollId },
+              { option: { equals: 'opt1' } },
+            ],
+          },
+        })
+
+        const totalVotes = await ctx.prisma.vote.count({
+          where: {
+            AND:[
+              { pollId },
+              {
+                OR: [
+                  { option: 'opt1' },
+                  { option: 'opt2' },
+                  { option: 'opt3' },
+                ],
+              },
+            ]
+          },
+        })
+        
+        ////console.log('opt1Count = ', opt1Count)
+        ////console.log('totalVotes = ', totalVotes)
+
+        const rating = totalVotes > 7 && (opt1Count / totalVotes).toFixed(2) * 100
+
+        ////console.log('rating = ', rating)
+
+        /* const chch = */ typeof rating === 'number' && await ctx.prisma.chapter.update({
+          where: {
+            id: chapterId,
+          },
+          data: {
+            rating
+          }
+        })
+
+        ////console.log(chch)
+
+        return myVote        
       },
     })
   },

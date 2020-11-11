@@ -25,6 +25,19 @@ const Query = queryType({
     t.crud.donation()
     t.crud.donations()
 
+    t.int('booksCount', (_, __, ctx) =>
+      ctx.prisma.book
+        .findMany({ where: { archived: { not: { equals: true } } } })
+        .then((r) => r.length),
+    )
+    // t.int('chaptersCount', (_, __, ctx) => ctx.prisma.chapter.count())
+    t.int('chaptersCount', (_, __, ctx) =>
+      ctx.prisma.chapter
+        .findMany({ where: { bookId: { not: { equals: null } } } })
+        .then((r) => r.length),
+    )
+    t.int('commentsCount', (_, __, ctx) => ctx.prisma.comment.count())
+
     t.field('me', {
       type: 'User',
       nullable: true,
@@ -57,28 +70,35 @@ const Query = queryType({
         skip: intArg({ nullable: true }),
       },
       resolve: (_, { bookId, bookSlug, skip }, ctx) => {
-        return ctx.prisma.chapter.findMany({
-          take: 1,
-          skip,
-          where: {
-            OR: [
-              {
-                book: {
-                  id: bookId,
-                },
+        if (bookId) {
+          return ctx.prisma.chapter.findMany({
+            take: 1,
+            skip,
+            where: {
+              book: {
+                id: { equals: bookId },
               },
-              {
-                book: {
-                  slug: bookSlug,
-                },
+            },
+            include: {
+              reviews: true,
+              comments: true,
+            },
+          })
+        } else if (bookSlug) {
+          return ctx.prisma.chapter.findMany({
+            take: 1,
+            skip,
+            where: {
+              book: {
+                slug: { equals: bookSlug },
               },
-            ],
-          },
-          include: {
-            reviews: true,
-            comments: true,
-          },
-        })
+            },
+            include: {
+              reviews: true,
+              comments: true,
+            },
+          })
+        }
       },
     })
 
@@ -86,6 +106,7 @@ const Query = queryType({
       type: 'Chapter',
       args: {
         skip: intArg({ nullable: true }),
+        take: intArg({ nullable: true }),
         userId: intArg(),
       },
       resolve: (_, { skip = 0, take = 5, userId }, ctx) => {
@@ -117,6 +138,9 @@ const Query = queryType({
                   },
                   {
                     author: { followers: { some: { id: { equals: userId } } } },
+                  },
+                  {
+                    author: { id: { equals: userId } },
                   },
                 ],
               },
@@ -152,6 +176,9 @@ const Query = queryType({
                       author: {
                         followers: { some: { id: { equals: userId } } },
                       },
+                    },
+                    {
+                      author: { id: { equals: userId } },
                     },
                   ],
                 },
@@ -220,6 +247,7 @@ const Query = queryType({
 
           where: { chapter: { id: { equals: chapterId } } },
           orderBy: { createdAt: 'desc' },
+          
         })
       },
     })
@@ -240,6 +268,41 @@ const Query = queryType({
           orderBy: { createdAt: 'desc' },
         })
       },
+    })
+
+    t.field('poll', {
+      type: 'Poll',
+      args: {
+        chapterId: intArg(),
+      },
+      resolve: async (parent, { chapterId }, ctx) =>
+        (await ctx.prisma.poll.findOne({ where: { chapterId } })) ||
+        (await ctx.prisma.poll.create({
+          data: {
+            chapter: { connect: { id: chapterId } },
+            expires: new Date(Date.now() + 3600000 * 24),
+          },
+        })),
+    })
+
+    t.list.field('topRatedBooks', {
+      type: 'Book',
+      args: {
+        take: intArg(),
+        skip: intArg(),
+      },
+      resolve: (parent, { take, skip }, ctx) =>
+        ctx.prisma.$queryRaw(`
+        SELECT Book.* 
+        FROM Book 
+        WHERE archived = FALSE                             
+        ORDER BY 
+        (SELECT AVG(rating) FROM Chapter WHERE bookId = Book.id AND rating >= 40) *
+        (SELECT COUNT(*) FROM Chapter WHERE bookId = Book.id AND rating >= 40) DESC,
+        (SELECT COUNT(*) FROM _UserBookReader WHERE A = Book.id) DESC        
+        LIMIT ${take || 100}
+        OFFSET ${skip || 0};                      
+      `),
     })
   },
 })

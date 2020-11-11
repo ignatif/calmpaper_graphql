@@ -4,7 +4,15 @@ src/generated/
 prisma/dev.db
 prisma/migrations/
 prisma/migrations
-
+migrations
+migrate.lock
+dev.db
+.env
+.env.development
+.env.production
+schema.graphql
+yarn.lock
+test.json
 .vercel
 files/
 sendgrid.env

@@ -1,13 +1,11 @@
 generator client {
   provider = "prisma-client-js"
-  binaryTargets = ["native", "debian-openssl-1.1.x"]
 }
 
 datasource sqlite {
   provider = ["sqlite", "postgres"]
   url      = env("DB_URL")
 }
-
 
 model User {
   id             Int         @default(autoincrement()) @id
@@ -36,12 +34,15 @@ model User {
   getStreamToken String?     @unique
   stripeId       String?     @unique
 
+  isAdmin        Boolean     @default(false)
+
   receivedDonations Donation[]  @relation("DonationReceiver")
   sentDonations     Donation[]  @relation("DonationPayer")
 }
 
 model Book {
   id             Int        @default(autoincrement()) @id
+  slug           String?    @unique
   name           String
   description    String
   image          String?
@@ -62,6 +63,7 @@ model Book {
 
 model Chapter {
   id             Int        @default(autoincrement()) @id
+  slug           String?    @unique
   title          String?
   content        String
   image          String?
@@ -72,6 +74,7 @@ model Chapter {
   bookId         Int?
   likes          Like[]
   views          Int        @default(0)
+  rating         Int?        
   reviews        Review[]
   comments       Comment[]
   donations      Donation[]
@@ -103,7 +106,7 @@ model Comment {
   replies        Comment[]  @relation("CommentReplies")
   parentId       Int?
   parent         Comment?   @relation("CommentReplies", fields: [parentId], references: [id])
-  isChild        Boolean    @default(false)
+  isChild        Boolean    @default(false)  
 }
 
 model Review {
@@ -152,4 +155,24 @@ model Donation {
   payer          User?      @relation("DonationPayer", fields: [payerId], references: [id])
   recipientId    Int?
   recipient      User?      @relation("DonationReceiver", fields: [recipientId], references: [id])
+}
+
+model Poll {
+  id             Int        @default(autoincrement()) @id
+  chapter        Chapter?   @relation(fields: [chapterId], references: [id])
+  chapterId      Int?       @unique
+  votes          Vote[]
+  expires        DateTime
+}
+
+
+model Vote {
+  id             Int        @default(autoincrement()) @id
+  user           User       @relation("VotedBy", fields: [userId], references: [id])
+  userId         Int
+  poll           Poll?      @relation("VotedWhere", fields: [pollId], references: [id])
+  pollId         Int?
+  option         String
+
+  @@unique([pollId, userId], name: "userId_pollId_vote_key")
 }

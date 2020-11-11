@@ -2,7 +2,8 @@ require('dotenv').config()
 const { GraphQLServer } = require('graphql-yoga')
 const { makeSchema, objectType, intArg, stringArg } = require('@nexus/schema')
 const { PrismaClient } = require('@prisma/client')
-const { nexusPrismaPlugin } = require('nexus-prisma')
+// const { nexusPrismaPlugin } = require('nexus-prisma')
+const { nexusSchemaPrisma } = require('nexus-plugin-prisma/schema')
 const {
   Query,
   Mutation,
@@ -16,9 +17,14 @@ const {
   Genre,
   Donation,
   AuthPayload,
+  Poll,
+  Vote,
+  VoteOption,
+  MyVote,
 } = require('./graphql')
 const { permissions } = require('./middlewares/permissions')
 const { notifications } = require('./middlewares/notifications')
+const { prerender } = require('./middlewares/prerender')
 const express = require('express')
 const multer = require('multer')
 const multerS3 = require('multer-s3')
@@ -59,19 +65,23 @@ let schema = makeSchema({
     Genre,
     Donation,
     AuthPayload,
+    Poll,
+    Vote,
+    VoteOption,
+    MyVote,
   ],
   plugins: [
-    nexusPrismaPlugin({
+    nexusSchemaPrisma({
       experimentalCRUD: true,
     }),
   ],
-  experimentalCRUD: true,
   outputs: {
     schema: __dirname + '/../schema.graphql',
   },
 })
 
-schema = applyMiddleware(schema, notifications)
+// schema = applyMiddleware(schema, notifications)
+schema = applyMiddleware(schema, prerender, notifications)
 
 const stipeNode = require('stripe')
 const stripe = stipeNode(process.env.STRIPE_SECRET_KEY)
@@ -111,7 +121,7 @@ server.express.use('/ping-me', (req, res) => {
   sgMail
     .send(msg)
     .then(() => {
-      console.log('Email sent')
+      //console.log('Email sent')
     })
     .catch((error) => {
       console.error(error)
@@ -121,15 +131,15 @@ server.express.use('/ping-me', (req, res) => {
 
 // file upload
 server.express.use(express.static('public'))
-server.express.use(
-  bodyParser.urlencoded({
-    parameterLimit: 100000,
-    limit: '50mb',
-    extended: false,
-  }),
-)
+// server.express.use(
+//   bodyParser.urlencoded({
+//     parameterLimit: 100000,
+//     limit: '50mb',
+//     extended: false,
+//   }),
+// )
 server.express.use(bodyParser.json({ limit: '50mb', type: 'application/json' }))
-server.express.use(bodyParser.json())
+// server.express.use(bodyParser.json())
 
 const storage = multer.diskStorage({
   destination: './files',
@@ -148,7 +158,7 @@ server.express.post('/files', upload.single('file'), (req, res) => {
   res.status(200).json({ path: file.path })
 })
 
-server.express.use(express.json())
+server.express.use(express.json({ limit: '50mb' }))
 server.express.use(
   express.urlencoded({
     parameterLimit: 100000,
@@ -158,6 +168,7 @@ server.express.use(
 )
 
 // auth
+server.express.use(session({ secret: process.env.APP_SECRET }))
 passport.serializeUser((user, done) => done(null, user))
 passport.deserializeUser((obj, done) => done(null, obj))
 server.express.use(session({ secret: 'cats' }))
@@ -185,24 +196,61 @@ server.express.get(
     const { user: profile } = req
 
     const getStreamToken = getStreamClient.createUserToken(profile.id)
-    const user = await prisma.user.upsert({
-      where: {
-        googleId: profile.id,
-      },
-      create: {
-        googleId: profile.id,
-        fullname: profile.displayName,
-        firstname: profile.name.familyName,
-        givenname: profile.name.givenName,
-        avatar: profile.photos[0].value,
-        email: profile.emails[0].value,
-        getStreamToken,
-      },
-      update: {
-        email: profile.emails[0].value,
-        getStreamToken,
-      },
-    })
+
+    let user
+    if (req.session.from) {
+      var parsedWordArray = CryptoJS.enc.Base64.parse(req.session.from)
+      var parsedStr = parsedWordArray.toString(CryptoJS.enc.Utf8)
+
+      const inviteFrom = parsedStr.substring(4)
+      let inviterId = parseInt(inviteFrom)
+      //console.log('inviterId')
+      //console.log(inviterId)
+
+      user = await prisma.user.upsert({
+        where: {
+          googleId: profile.id,
+        },
+        create: {
+          googleId: profile.id,
+          fullname: profile.displayName,
+          firstname: profile.name.familyName,
+          givenname: profile.name.givenName,
+          avatar: profile.photos[0].value,
+          email: profile.emails[0].value,
+          getStreamToken,
+          inviter: {
+            connect: {
+              id: inviterId,
+            },
+          },
+          following: { connect: { id: inviterId } },
+        },
+        update: {
+          email: profile.emails[0].value,
+          getStreamToken,
+        },
+      })
+    } else {
+      user = await prisma.user.upsert({
+        where: {
+          googleId: profile.id,
+        },
+        create: {
+          googleId: profile.id,
+          fullname: profile.displayName,
+          firstname: profile.name.familyName,
+          givenname: profile.name.givenName,
+          avatar: profile.photos[0].value,
+          email: profile.emails[0].value,
+          getStreamToken,
+        },
+        update: {
+          email: profile.emails[0].value,
+          getStreamToken,
+        },
+      })
+    }
     var token = sign({ userId: user.id }, APP_SECRET)
 
     res.redirect(`${process.env.FRONTEND_URL}/?token=${token}`)
@@ -214,7 +262,6 @@ server.start({ port: 3000 },() =>
     `🚀 Server ready at: http://localhost:4000\n⭐️ See sample queries: http://pris.ly/e/js/graphql#using-the-graphql-api`,
   ),
 )
-
 module.exports = {
   User,
   Book,
