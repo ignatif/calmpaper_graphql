@@ -1,6 +1,7 @@
 node_modules/
 src/generated/
 *.env*
+prisma/dev.old.db
 prisma/dev.db
 prisma/migrations/
 prisma/migrations
