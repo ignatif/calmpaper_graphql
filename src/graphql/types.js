@@ -265,17 +265,17 @@ const Comment = objectType({
         return vote?.option
       },
     })
-    t.string('bodyReplaceOldPoll', {
-      resolve: async ({ id, body }, _, ctx) => {
-        const newBody = body.split('. ').splice(1).join('')
-        const { body: editedBody } = await ctx.prisma.comment.update({
-          where: { id },
-          data: { body: newBody },
-          select: { body: true },
-        })
-        return editedBody
-      },
-    })
+    // t.string('bodyReplaceOldPoll', {
+    //   resolve: async ({ id, body }, _, ctx) => {
+    //     const newBody = body.split('. ').splice(1).join('')
+    //     const { body: editedBody } = await ctx.prisma.comment.update({
+    //       where: { id },
+    //       data: { body: newBody },
+    //       select: { body: true },
+    //     })
+    //     return editedBody
+    //   },
+    // })
   },
 })
 
