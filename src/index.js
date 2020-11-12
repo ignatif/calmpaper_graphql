@@ -257,9 +257,9 @@ server.express.get(
   },
 )
 
-server.start({ port: 4000 },() =>
+server.start({ port: 3000 },() =>
   console.log(
-    `🚀 Server ready at: http://localhost:4000\n⭐️ See sample queries: http://pris.ly/e/js/graphql#using-the-graphql-api`,
+    `🚀 Server ready at: http://localhost:3000\n⭐️ See sample queries: http://pris.ly/e/js/graphql#using-the-graphql-api`,
   ),
 )
 module.exports = {
