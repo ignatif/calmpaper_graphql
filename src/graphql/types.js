@@ -61,7 +61,7 @@ const Book = objectType({
           max: { views: true },
         })
 
-        // console.log(totalViews)
+        // //console.log(totalViews)
 
         return views > totalViews ? views : totalViews
       },
@@ -183,13 +183,13 @@ const Chapter = objectType({
           },
         })
 
-        //console.log('opt1Count = ', opt1Count)
-        //console.log('totalVotes = ', totalVotes)
+        ////console.log('opt1Count = ', opt1Count)
+        ////console.log('totalVotes = ', totalVotes)
 
         const rating =
           totalVotes > 7 && (opt1Count / totalVotes).toFixed(2) * 100
 
-        //console.log('rating = ', rating)
+        ////console.log('rating = ', rating)
 
         /* const chch = */ typeof rating === 'number' &&
           (await ctx.prisma.chapter.update({
@@ -261,10 +261,21 @@ const Comment = objectType({
             },
           },
         })
-        // console.log(vote)
+        // //console.log(vote)
         return vote?.option
       },
     })
+    // t.string('bodyReplaceOldPoll', {
+    //   resolve: async ({ id, body }, _, ctx) => {
+    //     const newBody = body.split('. ').splice(1).join('')
+    //     const { body: editedBody } = await ctx.prisma.comment.update({
+    //       where: { id },
+    //       data: { body: newBody },
+    //       select: { body: true },
+    //     })
+    //     return editedBody
+    //   },
+    // })
   },
 })
 

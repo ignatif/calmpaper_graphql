@@ -64,7 +64,7 @@ const notifications = async (resolve, root, args, context, info) => {
   // Like(Chapter)
   if (info.fieldName === 'setChapterLikee') {
     // const likeAuthorId = getUserId(context)
-    // console.log(result);
+    // //console.log(result);
     //       const user = await ctx.prisma.user.findOne({
     //         where: { id: authorId },
     //       })
@@ -110,9 +110,9 @@ const notifications = async (resolve, root, args, context, info) => {
     })
   }
   // if (info.fieldName === 'deleteOneChapter') {
-  //   console.log('after Result:')
-  //   console.log(info.fieldName)
-  //   console.log(result)
+  //   //console.log('after Result:')
+  //   //console.log(info.fieldName)
+  //   //console.log(result)
   // }
 
   // Comment
@@ -130,19 +130,19 @@ const notifications = async (resolve, root, args, context, info) => {
   //   })
   // }
   // if (info.fieldName === 'deleteOneComment') {
-  //   console.log('after Result:')
-  //   console.log(info.fieldName)
-  //   console.log(result)
+  //   //console.log('after Result:')
+  //   //console.log(info.fieldName)
+  //   //console.log(result)
   // }
 
   // Review
   // if (info.fieldName === 'createOneReview') {
   //   const userId = getUserId(context)
   //   const userFeed = getStreamClient.feed('all', userId)
-  //   console.log('args')
-  //   console.log(args)
+  //   //console.log('args')
+  //   //console.log(args)
 
-  //   console.log(result)
+  //   //console.log(result)
   //   userFeed.addActivity({
   //     actor: getStreamClient.user(userId),
   //     to: [`notifications:${res.book.authorId}`],
@@ -162,9 +162,9 @@ const notifications = async (resolve, root, args, context, info) => {
   //   bookId,
   // })
   // if (info.fieldName === 'deleteOneReview') {
-  //   console.log('after Result:')
-  //   console.log(info.fieldName)
-  //   console.log(result)
+  //   //console.log('after Result:')
+  //   //console.log(info.fieldName)
+  //   //console.log(result)
   // }
 
   // Like
@@ -182,9 +182,9 @@ const notifications = async (resolve, root, args, context, info) => {
   //   })
   // }
   // if (info.fieldName === 'deleteOneLike') {
-  //   console.log('after Result:')
-  //   console.log(info.fieldName)
-  //   console.log(result)
+  //   //console.log('after Result:')
+  //   //console.log(info.fieldName)
+  //   //console.log(result)
   // }
 
   return result
