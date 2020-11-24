@@ -42,6 +42,24 @@ const rules = {
       .author()
     return userId === author.id
   }),
+  isCommentBookAuthor: rule()(async (parent, { where: { id } }, context) => {
+    const userId = getUserId(context)
+    const bookAuthor = await context.prisma.comment
+      .findOne({ where: { id: Number(id) } })
+      .book()
+      .author()
+    return bookAuthor.id === userId
+  }),
+  isCommentChapterAuthor: rule()(async (parent, { where: { id } }, context) => {
+    const userId = getUserId(context)
+    const chapterAuthor = await context.prisma.comment
+      .findOne({ where: { id: Number(id) } })
+      .chapter()
+      .author()
+    console.log('isCommentChapterAuthor')
+    console.log(chapterAuthor.id === userId)
+    return chapterAuthor.id === userId
+  }),
   isReviewAuthor: rule()(async (parent, { where: { id } }, context) => {
     const userId = getUserId(context)
     const author = await context.prisma.review
@@ -97,7 +115,12 @@ const permissions = shield(
 
       createOneComment: rules.isAuthenticatedUser,
       updateOneComment: rules.isCommentAuthor,
-      deleteOneComment: or(rules.isCommentAuthor, rules.isAdmin),
+      deleteOneComment: or(
+        rules.isCommentBookAuthor,
+        rules.isCommentChapterAuthor,
+        rules.isCommentAuthor,
+        rules.isAdmin,
+      ),
 
       createOneReview: rules.isAuthenticatedUser,
       updateOneReview: rules.isReviewAuthor,
