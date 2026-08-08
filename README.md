@@ -1,26 +1,63 @@
-# Calmpaper GraphQL Server
+# Calmpaper GraphQL API
 
-**GraphQL server with JavaScript (Node.js)** based on [Prisma Client](https://github.com/prisma/prisma2/blob/master/docs/prisma-client-js/api.md) & [graphql-yoga](https://github.com/prisma/graphql-yoga).
+The restored Calmpaper backend: GraphQL Yoga, Prisma ORM, and PostgreSQL. This
+is the phase-one service described in
+[`docs/rehabilitation-plan.md`](docs/rehabilitation-plan.md).
 
-## Set up a project
+It supports email/password authentication, writers, books, pages, follows,
+libraries, likes, comments/replies, and a database-backed Following feed.
+GetStream, Stripe, Google OAuth, uploads, and transactional email remain
+disabled for this phase.
 
-add .env file inside prisma folder with the following:
+## Local setup
 
+Copy `.env.example` to `.env`, provide a PostgreSQL connection string, then:
+
+```bash
+bun install
+bun run db:migrate
+bun run db:seed
+bun run dev
 ```
-DB_URL=file:dev.db
+
+GraphQL is served at `http://localhost:4000/graphql`.
+
+The idempotent seed creates six public-domain writers, six books, pages,
+follows, library entries, and fictional cross-era discussions.
+
+Demo account:
+
+```text
+demo@calmpaper.com
+calmpaper
 ```
 
+## Checks
 
-```
-1) yarn
-2) npx prisma migrate save --name 'init' --experimental && npx prisma migrate up --experimental
-3) npx prisma generate
-4) yarn dev
+```bash
+bun run check
 ```
 
-The project should be up and running on http://localhost:4000
+## Production
 
+Required environment variables:
 
-## Next steps
+- `DATABASE_URL`
+- `APP_SECRET`
+- `FRONTEND_URL`
 
-- Explore [Prisma Documentation](https://www.prisma.io/docs/)
+Apply migrations and seed the demo database before serving traffic:
+
+```bash
+bun run db:migrate
+bun run db:seed
+```
+
+Vercel entry points live in `api/`; `/graphql` rewrites to `/api/graphql`.
+
+## Security boundaries
+
+- Mutation identity always comes from the signed bearer token.
+- Password hashes and integration secrets are not exposed by GraphQL.
+- Historical Google, Stream, Stripe, SendGrid, and upload code is not started.
+- Previously committed keys must still be treated as compromised and rotated.

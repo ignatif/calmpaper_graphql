@@ -13,7 +13,7 @@ const getStreamClient = stream.connect(
   process.env.GETSTREAM_SECRET,
 )
 
-const APP_SECRET = 'appsecret321'
+const APP_SECRET = process.env.APP_SECRET
 
 const Mutation = mutationType({
   definition(t) {

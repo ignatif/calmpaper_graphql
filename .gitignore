@@ -1,12 +1,12 @@
 node_modules/
 src/generated/
 *.env*
+!.env.example
+*.pem
+*.key
+*.crt
 prisma/dev.old.db
 prisma/dev.db
-prisma/migrations/
-prisma/migrations
-migrations
-migrate.lock
 dev.db
 .env
 .env.development
@@ -17,3 +17,4 @@ test.json
 .vercel
 files/
 sendgrid.env
+bun.lockb
